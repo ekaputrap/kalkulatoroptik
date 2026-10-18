@@ -1,11 +1,14 @@
 /* Service worker Kalkulator Optik
-   Strategi: simpan semua file saat pertama dibuka, lalu selalu tampilkan versi
-   tersimpan (cepat & offline) sambil diam-diam mengecek versi baru di latar belakang.
-   Kalau Anda mengubah isi aplikasi, naikkan angka VERSION di bawah. */
-const VERSION = 'v2';
+   - Halaman utama: ambil dari internet dulu (selalu versi terbaru). Kalau offline atau
+     internet lambat (> 4 detik), pakai salinan tersimpan.
+   - File lain (ikon dll): tampilkan salinan tersimpan, diperbarui diam-diam di latar belakang.
+   - Semua permintaan ke server melewati cache bawaan browser, jadi update langsung terbaca.
+   Setiap kali Anda mengubah aplikasi, naikkan angka VERSION di bawah. */
+const VERSION = 'v3';
 const CACHE = 'kalkulator-optik-' + VERSION;
+const PAGE = './index.html';
 const PRECACHE = [
-  './index.html',
+  PAGE,
   './manifest.json',
   './icon-192.png',
   './icon-512.png',
@@ -13,9 +16,19 @@ const PRECACHE = [
   './apple-touch-icon.png',
   './favicon-32.png'
 ];
+const NET_TIMEOUT = 4000;
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(PRECACHE)).then(() => self.skipWaiting()));
+  e.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    // cache: 'reload' = abaikan cache bawaan browser, ambil langsung dari server
+    await Promise.all(PRECACHE.map(async (url) => {
+      const res = await fetch(new Request(url, { cache: 'reload' }));
+      if (!res.ok) throw new Error('Gagal mengambil ' + url);
+      await cache.put(url, res);
+    }));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', (e) => {
@@ -32,28 +45,37 @@ async function clean(res) {
   return new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers });
 }
 
+async function pageStrategy(e) {
+  const cache = await caches.open(CACHE);
+  const net = fetch(PAGE, { cache: 'no-cache' }).then(async (res) => {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const r = await clean(res);
+    await cache.put(PAGE, r.clone());
+    return r;
+  });
+  net.catch(() => {});
+  try {
+    return await Promise.race([net, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), NET_TIMEOUT))]);
+  } catch (err) {
+    const cached = await cache.match(PAGE);
+    if (cached) { e.waitUntil(net.catch(() => {})); return cached; }
+    return net;   // belum ada salinan: tunggu internet
+  }
+}
+
+async function assetStrategy(e, req) {
+  const cache = await caches.open(CACHE);
+  const cached = await cache.match(req, { ignoreSearch: true });
+  const refresh = fetch(req, { cache: 'no-cache' })
+    .then(async (res) => { if (res && res.ok) await cache.put(req, res.clone()); return res; })
+    .catch(() => null);
+  if (cached) { e.waitUntil(refresh); return cached; }
+  return (await refresh) || Response.error();
+}
+
 self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  if (url.origin !== self.location.origin) return;
-
-  const isNav = req.mode === 'navigate';
-  const key = isNav ? './index.html' : req;
-
-  e.respondWith((async () => {
-    const cache = await caches.open(CACHE);
-    const cached = await cache.match(key, { ignoreSearch: true });
-    const refresh = fetch(isNav ? './index.html' : req)
-      .then(async (res) => {
-        if (res && res.ok) await cache.put(key, (await clean(res)).clone());
-        return res;
-      })
-      .catch(() => null);
-
-    if (cached) { e.waitUntil(refresh); return cached; }
-    const res = await refresh;
-    if (res) return isNav ? clean(res) : res;
-    return isNav ? (await cache.match('./index.html')) || Response.error() : Response.error();
-  })());
+  if (new URL(req.url).origin !== self.location.origin) return;
+  e.respondWith(req.mode === 'navigate' ? pageStrategy(e) : assetStrategy(e, req));
 });
