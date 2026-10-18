@@ -1,9 +1,4 @@
-/* Service worker Kalkulator Optik
-   - Halaman utama: ambil dari internet dulu (selalu versi terbaru). Kalau offline atau
-     internet lambat (> 4 detik), pakai salinan tersimpan.
-   - File lain (ikon dll): tampilkan salinan tersimpan, diperbarui diam-diam di latar belakang.
-   - Semua permintaan ke server melewati cache bawaan browser, jadi update langsung terbaca.
-   Setiap kali Anda mengubah aplikasi, naikkan angka VERSION di bawah. */
+/* Service worker Kalkulator Optik */
 const VERSION = 'v3';
 const CACHE = 'kalkulator-optik-' + VERSION;
 const PAGE = './index.html';
@@ -21,7 +16,7 @@ const NET_TIMEOUT = 4000;
 self.addEventListener('install', (e) => {
   e.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    // cache: 'reload' = abaikan cache bawaan browser, ambil langsung dari server
+    // cache reload = abaikan cache bawaan browser, ambil langsung dari server
     await Promise.all(PRECACHE.map(async (url) => {
       const res = await fetch(new Request(url, { cache: 'reload' }));
       if (!res.ok) throw new Error('Gagal mengambil ' + url);
@@ -39,7 +34,7 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Respons hasil redirect tidak boleh dipakai untuk navigasi, jadi dibersihkan dulu.
+// respons hasil redirect ga boleh dipake untuk navigasi, jadi diclear dulu
 async function clean(res) {
   if (!res.redirected) return res;
   return new Response(await res.blob(), { status: res.status, statusText: res.statusText, headers: res.headers });
@@ -59,7 +54,7 @@ async function pageStrategy(e) {
   } catch (err) {
     const cached = await cache.match(PAGE);
     if (cached) { e.waitUntil(net.catch(() => {})); return cached; }
-    return net;   // belum ada salinan: tunggu internet
+    return net;   // belum ada salinan = tunggu internet
   }
 }
 
