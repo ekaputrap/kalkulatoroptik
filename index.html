@@ -301,6 +301,38 @@ input:disabled, select:disabled { opacity: .62; }
 .ln { display: block; }
 .ln + .ln { margin-top: 3px; }
 
+/* Gambar penjelasan: sagita, base curve, tools, ketebalan lensa */
+.lzf { --lz2: #b35500; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lzf { --lz2: #ffb454; } }
+:root[data-theme="dark"] .lzf { --lz2: #ffb454; }
+.lzs { display: block; width: 100%; max-width: 24rem; height: auto; margin: 14px auto 0; overflow: visible; }
+.lzs .body { fill: var(--accent-soft); stroke: none; }
+.lzs .out { fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.lzs .hi { fill: none; stroke-width: 4; stroke-linecap: round; }
+.lzs .hi.a, .lzs .bar.a, .lzs .ldr.a, .lzs .dim.a { stroke: var(--accent); }
+.lzs .hi.o, .lzs .bar.o, .lzs .ldr.o, .lzs .dim.o { stroke: var(--lz2); }
+.lzs .bar { stroke-width: 4; stroke-linecap: butt; }
+.lzs .ldr { stroke-width: 1.5; stroke-linecap: round; }
+.lzs .thin, .lzs .ext { fill: none; stroke: var(--ink-2); stroke-width: 1; opacity: .75; }
+.lzs .dim { fill: none; stroke: var(--ink-2); stroke-width: 1.5; }
+.lzs .axis, .lzs .chord { stroke: var(--ink-2); stroke-width: 1.2; stroke-dasharray: 5 4; opacity: .8; }
+.lzs .blank { fill: none; stroke: var(--ink-2); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.lzs .cut { fill: url(#lz-arsir); stroke: none; }
+.lzs .arsir { stroke: var(--ink-2); stroke-width: 1; opacity: .6; }
+.lzs .ah { fill: var(--ink-2); }
+.lzs .dot { fill: var(--ink); }
+.lzs text { font: 600 13px var(--f-ui); fill: var(--ink); }
+.lzs .big { font-size: 15px; font-weight: 700; }
+.lzs .tn { font-size: 12px; font-weight: 500; fill: var(--ink-2); }
+.lzs .ta { fill: var(--accent); font-weight: 700; }
+.lzs .to { fill: var(--lz2); font-weight: 700; }
+.lzs .sb { font-size: 9px; }
+.lzk div { grid-template-columns: 4.4rem minmax(0, 1fr); }
+.lzk dd { font-family: var(--f-ui); font-size: .86rem; }
+.lzk dt.a { color: var(--accent); }
+.lzk dt.o { color: var(--lz2); }
+.lzn { margin-top: 10px; color: var(--ink-2); font-size: .84rem; line-height: 1.45; }
+
 /* tombol kalkulator di pojok kanan atas header homepage */
 .hbtn { flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .hbtn:active { filter: brightness(.92); }
@@ -842,6 +874,37 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 
       <section class="panel" data-t-aria-label="sagita.hasil">
         <div id="sag-out" class="panel"></div>
+        <details class="card formula lzf" open>
+          <summary data-t="gambar.sagita_judul"></summary>
+          <svg class="lzs" viewBox="0 0 320 228" role="img" data-t-aria-label="gambar.sagita_desk" focusable="false">
+    <path class="body" d="M137.53 22A150 150 0 0 0 137.53 206Z"/>
+    <line class="thin" x1="137.53" y1="22" x2="137.53" y2="206"/>
+    <path class="out" d="M137.53 22A150 150 0 0 0 137.53 206"/>
+    <line class="ext" x1="137.53" y1="22" x2="62" y2="22"/>
+    <line class="ext" x1="137.53" y1="206" x2="62" y2="206"/>
+    <line class="dim" x1="68" y1="27" x2="68" y2="201"/>
+    <polygon class="ah" points="68,22 71.2,29 64.8,29"/>
+    <polygon class="ah" points="68,206 64.8,199 71.2,199"/>
+    <text class="tx big" x="59" y="119" text-anchor="end">Ø</text>
+    <line class="axis" x1="137.53" y1="114" x2="256" y2="114"/>
+    <line class="axis" x1="256" y1="114" x2="137.53" y2="22"/>
+    <path class="thin" d="M137.53 106H145.53V114"/>
+    <circle class="dot" cx="256" cy="114" r="3.2"/>
+    <line class="bar a" x1="106" y1="114" x2="137.53" y2="114"/>
+    <text class="ta" x="121.76" y="103" text-anchor="middle">s</text>
+    <text class="tn" x="196.76" y="106" text-anchor="middle">r − s</text>
+    <text class="tn" x="208.76" y="61" text-anchor="start">r</text>
+    <text class="tn" x="146.53" y="76" text-anchor="start">Ø/2</text>
+    <text class="tx" x="264" y="119" text-anchor="start">C</text>
+          </svg>
+          <dl class="rumus lzk">
+          <div><dt class="a">s</dt><dd data-t="gambar.s_ket"></dd></div>
+          <div><dt>Ø</dt><dd data-t="gambar.dia_ket"></dd></div>
+          <div><dt>r</dt><dd data-t="gambar.r_ket"></dd></div>
+          <div><dt>C</dt><dd data-t="gambar.c_ket"></dd></div>
+          </dl>
+          <p class="lzn" data-t="gambar.sagita_cat"></p>
+        </details>
         <details class="card formula">
           <summary data-t="sagita.rumus_yang_dipakai"></summary>
           <dl class="rumus" id="sag-rumus"></dl>
@@ -875,6 +938,37 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 
       <section class="panel" data-t-aria-label="bc.hasil">
         <div id="bc-out" class="panel"></div>
+        <details class="card formula lzf" open>
+          <summary data-t="gambar.bc_judul"></summary>
+          <svg class="lzs" viewBox="0 0 320 238" role="img" data-t-aria-label="gambar.bc_desk" focusable="false">
+    <path class="body" d="M78 42A244.25 244.25 0 0 0 78 166 L110 166A82.64 82.64 0 0 1 110 42 Z"/>
+    <path class="out" d="M78 42A244.25 244.25 0 0 0 78 166 L110 166A82.64 82.64 0 0 1 110 42 Z"/>
+    <path class="hi a" d="M78 42A244.25 244.25 0 0 0 78 166"/>
+    <line class="ldr a" x1="54" y1="104" x2="67" y2="104"/>
+    <text class="ta big" x="51" y="109" text-anchor="end">BC</text>
+    <text class="tx" x="90" y="22" text-anchor="middle" data-t="gambar.lensa_minus"></text>
+    <text class="tx" x="90" y="212" text-anchor="middle">BC = ½ SE + 6</text>
+    <text class="tn" x="90" y="228" text-anchor="middle">SE ≤ 0</text>
+    <path class="body" d="M242 42A82.64 82.64 0 0 0 242 166 L250 166A197.2 197.2 0 0 1 250 42 Z"/>
+    <path class="out" d="M242 42A82.64 82.64 0 0 0 242 166 L250 166A197.2 197.2 0 0 1 250 42 Z"/>
+    <path class="hi a" d="M242 42A82.64 82.64 0 0 0 242 166"/>
+    <line class="ldr a" x1="198" y1="104" x2="211" y2="104"/>
+    <text class="ta big" x="195" y="109" text-anchor="end">BC</text>
+    <text class="tx" x="232" y="22" text-anchor="middle" data-t="gambar.lensa_plus"></text>
+    <text class="tx" x="232" y="212" text-anchor="middle">BC = SE + 6</text>
+    <text class="tn" x="232" y="228" text-anchor="middle">SE > 0</text>
+    <text class="tn" x="18" y="188" text-anchor="start" data-t="gambar.depan"></text>
+    <text class="tn" x="302" y="188" text-anchor="end" data-t="gambar.belakang"></text>
+    <line class="dim" x1="62" y1="184" x2="244" y2="184"/>
+    <polygon class="ah" points="246,184 240,187 240,181"/>
+          </svg>
+          <dl class="rumus lzk">
+          <div><dt class="a">BC</dt><dd data-t="gambar.bc_ket"></dd></div>
+          <div><dt>Minus</dt><dd data-t="gambar.bc_minus_ket"></dd></div>
+          <div><dt>Plus</dt><dd data-t="gambar.bc_plus_ket"></dd></div>
+          </dl>
+          <p class="lzn" data-t="gambar.bc_cat"></p>
+        </details>
         <details class="card formula">
           <summary data-t="bc.rumus_yang_dipakai"></summary>
           <dl class="rumus" id="bc-rumus"></dl>
@@ -908,6 +1002,72 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 
       <section class="panel" data-t-aria-label="et.hasil">
         <div id="et-out" class="panel"></div>
+        <details class="card formula lzf" open>
+          <summary data-t="gambar.et_judul"></summary>
+          <svg class="lzs" viewBox="0 0 320 260" role="img" data-t-aria-label="gambar.et_desk" focusable="false">
+    <defs><pattern id="lz-arsir" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="arsir" x1="0" y1="0" x2="0" y2="5"/></pattern></defs>
+    <path class="cut" d="M88 72L96 72L96 180L88 180A55.71 55.71 0 0 1 88 72Z"/>
+    <path class="blank" d="M88 72H96V180H88"/>
+    <path class="body" d="M26 72L26 180 L88 180A55.71 55.71 0 0 1 88 72 Z"/>
+    <path class="out" d="M26 72L26 180 L88 180A55.71 55.71 0 0 1 88 72 Z"/>
+    <line class="chord" x1="88" y1="72" x2="88" y2="180"/>
+    <line class="bar a" x1="26" y1="126" x2="46" y2="126"/>
+    <line class="bar o" x1="46" y1="126" x2="88" y2="126"/>
+    <line class="ext" x1="26" y1="72" x2="26" y2="46"/>
+    <line class="ext" x1="88" y1="72" x2="88" y2="46"/>
+    <line class="chord" x1="46" y1="126" x2="46" y2="46"/>
+    <line class="dim a" x1="26" y1="50" x2="46" y2="50"/>
+    <line class="dim o" x1="46" y1="50" x2="88" y2="50"/>
+    <line class="dim a" x1="26" y1="46" x2="26" y2="54"/>
+    <line class="dim a" x1="46" y1="46" x2="46" y2="54"/>
+    <line class="dim o" x1="88" y1="46" x2="88" y2="54"/>
+    <text class="ta" x="36" y="43" text-anchor="middle">CT</text>
+    <text class="to" x="67" y="43" text-anchor="middle">s</text>
+    <text class="tx" x="96" y="54" text-anchor="start">= ET</text>
+    <line class="ext" x1="26" y1="180" x2="26" y2="208"/>
+    <line class="ext" x1="96" y1="180" x2="96" y2="208"/>
+    <line class="dim" x1="26" y1="204" x2="96" y2="204"/>
+    <line class="dim" x1="26" y1="200" x2="26" y2="208"/>
+    <line class="dim" x1="96" y1="200" x2="96" y2="208"/>
+    <text class="tx big" x="61" y="223" text-anchor="middle">t</text>
+    <text class="tx" x="63" y="16" text-anchor="middle" data-t="gambar.lensa_minus"></text>
+    <text class="tn" x="63" y="250" text-anchor="middle">ET = s + CT</text>
+    <path class="cut" d="M276 72H284V180H276Z"/>
+    <path class="blank" d="M258 72H284V180H258"/>
+    <path class="body" d="M258 72A66.07 66.07 0 0 0 258 180 L276 180L276 72 Z"/>
+    <path class="out" d="M258 72A66.07 66.07 0 0 0 258 180 L276 180L276 72 Z"/>
+    <line class="chord" x1="258" y1="72" x2="258" y2="180"/>
+    <line class="bar o" x1="230" y1="126" x2="258" y2="126"/>
+    <line class="bar a" x1="258" y1="126" x2="276" y2="126"/>
+    <line class="ext" x1="230" y1="126" x2="230" y2="46"/>
+    <line class="ext" x1="258" y1="72" x2="258" y2="46"/>
+    <line class="ext" x1="276" y1="72" x2="276" y2="46"/>
+    <line class="dim o" x1="230" y1="50" x2="258" y2="50"/>
+    <line class="dim a" x1="258" y1="50" x2="276" y2="50"/>
+    <line class="dim o" x1="230" y1="46" x2="230" y2="54"/>
+    <line class="dim a" x1="258" y1="46" x2="258" y2="54"/>
+    <line class="dim a" x1="276" y1="46" x2="276" y2="54"/>
+    <text class="to" x="244" y="43" text-anchor="middle">s</text>
+    <text class="ta" x="267" y="43" text-anchor="middle">ET</text>
+    <text class="tx" x="284" y="54" text-anchor="start">= CT</text>
+    <line class="ext" x1="230" y1="126" x2="230" y2="208"/>
+    <line class="ext" x1="284" y1="180" x2="284" y2="208"/>
+    <line class="dim" x1="230" y1="204" x2="284" y2="204"/>
+    <line class="dim" x1="230" y1="200" x2="230" y2="208"/>
+    <line class="dim" x1="284" y1="200" x2="284" y2="208"/>
+    <text class="tx big" x="257" y="223" text-anchor="middle">t</text>
+    <text class="tx" x="257" y="16" text-anchor="middle" data-t="gambar.lensa_plus"></text>
+    <text class="tn" x="257" y="250" text-anchor="middle">CT = s + ET</text>
+          </svg>
+          <dl class="rumus lzk">
+          <div><dt class="a">CT</dt><dd data-t="gambar.ct_ket"></dd></div>
+          <div><dt class="a">ET</dt><dd data-t="gambar.et_ket"></dd></div>
+          <div><dt class="o">s</dt><dd data-t="gambar.sag_ket"></dd></div>
+          <div><dt>t</dt><dd data-t="gambar.t_ket"></dd></div>
+          <div><dt>Arsir</dt><dd data-t="gambar.arsir_ket"></dd></div>
+          </dl>
+          <p class="lzn" data-t="gambar.et_cat"></p>
+        </details>
         <details class="card formula">
           <summary data-t="et.rumus_yang_dipakai"></summary>
           <dl class="rumus" id="et-rumus"></dl>
@@ -941,6 +1101,37 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 
       <section class="panel" data-t-aria-label="ft.hasil">
         <div id="ft-out" class="panel"></div>
+        <details class="card formula lzf" open>
+          <summary data-t="gambar.ft_judul"></summary>
+          <svg class="lzs" viewBox="0 0 320 212" role="img" data-t-aria-label="gambar.ft_desk" focusable="false">
+    <path class="body" d="M80 46A197.2 197.2 0 0 0 80 170 L114 170A79.07 79.07 0 0 1 114 46 Z"/>
+    <path class="out" d="M80 46A197.2 197.2 0 0 0 80 170 L114 170A79.07 79.07 0 0 1 114 46 Z"/>
+    <path class="hi a" d="M80 46A197.2 197.2 0 0 0 80 170"/>
+    <path class="hi o" d="M114 170A79.07 79.07 0 0 1 114 46"/>
+    <line class="ldr a" x1="54" y1="108" x2="67" y2="108"/>
+    <text class="ta big" x="51" y="113" text-anchor="end">F1</text>
+    <line class="ldr o" x1="87" y1="108" x2="100" y2="108"/>
+    <text class="to big" x="103" y="113" text-anchor="start">F2</text>
+    <text class="tx" x="92" y="22" text-anchor="middle" data-t="gambar.meridian_1"></text>
+    <text class="tx" x="92" y="200" text-anchor="middle">F2 = P<tspan class="sb" dy="3">1</tspan><tspan dy="-3"> − F1</tspan></text>
+    <path class="body" d="M210 46A197.2 197.2 0 0 0 210 170 L258 170A65.68 65.68 0 0 1 258 46 Z"/>
+    <path class="out" d="M210 46A197.2 197.2 0 0 0 210 170 L258 170A65.68 65.68 0 0 1 258 46 Z"/>
+    <path class="hi a" d="M210 46A197.2 197.2 0 0 0 210 170"/>
+    <path class="hi o" d="M258 170A65.68 65.68 0 0 1 258 46"/>
+    <line class="ldr a" x1="184" y1="108" x2="197" y2="108"/>
+    <text class="ta big" x="181" y="113" text-anchor="end">F1</text>
+    <line class="ldr o" x1="217" y1="108" x2="230" y2="108"/>
+    <text class="to big" x="233" y="113" text-anchor="start">F2</text>
+    <text class="tx" x="229" y="22" text-anchor="middle" data-t="gambar.meridian_2"></text>
+    <text class="tx" x="229" y="200" text-anchor="middle">F2 = P<tspan class="sb" dy="3">2</tspan><tspan dy="-3"> − F1</tspan></text>
+          </svg>
+          <dl class="rumus lzk">
+          <div><dt class="a">F1</dt><dd data-t="gambar.f1_ket"></dd></div>
+          <div><dt class="o">F2</dt><dd data-t="gambar.f2_ket"></dd></div>
+          <div><dt>Meridian</dt><dd data-t="gambar.mer_ket"></dd></div>
+          </dl>
+          <p class="lzn" data-t="gambar.ft_cat"></p>
+        </details>
         <details class="card formula">
           <summary data-t="ft.rumus_yang_dipakai"></summary>
           <dl class="rumus" id="ft-rumus"></dl>
@@ -1622,6 +1813,41 @@ var TEKS = {
   "ft.resep": "Resep",
   "ft.hasil": "Hasil",
   "ft.rumus_yang_dipakai": "Rumus yang dipakai",
+
+  // ----- Gambar penjelasan (halaman sagita, bc, ft, et) -----
+  "gambar.lensa_minus": "Lensa minus",
+  "gambar.lensa_plus": "Lensa plus",
+  "gambar.depan": "depan",
+  "gambar.belakang": "belakang",
+  "gambar.sagita_judul": "Gambar sagita",
+  "gambar.sagita_desk": "Potongan samping permukaan lensa: sagita s, diameter Ø, jari-jari r, dan pusat lengkung C.",
+  "gambar.s_ket": "Sagita: tinggi lengkung, diukur dari bidang diameter sampai puncak permukaan, dalam mm.",
+  "gambar.dia_ket": "Diameter lensa, dalam mm.",
+  "gambar.r_ket": "Jari-jari lengkung permukaan, dalam mm. r = 1000 × (n\u00A0−\u00A01) ÷ |D|.",
+  "gambar.c_ket": "Titik pusat lengkung permukaan.",
+  "gambar.sagita_cat": "Approximate memakai s ≈ Ø² ÷ 8r. Exact memakai segitiga siku-siku dengan sisi r, r\u00A0−\u00A0s, dan Ø/2.",
+  "gambar.bc_judul": "Gambar base curve",
+  "gambar.bc_desk": "Potongan samping lensa minus dan lensa plus. Lengkung depan, yaitu base curve (BC), ditebalkan.",
+  "gambar.bc_ket": "Base curve: lengkung permukaan depan lensa, dalam dioptri. Nilainya sama dengan F1 di halaman Tools.",
+  "gambar.bc_minus_ket": "BC = ½ SE + 6 bila SE ≤ 0. Makin minus, BC makin datar.",
+  "gambar.bc_plus_ket": "BC = SE + 6 bila SE > 0. Makin plus, BC makin curam.",
+  "gambar.bc_cat": "Potongan samping lensa. Sisi depan menjauhi mata, sisi belakang dekat mata.",
+  "gambar.ft_judul": "Gambar tools (F1 dan F2)",
+  "gambar.ft_desk": "Potongan samping lensa pada dua meridian. Lengkung depan F1 sama, lengkung belakang F2 berbeda.",
+  "gambar.meridian_1": "Meridian 1",
+  "gambar.meridian_2": "Meridian 2",
+  "gambar.f1_ket": "Lengkung permukaan depan, sama dengan base curve (F1 = BC).",
+  "gambar.f2_ket": "Lengkung permukaan belakang. F2 = power meridian − F1.",
+  "gambar.mer_ket": "Tanpa cylinder hanya ada satu F2. Dengan cylinder ada dua F2, satu tiap meridian (Spheris, dan Spheris + Cylinder), sedangkan F1 tetap sama.",
+  "gambar.ft_cat": "P adalah power meridian: P1 = Spheris, P2 = Spheris + Cylinder.",
+  "gambar.et_judul": "Gambar ketebalan lensa",
+  "gambar.et_desk": "Potongan samping lensa minus dan lensa plus: tebal tengah CT, tebal tepi ET, sagita s, dan tebal blank t.",
+  "gambar.ct_ket": "Tebal tengah (center thickness), diukur di sumbu lensa.",
+  "gambar.et_ket": "Tebal tepi (edge thickness), diukur di tepi diameter lensa.",
+  "gambar.sag_ket": "Sagita dari power dan diameter lensa.",
+  "gambar.t_ket": "Tebal blank: ET atau CT terbesar + 2, dibulatkan ke atas.",
+  "gambar.arsir_ket": "Tebal yang dibuang: t − ET (minus) atau t − CT (plus), dibagi Grinding 70%, Finning 20%, Polishing 10%.",
+  "gambar.et_cat": "Minus: CT diketahui, ET = s + CT. Plus: ET diketahui, CT = s + ET. Lensa digambar plano (satu sisi rata) supaya sagita mudah terlihat.",
 
   // ----- Halaman: kerato -----
   "kerato.kembali_ke_beranda": "Kembali ke beranda",
