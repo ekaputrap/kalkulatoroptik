@@ -1560,7 +1560,7 @@ var TEKS = {
   "kerato.bacaan_horizontal_dan_vertikal": "Bacaan horizontal dan vertikal",
   "kerato.atur_ulang": "Atur ulang",
   "kerato.input": "Input",
-  "kerato.bacaan_keratometer": "Bacaan keratometer",
+  "kerato.bacaan_keratometer": "Skala Keratometer",
   "kerato.geser_skala_ke_kiri": "Geser skala ke kiri atau kanan sampai garis tengah menunjuk angka yang terbaca di alat. Bisa pakai tombol panah atau ketik radiusnya.",
   "kerato.vertikal_v": "Vertikal (V)",
   "kerato.mm": "mm",
@@ -4545,7 +4545,7 @@ window.addEventListener('popstate', function () { route(true); });
 /* ---------- Simulator Lensometer ---------- */
 (function () {
   var V = $('#v-lenso'); if (!V) return;
-  var DEF = { sph: -2, cyl: -1, axis: 180, add: 0, pos: 'far', drum: 0, dial: 90, mode: 'demo', asph: 0, acyl: 0, aaxis: 180, aadd: 0 };
+  var DEF = { sph: 0, cyl: 0, axis: 180, add: 0, pos: 'far', drum: 0, dial: 90, mode: 'demo', asph: 0, acyl: 0, aaxis: 180, aadd: 0 };
   var T = { shown: false, demo: null };
   var UI = { ctl: 'real', hide: false, hidelive: false };   // tampilan kontrol: real = drum dan axis wheel digeser, plain = slider
   var S = {}; function rst() { Object.keys(DEF).forEach(function (k) { S[k] = DEF[k]; }); } rst();
@@ -5799,7 +5799,7 @@ $('#calc-open').addEventListener('click', function () { openFeature('kalkulator'
 // href boleh berawalan https://, http://, mailto:, atau tel:
 var ABOUT = {
   app: _T('js.kalkulator_optik'),
-  version: '1.0',
+  version: '1.1',
   dev: _T('js.nama_developer'),
   role: _T('js.developer_aplikasi'),
   links: [

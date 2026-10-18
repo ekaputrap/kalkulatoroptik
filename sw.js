@@ -2,7 +2,7 @@
    Strategi: simpan semua file saat pertama dibuka, lalu selalu tampilkan versi
    tersimpan (cepat & offline) sambil diam-diam mengecek versi baru di latar belakang.
    Kalau Anda mengubah isi aplikasi, naikkan angka VERSION di bawah. */
-const VERSION = 'v1';
+const VERSION = 'v1.1';
 const CACHE = 'kalkulator-optik-' + VERSION;
 const PRECACHE = [
   './index.html',
