@@ -349,6 +349,28 @@ input:disabled, select:disabled { opacity: .62; }
 .calc-res.pre { color: var(--ink-2); font-weight: 600; }
 .calc-res.err { color: var(--bad); font-family: var(--f-ui); font-size: 1.05rem; line-height: 2.5; }
 .calc-keys { display: grid; gap: 12px; }
+/* riwayat kalkulator: tombol di baris status, panel menggantikan papan tombol selama terbuka */
+.ch-tog { margin-left: auto; display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px 0 7px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink-2); font: 650 .75rem/1 var(--f-ui); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.ch-tog svg { width: 14px; height: 14px; flex: none; pointer-events: none; }
+.ch-tog[aria-expanded="true"] { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
+.ch-tog:active { filter: brightness(.92); }
+.calc-hist { display: grid; gap: 10px; align-content: start; }
+.ch-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ch-head h2 { font-size: 1rem; line-height: 1.2; }
+.ch-head .ghost:disabled { opacity: .45; cursor: default; }
+.ch-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: min(52vh, 24rem); overflow-y: auto; overscroll-behavior: contain; }
+.ch-i { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); overflow: hidden; }
+.ch-sc { overflow-x: auto; scrollbar-width: none; }
+.ch-sc::-webkit-scrollbar { display: none; }
+.ch-in { min-width: 100%; width: max-content; display: grid; }
+.ch-e, .ch-r { display: block; width: 100%; border: 0; background: transparent; text-align: right; white-space: nowrap; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.ch-e { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 9px 12px 2px; color: var(--ink-2); font: 1.1rem/1.4 "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", Times, serif; }
+.ch-e .cs { flex: none; border: 1px solid var(--line); background: var(--surface); font-family: var(--f-ui); }
+.ch-r { padding: 0 12px 9px; color: var(--ink); font: 700 1.2rem/1.3 var(--f-num); font-variant-numeric: tabular-nums; }
+.ch-r .x-fr { font-size: .85em; }
+.ch-e:active, .ch-r:active { background: var(--accent-soft); }
+@media (hover: hover) { .ch-e:hover, .ch-r:hover { background: var(--accent-soft); } }
+.ch-empty { padding: 18px 8px; text-align: center; color: var(--ink-2); font-size: .9rem; }
 .ck-grid { display: grid; gap: 8px; }
 .ck-tog { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 40px; padding: 0 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--ink-2); font: 650 .85rem/1 var(--f-ui); touch-action: manipulation; -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
 .ck-tog:active { background: var(--accent-soft); }
@@ -640,18 +662,88 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   #v-lenso.lm-typing .lm-view { position: static; box-shadow: none; }
 }
 
-/* gambar penampang lensa: Sagita, Base Curve, Tools, Ketebalan Lensa */
-.lf { --ray: #d98200; --ray2: #1565c0; display: block; width: 100%; max-width: 30rem; height: auto; margin: 0 auto; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lf { --ray: #ffc247; --ray2: #6cb6ff; } }
-:root[data-theme="dark"] .lf { --ray: #ffc247; --ray2: #6cb6ff; }
-.lf .tx { fill: var(--ink); font: 600 12px var(--f-ui); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
-.lf .tx2 { fill: var(--ink-2); font-weight: 500; font-size: 11px; }
-.lf .num { font-family: var(--f-num); font-variant-numeric: tabular-nums; }
-.lf .ax { stroke: var(--line); stroke-width: 1; fill: none; }
-.lf .dm { stroke: var(--ink-2); stroke-width: 1.2; fill: none; }
-.lf .xl { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 3; opacity: .7; fill: none; }
-.lf-card .eye-h { margin-bottom: 8px; }
-.lf-note { margin-top: 6px; font-size: .8rem; }
+/* ---------- gambar lensa 2D dan 3D ---------- */
+.lv { --lv-f: var(--accent); --lv-b: #c2641a; --lv-hi: #a1389f; --lv-g: #a24b05; --lv-od: var(--od); --lv-on-od: var(--on-od); --lv-os: var(--os); --lv-on-os: var(--on-os); }   /* OD merah, OS biru: sama dengan chip OD dan OS di kartu input (variabel --od dan --os, terang dan gelap) */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .lv { --lv-b: #f2a15c; --lv-hi: #dc9be9; --lv-g: #f0a04b; } }
+:root[data-theme="dark"] .lv { --lv-b: #f2a15c; --lv-hi: #dc9be9; --lv-g: #f0a04b; }
+.lv .eye-h { margin-bottom: 12px; }
+/* tombol pilihan: satu gaya (segmented), tinggi sama, lebar dibagi rata */
+.lv-sg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface-2); }
+.lv-sg[hidden] { display: none; }
+.lv-sg button { flex: 1 1 auto; min-width: 0; height: 36px; padding: 0 10px; border: 0; background: transparent; color: var(--ink-2); font: 700 .82rem/1 var(--f-ui); white-space: nowrap; touch-action: manipulation; }
+.lv-sg button + button { border-left: 1px solid var(--line); }
+.lv-sg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.lv-sg button:disabled { opacity: .4; }
+.lv-sg button:not([aria-pressed="true"]):not(:disabled):active { background: var(--accent-soft); }
+.lv-seg { margin-left: auto; }
+.lv-seg button { flex: none; min-width: 54px; }
+.lv-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; margin-bottom: 10px; }
+.lv-bar[hidden] { display: none; }
+.lv-eyes { flex: 0 0 116px; }
+.lv-eyes button { font-family: var(--f-num); letter-spacing: .04em; }
+.lv-eyes button[data-eye="od"] { color: var(--lv-od); }
+.lv-eyes button[data-eye="os"] { color: var(--lv-os); }
+.lv-eyes button[data-eye="od"][aria-pressed="true"] { background: var(--lv-od); color: var(--lv-on-od); }
+.lv-eyes button[data-eye="os"][aria-pressed="true"] { background: var(--lv-os); color: var(--lv-on-os); }
+.lv-mer { flex: 1 1 140px; }   /* mengisi sisa baris, atau satu baris penuh bila sempit */
+.lv-mer button { font-family: var(--f-num); padding: 0 12px; }
+.lv-views { margin-bottom: 10px; }
+.lv-ov { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.lv[data-m="3d"] .lg-f { background: #62c3de; opacity: 1; } .lv[data-m="3d"] .lg-b { background: #f2a15c; opacity: 1; } .lv[data-m="3d"] .lg-w { background: #dc9be9; opacity: .6; }
+.lv[data-m="3d"] .lg-t { background: #d5e0e8; opacity: .45; }
+.lv[data-m="3d"] .lg-gr { background: #f2a15c; opacity: .35; } .lv[data-m="3d"] .lg-fn { background: #f2a15c; opacity: .6; } .lv[data-m="3d"] .lg-pl { background: #f2a15c; opacity: .9; } .lv[data-m="3d"] .lg-bl { background: #f2a15c; opacity: .4; }
+@media (max-width: 359px) { .lv-sg button { padding: 0 5px; font-size: .74rem; } .lv-eyes { flex-basis: 100px; } }
+.lv-stage { position: relative; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); overflow: hidden; }
+.lv[data-eye="od"] .lv-stage { border-color: var(--lv-od); } .lv[data-eye="os"] .lv-stage { border-color: var(--lv-os); }   /* bingkai gambar mengikuti warna mata */
+.lv-stage .lv-empty { padding: 28px 16px; text-align: center; }
+.lv-2d svg { display: block; width: 100%; height: auto; }
+.lv-gl { position: relative; aspect-ratio: 5 / 4; background: #1a232c; }
+.lv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -3px; }
+.lv-canvas:active { cursor: grabbing; }
+.lv-hint { position: absolute; left: 10px; right: 10px; bottom: 7px; margin: 0; font-size: .7rem; line-height: 1.3; color: #dbe5ec; opacity: .78; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.7); transition: opacity .25s ease, visibility 0s; }
+.lv-hint.off { opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility 0s .25s; }
+.lv-nogl { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; text-align: center; color: #dbe5ec; }
+.lv-ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 14px; margin-top: 10px; }
+.lv-ctl[hidden] { display: none; }
+.lv-cam { flex: 1 1 100%; margin-top: 6px; }
+.lv-qrow { flex: 1 1 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; margin-top: 6px; }
+.lv-ql { font: 600 .86rem/1.2 var(--f-ui); color: var(--ink); }
+.lv-q { flex: 1 1 200px; }
+.lv-qh { flex: 1 1 100%; margin: 0; font-size: .78rem; line-height: 1.35; }
+/* pilihan opsional: saklar, bukan tombol */
+.lv-sw { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0; border: 0; background: transparent; color: var(--ink); font: 600 .86rem/1.2 var(--f-ui); text-align: left; white-space: nowrap; touch-action: manipulation; }
+.lv-sw i { position: relative; flex: none; width: 38px; height: 22px; border-radius: 999px; background: var(--ink-2); opacity: .45; transition: background .15s ease, opacity .15s ease; }
+.lv-sw i::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.35); transition: transform .15s ease; }
+.lv-sw[aria-pressed="true"] i { background: var(--accent); opacity: 1; }
+.lv-sw[aria-pressed="true"] i::after { transform: translateX(16px); }
+.lv-sw:focus-visible, .lv-sg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .lv-sw i, .lv-sw i::after { transition: none; } }
+.lv-leg { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: .8rem; color: var(--ink-2); }
+.lv-leg[hidden], .lv-note[hidden] { display: none; }
+.lv-leg i { display: inline-block; width: 18px; height: 8px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+.lg-f { background: var(--lv-f); } .lg-b { background: var(--lv-b); } .lg-d { background: var(--ink-2); opacity: .6; }
+.lg-w { background: var(--lv-hi); opacity: .5; } .lg-t { background: var(--ink-2); opacity: .35; }
+.lg-gr { background: var(--lv-b); opacity: .35; } .lg-fn { background: var(--lv-b); opacity: .6; } .lg-pl { background: var(--lv-b); opacity: .9; } .lg-bl { background: var(--lv-b); opacity: .25; }
+.lv-note { margin-top: 8px; font-size: .8rem; line-height: 1.4; }
+/* isi SVG 2D: warna dari variabel tema, jadi ikut mode terang dan gelap */
+.lv-lens { fill: var(--accent-soft); fill-opacity: .8; stroke: none; }
+.lv-sf, .lv-sb, .lv-shell, .lv-blkl { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+.lv-sf { stroke: var(--lv-f); stroke-width: 2.2; } .lv-sf.lvh { stroke-width: 3.4; }
+.lv-sb { stroke: var(--lv-b); stroke-width: 2.2; } .lv-sb.lvh { stroke-width: 3.4; } .lv-sb.lvd { stroke: var(--ink-2); stroke-width: 1.6; stroke-dasharray: 5 3; }
+.lv-rim { stroke: var(--ink-2); stroke-width: 1.4; }
+.lv-ax { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 9 3 2 3; opacity: .8; }
+.lv-dm { stroke: var(--ink-2); stroke-width: 1; } .lv-dm.lvh { stroke: var(--lv-hi); stroke-width: 1.7; }
+.lv-ex { stroke: var(--ink-2); stroke-width: .8; stroke-dasharray: 3 3; opacity: .65; }
+.lv-ar { fill: var(--ink-2); }
+.lv-t { font: 11px/1 var(--f-num); fill: var(--ink); paint-order: stroke; stroke: var(--surface-2); stroke-width: 3px; stroke-linejoin: round; }
+.lv-t.lvc-m { font: 10px var(--f-ui); fill: var(--ink-2); } .lv-t.lvc-b { font-weight: 700; }
+.lv-t.lvc-f { fill: var(--lv-f); } .lv-t.lvc-bk { fill: var(--lv-b); } .lv-t.lvc-hi { fill: var(--lv-hi); } .lv-t.lvc-g { fill: var(--lv-g); }
+.lv-wedge { fill: var(--lv-hi); fill-opacity: .34; stroke: none; }
+.lv-shell { stroke: var(--lv-hi); stroke-width: 1.2; stroke-dasharray: 4 3; }
+.lv-tool { fill: var(--ink-2); fill-opacity: .2; stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 3; }
+.lv-grd { fill: var(--lv-b); fill-opacity: .35; } .lv-fin { fill: var(--lv-b); fill-opacity: .6; } .lv-pol { fill: var(--lv-b); fill-opacity: .9; }
+.lv-blk { fill: var(--lv-b); fill-opacity: .25; } .lv-blkl { stroke: var(--lv-g); stroke-width: 1.2; stroke-dasharray: 4 3; }
+.lv-dot { fill: var(--lv-g); }
 </style>
 </head>
 <body>
@@ -762,6 +854,8 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
     <section class="panel" id="p-result" data-t-aria-label="kartu.hasil">
       <div id="out" class="panel"></div>
 
+      <section class="card" id="kk-viz"></section>
+
       <details class="card formula" id="formula" hidden>
         <summary data-t="kartu.rumus_yang_dipakai"></summary>
         <dl class="rumus" id="rumus"></dl>
@@ -854,7 +948,6 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       </section>
 
       <section class="panel" data-t-aria-label="sagita.hasil">
-        <div id="sag-fig" hidden></div>
         <div id="sag-out" class="panel"></div>
         <details class="card formula">
           <summary data-t="sagita.rumus_yang_dipakai"></summary>
@@ -888,7 +981,6 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       </section>
 
       <section class="panel" data-t-aria-label="bc.hasil">
-        <div id="bc-fig" hidden></div>
         <div id="bc-out" class="panel"></div>
         <details class="card formula">
           <summary data-t="bc.rumus_yang_dipakai"></summary>
@@ -922,7 +1014,6 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       </section>
 
       <section class="panel" data-t-aria-label="et.hasil">
-        <div id="et-fig" hidden></div>
         <div id="et-out" class="panel"></div>
         <details class="card formula">
           <summary data-t="et.rumus_yang_dipakai"></summary>
@@ -956,7 +1047,6 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       </section>
 
       <section class="panel" data-t-aria-label="ft.hasil">
-        <div id="ft-fig" hidden></div>
         <div id="ft-out" class="panel"></div>
         <details class="card formula">
           <summary data-t="ft.rumus_yang_dipakai"></summary>
@@ -1067,6 +1157,7 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
                 <option value="auto" data-l="Otomatis (sesuai selisih H dan V)" data-t="parlk.otomatis_sesuai_selisih_h"></option>
                 <option value="flat" data-l="Flat + 0.7" data-t="parlk.flat_0_7"></option>
                 <option value="avg" data-l="Rata-rata H dan V + 10%" data-t="parlk.rata_rata_h_dan"></option>
+                <option value="flat10" data-l="Flat + 10%" data-t="parlk.flat_10"></option>
               </select>
             </div>
             <div class="f" id="lk-limf"><label for="lk-lim"><span data-t="parlk.batas_selisih_h_dan"></span> <small data-t="parlk.mm_untuk_rumus_otomatis"></small></label><input type="text" id="lk-lim" data-k="lk.lim" data-rule="pos" inputmode="decimal" autocomplete="off" placeholder="0.20" enterkeyhint="done"></div>
@@ -1405,10 +1496,14 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
     </header>
     <main class="calc">
       <section class="card calc-disp" data-t-aria-label="kalkulator.layar_kalkulator">
-        <div class="calc-st"><span class="cs on" id="cs-2nd" hidden data-t="kalkulator.2nd"></span><span class="cs on" id="cs-ang" data-t="kalkulator.deg"></span><span class="cs" id="cs-m" hidden data-t="kalkulator.m"></span><span class="cs on" id="cs-fr" hidden data-t="kalkulator.ab"></span></div>
+        <div class="calc-st"><span class="cs on" id="cs-2nd" hidden data-t="kalkulator.2nd"></span><span class="cs on" id="cs-ang" data-t="kalkulator.deg"></span><span class="cs" id="cs-m" hidden data-t="kalkulator.m"></span><span class="cs on" id="cs-fr" hidden data-t="kalkulator.ab"></span><button type="button" class="ch-tog" id="ch-tog" aria-expanded="false" aria-controls="calc-hist"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 10a6.6 6.6 0 1 0 2-4.7M3.4 3.6v3.2h3.2M10 6.6V10l2.5 1.7"/></svg><span data-t="kalkulator.riwayat"></span></button></div>
         <div class="calc-expr" id="calc-expr"></div>
         <div class="calc-res" id="calc-res"></div>
         <p class="sr" id="calc-sr" role="status"></p>
+      </section>
+      <section class="card calc-hist" id="calc-hist" hidden data-t-aria-label="kalkulator.riwayat_perhitungan">
+        <div class="ch-head"><h2 data-t="kalkulator.riwayat"></h2><button type="button" class="ghost" id="ch-clr" data-t="kalkulator.hapus_riwayat"></button></div>
+        <ul class="ch-list" id="ch-list"></ul>
       </section>
       <div class="calc-keys" id="calc-keys">
         <button type="button" class="ck-tog" id="ck-tog" aria-expanded="false" aria-controls="ck-sci"><span id="ck-tog-t" data-t="kalkulator.tampilkan_fungsi_scientific"></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l6-6 6 6"/></svg></button>
@@ -1681,6 +1776,7 @@ var TEKS = {
   "parlk.otomatis_sesuai_selisih_h": "Otomatis (sesuai selisih H dan V)",
   "parlk.flat_0_7": "Flat + 0.7",
   "parlk.rata_rata_h_dan": "Rata-rata H dan V + 10%",
+  "parlk.flat_10": "Flat + 10%",
   "parlk.batas_selisih_h_dan": "Batas selisih H dan V",
   "parlk.mm_untuk_rumus_otomatis": "mm, untuk rumus otomatis",
   "parlk.hasil": "Hasil",
@@ -1757,6 +1853,9 @@ var TEKS = {
   "kalkulator.m": "M",
   "kalkulator.ab": "a⁄b",
   "kalkulator.tampilkan_fungsi_scientific": "Tampilkan fungsi scientific",
+  "kalkulator.riwayat": "Riwayat",
+  "kalkulator.riwayat_perhitungan": "Riwayat perhitungan",
+  "kalkulator.hapus_riwayat": "Hapus riwayat",
 
   // ----- Halaman: rumus -----
   "rumus.kembali_ke_beranda": "Kembali ke beranda",
@@ -2032,6 +2131,11 @@ var TEKS = {
   "js.diameter_total_hvid_2": "Diameter total = HVID + 2 mm",
   "js.radius_terbesar_antara_h": "Radius terbesar antara H dan V (meridian yang lebih datar). H dan V adalah radius dalam mm, sama dengan bacaan di menu Keratometer.",
   "js.bc_flat_0_7": "BC = flat + 0.7",
+  "js.flat_10": "flat + 10%",
+  "js.flat_10_2": "Flat + 10%",
+  "js.flat_10_3": "Flat + 10%:",
+  "js.bc_flat_10": "BC = flat + 10%",
+  "js.flat_10_ket": "Flat ditambah 10% dari flat itu, jadi flat × 1.10. Hanya dipakai bila dipilih sendiri, tidak termasuk rumus Otomatis.",
   "js.rata_rata_h_dan": "Rata-rata H dan V ditambah 10% dari rata-rata itu, jadi rata-rata × 1.10. Dipakai bila selisih H dan V jauh.",
   "js.otomatis_2": "Otomatis",
   "js.selisih_h_dan_v": "Selisih H dan V ≤ batas: BC 1 (flat + 0.7)",
@@ -2283,7 +2387,7 @@ var TEKS = {
 
   // ----- Dari skrip: Menu logo: Kumpulan Rumus, Pengaturan, Tentang Developer -----
   "js.semua_rumus_di_satu": "Semua rumus di satu tempat",
-  "js.tema_animasi_dan_batas": "Tema, animasi, dan batas diameter",
+  "js.tema_animasi_dan_batas": "Tampilan dan lainnya",
   "js.info_aplikasi_dan_pembuat": "Info aplikasi dan pembuat",
 
   // ----- Dari skrip: Pencarian menu di beranda -----
@@ -2404,16 +2508,22 @@ var TEKS = {
 
   // ----- Dari skrip: Tampilan natural: pecahan bertingkat dan akar dengan garis atas -----
   "js.sembunyikan_fungsi_scientific": "Sembunyikan fungsi scientific",
+  "js.riwayat_kosong": "Belum ada riwayat. Setiap hasil yang keluar saat menekan = akan tersimpan di sini.",
+  "js.pakai_ekspresi_ini": "Pakai ekspresi ini di layar",
+  "js.sisipkan_hasil_ini": "Sisipkan hasil ini di layar",
+  "js.riwayat_dibuka": "Riwayat dibuka",
+  "js.riwayat_ditutup": "Riwayat ditutup",
+  "js.riwayat_dihapus": "Riwayat dihapus",
   "js.tampilkan_fungsi_scientific": "Tampilkan fungsi scientific",
   "js.rad": "RAD",
   "js.ketuk_untuk_ganti": ", ketuk untuk ganti",
 
   // ----- Dari skrip: Halaman Tentang Developer -----
-  "js.nama_developer": "Nama Developer",
-  "js.developer_aplikasi": "Eka Putra Prasetya",
+  "js.nama_developer": "Eka Putra Prasetya",
+  "js.developer_aplikasi": "Developer",
   "js.email": "Email",
   "js.whatsapp": "0934934",
-  "js.instagram": "Instagram",
+  "js.instagram": "@cryst4lz",
   "js.website": "Website",
   "js.developer": "Developer",
   "js.nama": "Nama",
@@ -2424,23 +2534,55 @@ var TEKS = {
   "js.di_perangkat_ini": "Di perangkat ini",
   "js.hasil_hitungan_adalah_alat": "Aplikasi ini bertujuan untuk membantu dalam kegiatan refraksi, optisi, dan optometri menjadi lebih mudah dan praktis. ",
 
-  // ----- Halaman: gambar penampang lensa -----
-  "gambar.judul": "Gambar",
-  "gambar.meridian": "Meridian",
-  "gambar.cembung": "Cembung (plus)",
-  "gambar.cekung": "Cekung (minus)",
-  "gambar.plano": "Plano",
-  "gambar.datar": "Datar",
-  "gambar.dibuang": "dibuang",
-  "gambar.skala_tinggi": "Tinggi lengkung dan tebal digambar {x}× dari ukuran sebenarnya supaya terlihat.",
-  "gambar.dibatasi": "Lengkung di atas 17 D digambar dengan batas 17 D.",
-  "gambar.catatan_bc": "Lengkung depan digambar dengan radius ≈ 530 ÷ BC. Titik pada grafik menunjukkan SE dan BC hasil hitungan.",
-  "gambar.catatan_tools": "F1 = lengkung depan (BC), F2 = lengkung belakang. Radius ≈ 530 ÷ F.",
-  "gambar.alt_sagita": "Penampang lengkung lensa dengan diameter dan sagita",
-  "gambar.alt_bc": "Lengkung depan sesuai base curve dan grafik SE terhadap BC",
-  "gambar.alt_tools": "Penampang lensa dengan lengkung depan F1 dan lengkung belakang F2",
-  "gambar.alt_tebal": "Penampang ketebalan lensa: CT, ET, dan tebal blank t",
-
+  "viz.judul": "Gambar lensa",
+  "viz.jenis": "Jenis gambar",
+  "viz.meridian": "Meridian",
+  "viz.kosong": "Isi data precal dan data lensa untuk melihat gambarnya.",
+  "viz.mata": "Mata",
+  "viz.tampilan": "Tampilan gambar",
+  "viz.sudut": "Sudut pandang",
+  "viz.v_sag": "Sagita",
+  "viz.v_bc": "Base Curve",
+  "viz.v_ft": "Tools",
+  "viz.v_et": "Ketebalan",
+  "viz.bantuan3d": "Seret ke segala arah untuk memutar. Cubit atau Ctrl + scroll untuk zoom. Ketuk dua kali untuk mengembalikan.",
+  "viz.putar": "Putar otomatis",
+  "viz.ar": "Anti-refleksi",
+  "viz.depan": "Depan",
+  "viz.miring": "Miring",
+  "viz.samping": "Samping",
+  "viz.belakang": "Belakang",
+  "viz.dibuang": "Dibuang",
+  "viz.lihat3d": "Keterangan di gambar 3D",
+  "viz.grafik": "Grafik",
+  "viz.grafik_aria": "Kualitas grafik gambar 3D",
+  "viz.q_low": "Rendah",
+  "viz.q_mid": "Sedang",
+  "viz.q_high": "Tinggi",
+  "viz.qh_low": "Paling ringan dan hemat baterai: gambar lebih kasar dan sedikit lebih patah-patah. Pantulan tetap penuh.",
+  "viz.qh_mid": "Seimbang: gambar cukup tajam, tepi lensa dihaluskan, tetap lancar di kebanyakan perangkat.",
+  "viz.qh_high": "Paling tajam: resolusi penuh dan tepi paling halus. Butuh perangkat yang lebih kuat, dan bisa terasa berat di HP lama.",
+  "viz.nogl": "Gambar 3D memerlukan WebGL, yang tidak tersedia di perangkat ini. Gambar 2D tetap bisa dipakai.",
+  "viz.m_sph": "Sph",
+  "viz.m_sc": "Sph + Cyl",
+  "viz.skala_asli_s": "Skala asli",
+  "viz.l_depan": "Permukaan depan",
+  "viz.l_belakang": "Permukaan belakang",
+  "viz.l_sagita": "Sagita (s)",
+  "viz.l_bc": "Base curve (depan)",
+  "viz.l_f1": "F1 (depan)",
+  "viz.l_f2": "F2 (belakang)",
+  "viz.l_tool": "Tool",
+  "viz.l_grinding": "Grinding 70%",
+  "viz.l_finning": "Finning 20%",
+  "viz.l_polishing": "Polishing 10%",
+  "viz.l_blank": "Blank (tebal dibuang)",
+  "viz.n_sag": "Potongan lensa dengan lengkung depan dari base curve. Area berwarna adalah tebal tambahan akibat power: sagita (s) di tepi untuk lensa minus, di tengah untuk lensa plus.",
+  "viz.n_bc": "Base curve adalah lengkung permukaan depan. Radius = 1000 × (n − 1) ÷ BC, dengan n dari indeks bias yang diisi. s1 adalah sagita lengkung depan.",
+  "viz.n_ft": "F1 adalah lengkung depan (sama dengan BC), F2 adalah lengkung belakang. Radius = 1000 × (n − 1) ÷ D, dengan n dari indeks bias yang diisi. Tool digambar terpisah dari lensa supaya bentuknya terlihat.",
+  "viz.n_et": "CT adalah tebal pusat dan ET tebal tepi pada meridian ini. t adalah tebal blank. Selisih t dengan bagian lensa yang paling tebal dibuang dari sisi belakang.",
+  "viz.n_3d": "Gambar 3D: cahaya dibiaskan lewat kedua permukaan, jadi grid di belakang lensa mengecil (minus) atau membesar (plus) sesuai power. Tepi lensa uncut tampak buram.",
+  "viz.n_3d_cyl": "Lensa dengan cylinder digambar dengan satu tebal pusat (CT terbesar). Garis tipis pada lensa menandai axis.",
 };
 function _T(k) { return Object.prototype.hasOwnProperty.call(TEKS, k) ? TEKS[k] : k; }
 (function () {
@@ -2639,8 +2781,8 @@ function blank() {
     ft: { sph: '', cyl: '', axis: '', bc: '', tr: false },   // halaman Tools, terpisah dari kartu kerja. bc kosong = otomatis dari resep
     bc: { sph: '', cyl: '', tr: false },
     et: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', thick: '1.4', tr: false, rem: false },   // halaman Ketebalan Lensa, terpisah dari kartu kerja   // halaman Base Curve, terpisah dari kartu kerja
-    calc: { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false },   // kalkulator scientific: ekspresi, mode sudut (true = derajat), memori, dan jawaban terakhir
-    lk: { hvid: '', h: '', v: '', src: 'own', mode: 'auto', lim: '0.20' },   // halaman Parameter LK: HVID, radius H dan V (own = isi sendiri, kr = dari Keratometer), rumus BC (auto, flat, avg), batas selisih H dan V (mm) untuk rumus otomatis
+    calc: { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false, hist: [] },   // kalkulator scientific: ekspresi, mode sudut (true = derajat), memori, jawaban terakhir, dan riwayat (terbaru di depan: { e: ekspresi, v: hasil, d: mode derajat })
+    lk: { hvid: '', h: '', v: '', src: 'own', mode: 'auto', lim: '0.20' },   // halaman Parameter LK: HVID, radius H dan V (own = isi sendiri, kr = dari Keratometer), rumus BC (auto, flat, avg, flat10), batas selisih H dan V (mm) untuk rumus otomatis
     kr: { v: '7.67', h: '7.67' },   // halaman Keratometer: radius V dan H (mm), nilai awal 44 D (337.5 ÷ 7.67 = 44.00 D)
     bg: { sph: '0.00', cyl: '', axis: '', cor: 'off', view: 'sep', lsph: '', lcyl: '', laxis: '', zoom: 1 },   // halaman Bagan Refraksi: Sph, Cyl, Axis mata; lensa koreksi (off/on) dan ukuran lensanya (kosong = koreksi penuh)
     sn: { type: 'letter', dist: '', view: 'full', seed: 0, line: '', miss: [], rec: { od: null, os: null } },   // halaman Snellen Chart: jenis optotipe, jarak uji (kosong = otomatis), tampilan, acakan, baris aktif, huruf salah, visus tercatat OD dan OS
@@ -2869,7 +3011,7 @@ function evalEye(k, pre) {
   var tr = !!e.tr && cylv !== 0;   // transposisi hanya berlaku bila ada cylinder
   var rx = tr ? transpose(orig) : orig;
   var r = calcEye({ sph: rx.sph, cyl: rx.cyl, n: n, thick: thick }, pre.dia);
-  return { state: 'ok', r: r, sph: rx.sph, cyl: rx.cyl, n: n, ax: rx.ax, axOK: axOK, tr: tr, canTr: cylv !== 0, orig: orig };
+  return { state: 'ok', r: r, sph: rx.sph, cyl: rx.cyl, n: n, thick: thick, ax: rx.ax, axOK: axOK, tr: tr, canTr: cylv !== 0, orig: orig };
 }
 
 /* ---------- Tampilkan hasil ---------- */
@@ -3462,6 +3604,7 @@ $('#kr-reset').addEventListener('click', function () {
 //   flat = radius terbesar antara H dan V (meridian yang paling datar).
 //   Rumus 1: BC = flat + 0.7
 //   Rumus 2: BC = (H + V) ÷ 2 + 10%, yaitu rata-rata dikali 1.10. Dipakai bila selisih H dan V jauh.
+//   Rumus 3: BC = flat + 10%, yaitu flat dikali 1.10. Hanya dipakai bila dipilih sendiri (tidak ikut rumus Otomatis).
 //   Otomatis: rumus 2 dipakai bila selisih H dan V lebih besar dari batas (standar 0.20 mm), selain itu rumus 1.
 var LK_DEF = 0.2, LK_ADD = 0.7, LK_PCT = 1.1;
 function lkN(x) {   // angka tampil: paling sedikit 2 desimal, paling banyak 3
@@ -3480,7 +3623,7 @@ function lkDia() {
   return { state: 'ok', hvid: hv, total: rd2(hv + 2) };
 }
 function lkBC() {
-  var s = S.lk, kr = s.src === 'kr', mode = (s.mode === 'flat' || s.mode === 'avg') ? s.mode : 'auto', h, v, errs = [];
+  var s = S.lk, kr = s.src === 'kr', mode = (s.mode === 'flat' || s.mode === 'avg' || s.mode === 'flat10') ? s.mode : 'auto', h, v, errs = [];
   if (kr) {
     h = krVal('h'); v = krVal('v');
     if (h === null || v === null) return { state: 'error', errs: [(_T('js.radius_h_atau_v') + ' ') + KR_MIN.toFixed(2) + ' dan ' + KR_MAX.toFixed(2) + (' ' + _T('js.mm_perbaiki_di_keratometer'))] };
@@ -3501,7 +3644,7 @@ function lkBC() {
   }
   var flat = Math.max(h, v), avg = (h + v) / 2, diff = rd2(flat - Math.min(h, v)), big = diff > lim + 1e-9;
   return { state: 'ok', h: h, v: v, flat: flat, avg: avg, diff: diff, dK: rd2(Math.abs(krPow(h) - krPow(v))),
-    b1: rd2(flat + LK_ADD), b2: rd2(avg * LK_PCT), mode: mode, lim: lim, big: big, kr: kr,
+    b1: rd2(flat + LK_ADD), b2: rd2(avg * LK_PCT), b3: rd2(flat * LK_PCT), mode: mode, lim: lim, big: big, kr: kr,
     use: mode === 'auto' ? (big ? 'avg' : 'flat') : mode, flatName: h > v ? 'H' : v > h ? 'V' : 'H = V',
     warn: h < KR_MIN || h > KR_MAX || v < KR_MIN || v > KR_MAX };
 }
@@ -3523,16 +3666,18 @@ function lkBCHTML(b) {
   if (b.state === 'empty') body = ('<p class="hint">' + _T('js.isi_radius_h_dan') + '</p>');
   else if (b.state === 'error') body = lkErr(b.errs);
   else {
-    var f2 = function (x) { return x.toFixed(2); }, isF = b.use === 'flat', BC = isF ? b.b1 : b.b2, useTxt = isF ? _T('js.flat_0_7') : _T('js.rata_rata_10');
+    var f2 = function (x) { return x.toFixed(2); }, isF = b.use === 'flat', isF10 = b.use === 'flat10', isA = !isF && !isF10;
+    var BC = isF ? b.b1 : isF10 ? b.b3 : b.b2, useTxt = isF ? _T('js.flat_0_7') : isF10 ? _T('js.flat_10') : _T('js.rata_rata_10');
     body = ('<div class="spec"><b>' + _T('js.h') + ' ') + lkN(b.h) + ' · V ' + lkN(b.v) + ('</b><br><span>' + _T('js.flat') + ' ') + lkN(b.flat) + ' mm (' + b.flatName + (_T('js.selisih') + ' ') + f2(b.diff) + ' mm (' + f2(b.dK) + ' D)</span></div>' +
       '<div class="tiles" style="margin-top:12px;grid-template-columns:repeat(2,minmax(0,1fr))">' +
         ('<div class="tile main"><small>' + _T('js.base_curve') + '</small><b>') + f2(BC) + '</b></div>' +
         ('<div class="tile"><small>' + _T('js.flat') + '</small><b>') + lkN(b.flat) + '</b></div></div>' +
       '<div class="tbl" style="--cols:1">' +
         row(_T('js.flat_0_7_2'), [f2(b.b1)], 1, { key: isF, note: lkN(b.flat) + ' + 0.7' + (isF ? (' ' + _T('js.dipakai')) : '') }) +
-        row(_T('js.rata_rata_10_2'), [f2(b.b2)], 1, { key: !isF, note: '(' + lkN(b.h) + ' + ' + lkN(b.v) + ') ÷ 2 + 10%' + (!isF ? (' ' + _T('js.dipakai')) : '') }) +
+        row(_T('js.rata_rata_10_2'), [f2(b.b2)], 1, { key: isA, note: '(' + lkN(b.h) + ' + ' + lkN(b.v) + ') ÷ 2 + 10%' + (isA ? (' ' + _T('js.dipakai')) : '') }) +
+        row(_T('js.flat_10_2'), [f2(b.b3)], 1, { key: isF10, note: lkN(b.flat) + ' + 10%' + (isF10 ? (' ' + _T('js.dipakai')) : '') }) +
       '</div>' +
-      ('<p class="how">' + _T('js.flat_0_7_3') + ' ') + lkN(b.flat) + ' + 0.7 = ' + f2(b.b1) + ('<br>' + _T('js.rata_rata_10_3')) + lkN(b.h) + ' + ' + lkN(b.v) + ') ÷ 2 = ' + lkN(b.avg) + (_T('js.lalu') + ' ') + lkN(b.avg) + ' + 10% = ' + f2(b.b2) + '</p>';
+      ('<p class="how">' + _T('js.flat_0_7_3') + ' ') + lkN(b.flat) + ' + 0.7 = ' + f2(b.b1) + ('<br>' + _T('js.rata_rata_10_3')) + lkN(b.h) + ' + ' + lkN(b.v) + ') ÷ 2 = ' + lkN(b.avg) + (_T('js.lalu') + ' ') + lkN(b.avg) + ' + 10% = ' + f2(b.b2) + ('<br>' + _T('js.flat_10_3') + ' ') + lkN(b.flat) + ' + 10% = ' + f2(b.b3) + '</p>';
     if (b.mode === 'auto') body += ('<div class="msg info">' + _T('js.otomatis_selisih_h_dan') + ' ') + f2(b.diff) + ' mm ' + (b.big ? 'lebih besar dari' : 'tidak lebih besar dari') + ' batas ' + lkN(b.lim) + (' ' + _T('js.mm_jadi_dipakai') + ' ') + useTxt + '.</div>';
     if (b.warn) body += ('<div class="msg warn">' + _T('js.radius_h_atau_v_2') + ' ') + KR_MIN.toFixed(1) + '–' + KR_MAX.toFixed(1) + (' ' + _T('js.mm_periksa_kembali_isiannya') + '</div>');
   }
@@ -3546,13 +3691,14 @@ function lkRows() {
     { dt: _T('js.flat'), dd: _T('js.radius_terbesar_antara_h') },
     { dt: 'BC 1', dd: _T('js.bc_flat_0_7') },
     { dt: 'BC 2', dd: LK_EQ + ('<span class="eq-note">' + _T('js.rata_rata_h_dan') + '</span>') },
+    { dt: 'BC 3', dd: _T('js.bc_flat_10') + ('<span class="eq-note">' + _T('js.flat_10_ket') + '</span>') },
     { dt: _T('js.otomatis_2'), dd: lnH(_T('js.selisih_h_dan_v'), ('Selisih H dan V > ' + _T('js.batas_bc_2_rata')), _T('js.batas_standar_0_20')) },
     { dt: _T('js.bulat'), dd: _T('js.selisih_dan_bc_dibulatkan') }
   ];
 }
 function lkRender() {
   if (!$('#lk-out')) return;
-  var s = S.lk, kr = s.src === 'kr', hi = $('#lk-hor'), vi = $('#lk-ver'), mode = (s.mode === 'flat' || s.mode === 'avg') ? s.mode : 'auto';
+  var s = S.lk, kr = s.src === 'kr', hi = $('#lk-hor'), vi = $('#lk-ver'), mode = (s.mode === 'flat' || s.mode === 'avg' || s.mode === 'flat10') ? s.mode : 'auto';
   var kh = krVal('h'), kv = krVal('v'), ok = kh !== null && kv !== null;
   hi.disabled = vi.disabled = kr;   // sumber Keratometer: H dan V dikunci dan menampilkan bacaan di sana
   if (kr) { setVal(hi, kh === null ? '' : Lx(kh.toFixed(2))); setVal(vi, kv === null ? '' : Lx(kv.toFixed(2))); }
@@ -4278,6 +4424,915 @@ function renderFormula(pre, ev) {
   }).join(''));
 }
 
+/* ---------- Gambar lensa 3D (WebGL, tanpa pustaka luar) ---------- */
+// Satu kanvas WebGL dipakai bersama semua halaman. Lensa dihitung dengan ray tracing di fragment shader:
+// pembiasan lewat permukaan depan dan belakang (hukum Snell), pantulan Fresnel, penyerapan, pantulan dalam,
+// tepi lensa uncut yang buram (frosted), dan lapisan anti-refleksi. Permukaan depan bola, belakang torik.
+var LV3_VS = 'attribute vec2 aP;void main(){gl_Position=vec4(aP,0.,1.);}';
+var LV3_FS = [
+'#ifdef GL_FRAGMENT_PRECISION_HIGH',
+'precision highp float;',
+'#else',
+'precision mediump float;',
+'#endif',
+'uniform vec2 uRes;uniform mat3 uRot;uniform mat3 uRotI;uniform vec3 uCam;uniform float uFocal;',
+'uniform float uH,uCT,uKf,uKb1,uKb2,uCirc,uN,uZhi,uZlo,uAR,uDark,uMarks,uBgZ;',
+/* anti-aliasing adaptif: uPass 0 = satu sampel per piksel, 1 = hasil akhir (sampel tambahan hanya di piksel tepi), 2 = cadangan tanpa tekstur (semua piksel).
+   uAA = jumlah sampel tambahan (0 sampai 8), uThr = ambang selisih terang antar piksel tetangga, uPx = ukuran satu piksel layar (mm) di kedalaman lensa */
+'uniform float uAA,uPass,uPx,uThr;uniform sampler2D uTex;',
+'uniform vec2 uAx;uniform vec3 uAbs;',
+'const int NS=72;',
+'float sagF(float k,float r2){',
+'  if(uCirc>.5){float d=max(1.-k*k*r2,1e-4);return k*r2/(1.+sqrt(d));}',
+'  return .5*k*r2;}',
+'float zFr(vec2 p){return .5*uCT-sagF(uKf,dot(p,p));}',
+'float kBk(vec2 p){float r2=dot(p,p);if(r2<1e-8)return uKb1;float a=dot(p,uAx);float c=a*a/r2;return uKb1*c+uKb2*(1.-c);}',
+'float zBk(vec2 p){return -.5*uCT-sagF(kBk(p),dot(p,p));}',
+'float marg(vec3 p){return min(uH-length(p.xy),min(zFr(p.xy)-p.z,p.z-zBk(p.xy)));}',
+'vec3 nFr(vec2 p){float e=.02;float dx=zFr(p+vec2(e,0.))-zFr(p-vec2(e,0.));float dy=zFr(p+vec2(0.,e))-zFr(p-vec2(0.,e));return normalize(vec3(-dx,-dy,2.*e));}',
+'vec3 nBk(vec2 p){float e=.02;float dx=zBk(p+vec2(e,0.))-zBk(p-vec2(e,0.));float dy=zBk(p+vec2(0.,e))-zBk(p-vec2(0.,e));return normalize(vec3(dx,dy,-2.*e));}',
+'vec2 bnd(vec3 ro,vec3 rd){',
+'  float t0=-1e9,t1=1e9;',
+'  if(abs(rd.z)>1e-6){float a=(uZlo-ro.z)/rd.z,b=(uZhi-ro.z)/rd.z;t0=min(a,b);t1=max(a,b);}',
+'  else if(ro.z<uZlo||ro.z>uZhi)return vec2(1.,-1.);',
+'  float hb=uH+.02;float a=dot(rd.xy,rd.xy),b=dot(ro.xy,rd.xy),c=dot(ro.xy,ro.xy)-hb*hb;',
+'  if(a>1e-10){float ds=b*b-a*c;if(ds<0.)return vec2(1.,-1.);float sq=sqrt(ds);t0=max(t0,(-b-sq)/a);t1=min(t1,(-b+sq)/a);}',
+'  else if(c>0.)return vec2(1.,-1.);',
+'  return vec2(t0,t1);}',
+'float cross_(vec3 ro,vec3 rd,bool enter){',
+'  vec2 tt=bnd(ro,rd);float t0=max(tt.x,0.),t1=tt.y;if(t0>=t1)return -1.;',
+'  float dt=(t1-t0)/float(NS);float tp=t0;float mp=enter?-1.:1.;',
+'  for(int i=1;i<=NS;i++){',
+'    float tc=t0+dt*float(i);float mc=marg(ro+rd*tc);',
+'    bool cr=enter?(mp<=0.&&mc>0.):(mp>0.&&mc<=0.);',
+'    if(cr){float a=tp,b=tc;',
+'      for(int j=0;j<9;j++){float m=.5*(a+b);bool in_=marg(ro+rd*m)>0.;if(enter){if(in_)b=m;else a=m;}else{if(in_)a=m;else b=m;}}',
+'      return .5*(a+b);}',
+'    tp=tc;mp=mc;}',
+'  return -1.;}',
+'float fres(float ci,float eta){float s2=(1.-ci*ci)/(eta*eta);if(s2>=1.)return 1.;float ct=sqrt(1.-s2);',
+'  float rs=(ci-eta*ct)/(ci+eta*ct),rp=(eta*ci-ct)/(eta*ci+ct);return .5*(rs*rs+rp*rp);}',
+'float hash(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}',
+'float vnoise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
+'  return mix(mix(hash(i),hash(i+vec2(1.,0.)),f.x),mix(hash(i+vec2(0.,1.)),hash(i+vec2(1.,1.)),f.x),f.y);}',
+/* lampu studio (ruang kamera): softbox besar, strip, lampu atas */
+'float rect(vec3 d,vec3 c,vec2 hs,float soft,out vec2 q){',
+'  float z=dot(d,c);if(z<=.05){q=vec2(9.);return 0.;}',
+'  vec3 r=normalize(cross(vec3(0.,1.,0.),c));vec3 u=cross(c,r);',
+'  q=vec2(dot(d,r),dot(d,u))/z;vec2 e=abs(q)-hs;float m=max(e.x,e.y);',
+'  return 1.-smoothstep(-soft,soft,m);}',
+'vec3 envS(vec3 d){',
+'  vec3 top=mix(vec3(.42,.46,.52),vec3(.14,.16,.20),uDark);',
+'  vec3 mid=mix(vec3(.17,.18,.20),vec3(.05,.055,.07),uDark);',
+'  vec3 flr=mix(vec3(.32,.31,.30),vec3(.02,.025,.03),uDark);',
+'  vec3 col=mix(mid,top,smoothstep(0.,.9,d.y));col=mix(col,flr,smoothstep(0.,-.7,d.y));',
+'  vec2 q;float m;',
+'  m=rect(d,normalize(vec3(-.55,.55,.62)),vec2(.62,.42),.05,q);',
+'  float mull=1.-.55*(1.-smoothstep(.0,.03,abs(abs(q.x)-.0)-.0))*0.;',
+'  float gx=smoothstep(.0,.025,abs(fract((q.x+.62)/.62)-.5)*2.-.0);',
+'  col+=vec3(1.,.97,.92)*m*13.*(.78+.22*gx);',
+'  m=rect(d,normalize(vec3(.88,.10,.46)),vec2(.10,.85),.04,q);col+=vec3(.92,.96,1.)*m*10.;',
+'  m=rect(d,normalize(vec3(.05,.96,.28)),vec2(.60,.20),.06,q);col+=vec3(1.)*m*6.;',
+'  m=rect(d,normalize(vec3(-.2,-.55,.8)),vec2(.50,.16),.08,q);col+=vec3(.9,.95,1.)*m*1.2;',
+'  return col;}',
+'vec3 envD(vec3 n){',
+'  vec3 a=mix(vec3(.50,.52,.55),vec3(.10,.11,.14),uDark);',
+'  a+=vec3(1.,.97,.92)*max(dot(n,normalize(vec3(-.55,.55,.62))),0.)*mix(1.0,1.5,uDark);',
+'  a+=vec3(.92,.96,1.)*max(dot(n,normalize(vec3(.88,.10,.46))),0.)*mix(.35,.7,uDark);',
+'  return a;}',
+'vec3 backdrop(vec3 pc,vec3 dc){',
+'  vec3 e=envS(dc);',
+'  float w=smoothstep(-.04,-.28,dc.z);if(w<=0.)return e;',
+'  float t=(-uBgZ-pc.z)/dc.z;vec3 q=pc+dc*t;',
+'  float r=length(q.xy)/(uBgZ*1.7+70.);',
+'  vec3 pc0=mix(vec3(.30,.345,.40),vec3(.105,.125,.155),uDark);',
+'  vec3 pc1=mix(vec3(.085,.10,.125),vec3(.02,.024,.032),uDark);',
+'  vec3 p=mix(pc0,pc1,smoothstep(.1,1.2,r));',
+'  float s=10.;vec2 g=abs(fract((q.xy+s*.5)/s)-.5)*s;float gl=min(g.x,g.y);',
+'  float ln=1.-smoothstep(.12,.85,gl);',
+'  vec2 g2=abs(fract((q.xy+s*2.5)/(s*5.))-.5)*s*5.;float gl2=min(g2.x,g2.y);float ln2=1.-smoothstep(.2,1.1,gl2);',
+'  float line=max(ln*.30,ln2*.55);',
+'  p=mix(p,p*vec3(1.9,1.95,2.05),line*.42);',
+'  vec3 ax=uRot*vec3(0.,0.,1.);vec3 L=normalize(vec3(-.55,.55,.62));float dl=dot(L,ax);',
+'  if(abs(dl)>.06){float sdist=-dot(q,ax)/dl;if(sdist>0.){vec3 hp=q+L*sdist;float rr=length(hp-dot(hp,ax)*ax);',
+'    float pen=2.+sdist*.07;float sh=1.-smoothstep(uH-pen,uH+pen,rr);sh*=smoothstep(.06,.3,abs(dl));p*=1.-.22*sh;}}',
+'  return mix(e,p,w);}',
+'vec3 bgL(vec3 p,vec3 rd){return backdrop(uRot*p+vec3(0.),uRot*rd);}',
+'vec3 wallOut(vec3 p,vec3 N,vec3 rd){',
+'  vec3 Nc=uRot*N;vec3 V=uRot*rd;float ci=clamp(-dot(rd,N),0.,1.);',
+'  float az=atan(p.y,p.x);float f1=1.-smoothstep(.6,1.2,uPx*2.5),f2=1.-smoothstep(.35,.8,uPx*7.);',
+'  float nz=mix(.5,vnoise(vec2(az*26.,p.z*2.5)),f1)*.6+mix(.5,vnoise(vec2(az*90.,p.z*7.)),f2)*.4;',
+'  vec3 alb=vec3(.84,.89,.91)*(.86+.2*nz);',
+'  vec3 col=alb*envD(Nc)*.46;',
+'  col+=envS(reflect(V,Nc))*(.03+.16*pow(1.-ci,3.))*(.4+.6*nz);',
+'  return col;}',
+'vec3 wallIn(vec3 p,vec3 N,vec3 rd){',
+'  float nz=mix(.5,vnoise(vec2(atan(p.y,p.x)*30.,p.z*3.)),1.-smoothstep(.6,1.2,uPx*3.));',
+'  vec3 alb=vec3(.80,.87,.90)*(.85+.25*nz);',
+'  return alb*envD(vec3(0.,0.,1.))*.34+alb*envD(uRot*(-N))*.12;}',
+'vec3 coat(float ci){return mix(vec3(.30,1.,.50),vec3(.85,.35,1.),smoothstep(.35,.95,1.-ci))*1.25;}',
+'vec3 trace(vec3 ro,vec3 rd){',
+'  vec3 col=vec3(0.),thr=vec3(1.);bool ins=false;',
+'  for(int b=0;b<4;b++){',
+'    float t=cross_(ro,rd,!ins);',
+'    if(t<0.){col+=thr*bgL(ro,rd);return col;}',
+'    vec3 p=ro+rd*t;',
+'    float a=abs(uH-length(p.xy)),bb=abs(zFr(p.xy)-p.z),cc=abs(p.z-zBk(p.xy));',
+'    vec3 N;int kd;',
+'    if(a<bb&&a<cc){N=normalize(vec3(p.xy,0.));kd=0;}else if(bb<cc){N=nFr(p.xy);kd=1;}else{N=nBk(p.xy);kd=2;}',
+'    if(!ins){',
+'      if(kd==0){col+=thr*wallOut(p,N,rd);return col;}',
+'      float ci=clamp(-dot(rd,N),0.,1.);float F=fres(ci,uN);',
+'      vec3 rc=vec3(1.);float ff=F;if(uAR>.5){rc=coat(ci);ff=F*.30;}',
+'      col+=thr*rc*ff*envS(uRot*reflect(rd,N));',
+'      {float rw=smoothstep(uH-.55,uH-.04,length(p.xy));col+=thr*rw*.30*envD(uRot*N);thr*=1.-.25*rw;}',
+'      if(b==0&&kd==1&&uMarks>.5){vec2 pr=p.xy;float al=abs(dot(pr,vec2(-uAx.y,uAx.x)));float ra=abs(dot(pr,uAx));',
+'        float mk=(1.-smoothstep(.10,.24,al))*step(uH-9.,ra)*step(ra,uH-4.5);thr*=1.-.62*mk;}',
+'      thr*=1.-ff;rd=refract(rd,N,1./uN);ro=p-N*2e-3;ins=true;',
+'    }else{',
+'      thr*=exp(-uAbs*t);',
+'      if(kd==0){col+=thr*wallIn(p,N,rd);return col;}',
+'      vec3 rr=refract(rd,-N,uN);',
+'      if(dot(rr,rr)<1e-6){rd=reflect(rd,N);ro=p-N*2e-3;continue;}',
+'      float ci=clamp(dot(rr,N),0.,1.);float F=fres(clamp(dot(rd,N),0.,1.),1./uN);',
+'      float ff=uAR>.5?F*.30:F;',
+'      if(uAR<.5&&F>.004){',
+'        vec3 g=reflect(rd,N);vec3 go=p-N*2e-3;float tg=cross_(go,g,false);',
+'        if(tg>0.){vec3 pg=go+g*tg;float ga=abs(uH-length(pg.xy)),gb=abs(zFr(pg.xy)-pg.z),gc=abs(pg.z-zBk(pg.xy));',
+'          if(!(ga<gb&&ga<gc)){vec3 Ng=gb<gc?nFr(pg.xy):nBk(pg.xy);vec3 go2=refract(g,-Ng,uN);',
+'            if(dot(go2,go2)>1e-6){float F2=fres(clamp(dot(g,Ng),0.,1.),1./uN);col+=thr*F*(1.-F2)*bgL(pg,go2)*exp(-uAbs*tg);}}}}',
+'      thr*=1.-ff;rd=rr;ro=p+N*2e-3;col+=thr*bgL(ro,rd);return col;',
+'    }',
+'  }',
+'  return col+thr*envD(vec3(0.,0.,1.))*.4;}',
+'vec3 aces(vec3 x){return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),0.,1.);}',
+'float luma(vec3 c){return dot(c,vec3(.299,.587,.114));}',
+'vec3 tex(vec2 o){return texture2D(uTex,(gl_FragCoord.xy+o)/uRes).rgb;}',
+'void main(){',
+'  float nS=1.;',
+/* tahap 2: bandingkan dengan 8 tetangga dari gambar tahap 1. Bila rata (tidak ada tepi, pantulan tajam, atau garis halus), salin saja.
+   Hanya piksel yang berbeda tajam dari tetangganya dilacak ulang dengan beberapa sampel tambahan. */
+'  if(uPass>.5&&uPass<1.5){',
+'    vec3 c0=tex(vec2(0.));float l0=luma(c0);float mx=0.;',
+'    mx=max(mx,abs(luma(tex(vec2(1.,0.)))-l0));mx=max(mx,abs(luma(tex(vec2(-1.,0.)))-l0));',
+'    mx=max(mx,abs(luma(tex(vec2(0.,1.)))-l0));mx=max(mx,abs(luma(tex(vec2(0.,-1.)))-l0));',
+'    mx=max(mx,abs(luma(tex(vec2(1.,1.)))-l0));mx=max(mx,abs(luma(tex(vec2(-1.,-1.)))-l0));',
+'    mx=max(mx,abs(luma(tex(vec2(1.,-1.)))-l0));mx=max(mx,abs(luma(tex(vec2(-1.,1.)))-l0));',
+'    if(mx<uThr){gl_FragColor=vec4(c0,1.);return;}',
+'    nS=1.+uAA;',
+'  }else if(uPass>1.5)nS=1.+uAA;',
+'  vec2 vv=(gl_FragCoord.xy-.5*uRes)/uRes.y;float vig=1.-.35*dot(vv,vv);',
+'  vec3 acc=vec3(0.);',
+/* satu pemanggilan trace() saja di dalam loop: sampel pusat dulu, lalu sampel tambahan di cakram kecil (pola bunga matahari).
+   Tiap sampel di-tone-map dulu baru dirata-rata, supaya tepi pantulan yang sangat terang tetap mulus dan tidak ikut membesar. */
+'  for(int i=0;i<9;i++){',
+'    if(float(i)>=nS)break;',
+'    vec2 off=vec2(0.);',
+'    if(i>0){float a=float(i)*2.39996323;float r=.58*sqrt((float(i)-.5)/max(nS-1.,1.));off=r*vec2(cos(a),sin(a));}',
+'    vec2 uv=(gl_FragCoord.xy+off-.5*uRes)/(.5*uRes.y);',
+'    vec3 rdc=normalize(vec3(uv.x,uv.y,-uFocal));',
+'    vec3 c=trace(uRotI*uCam,uRotI*rdc);',
+'    acc+=aces(c*vig*mix(1.0,1.15,uDark));',
+'  }',
+'  vec3 c=pow(acc/nS,vec3(1./2.2));',
+'  c+=(hash(gl_FragCoord.xy)-.5)/255.;',
+'  gl_FragColor=vec4(c,1.);}'
+].join('\n');
+
+// Tiga pilihan grafik. Semuanya menghitung pantulan, pembiasan, dan lapisan anti-refleksi dengan penuh; yang berbeda hanya ketajaman gambarnya.
+//   dpr   = batas kerapatan piksel gambar (1 = sama dengan ukuran layar CSS)
+//   smin  = skala resolusi terendah yang boleh dipakai saat lensa bergerak (1 = penuh)
+//   aaMove, aaStill = sampel tambahan anti-aliasing di piksel tepi, saat bergerak dan saat diam (0 sampai 8)
+//   gap   = jarak minimum antar gambar (ms) saat bergerak: 40 = sekitar 20 gambar per detik, 30 = sekitar 30 gambar per detik
+var LV_Q = {
+  low:  { dpr: 1,   smin: 0.4, aaMove: 0, aaStill: 2, gap: 40 },
+  mid:  { dpr: 1.5, smin: 0.5, aaMove: 2, aaStill: 4, gap: 30 },
+  high: { dpr: 2,   smin: 0.6, aaMove: 4, aaStill: 8, gap: 30 }
+};
+// Bawaan: layar sentuh (HP, tablet) mulai dari Sedang, selebihnya Tinggi. Pilihan pengguna disimpan dan menggantikan ini.
+function lvQDefault() { try { return window.matchMedia && matchMedia('(pointer: coarse)').matches ? 'mid' : 'high'; } catch (e) { return 'high'; } }
+var LV3 = { canvas: null, gl: null, prog: null, U: {}, err: '', lost: false, fbo: null, tex: null, tw: 0, th: 0, noFbo: false };
+function lv3Init() {
+  if (LV3.gl && !LV3.lost) return true;
+  if (LV3.err === 'nogl') return false;
+  var c = LV3.canvas || document.createElement('canvas');
+  var gl = null;
+  try { gl = c.getContext('webgl', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'high-performance' }) || c.getContext('experimental-webgl'); } catch (e) {}
+  if (!gl) { LV3.err = 'nogl'; return false; }
+  function sh(type, src) {
+    var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { LV3.err = gl.getShaderInfoLog(s) || 'shader'; return null; }
+    return s;
+  }
+  var vs = sh(gl.VERTEX_SHADER, LV3_VS), fs = sh(gl.FRAGMENT_SHADER, LV3_FS);
+  if (!vs || !fs) return false;
+  var pr = gl.createProgram(); gl.attachShader(pr, vs); gl.attachShader(pr, fs); gl.linkProgram(pr);
+  if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { LV3.err = gl.getProgramInfoLog(pr) || 'link'; return false; }
+  gl.useProgram(pr);
+  var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+  var loc = gl.getAttribLocation(pr, 'aP'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+  LV3.U = {};
+  ['uRes', 'uRot', 'uRotI', 'uCam', 'uFocal', 'uH', 'uCT', 'uKf', 'uKb1', 'uKb2', 'uCirc', 'uN', 'uZhi', 'uZlo', 'uAR', 'uDark', 'uAA', 'uPass', 'uPx', 'uThr', 'uTex', 'uMarks', 'uBgZ', 'uAx', 'uAbs']
+    .forEach(function (k) { LV3.U[k] = gl.getUniformLocation(pr, k); });
+  gl.uniform1i(LV3.U.uTex, 0);
+  // target render untuk tahap 1 (gambar satu sampel). Bila perangkat tidak bisa membuatnya, tahap 2 diganti pengambilan sampel di semua piksel.
+  LV3.fbo = gl.createFramebuffer(); LV3.tex = gl.createTexture(); LV3.tw = 0; LV3.th = 0; LV3.noFbo = false;
+  LV3.canvas = c; LV3.gl = gl; LV3.prog = pr; LV3.lost = false; LV3.err = '';
+  return true;
+}
+// matriks rotasi lensa: putar di sumbu Y (yaw), lalu miring di sumbu X (pitch). Hasil: kolom-utama untuk GL, dan kebalikannya (transpos).
+function lv3Mats(yaw, pitch) {
+  var cy = Math.cos(yaw), sy = Math.sin(yaw), cx = Math.cos(pitch), sx = Math.sin(pitch);
+  // R = Rx(pitch) * Ry(yaw), baris demi baris
+  return lv3Pack([cy, 0, sy,
+                  sx * sy, cx, -sx * cy,
+                  -cx * sy, sx, cx * cy]);
+}
+// r: matriks rotasi 3x3 bebas (baris demi baris), untuk orientasi lensa ke segala arah
+function lv3Pack(r) {
+  var cm = new Float32Array([r[0], r[3], r[6], r[1], r[4], r[7], r[2], r[5], r[8]]);        // kolom-utama R
+  var ci = new Float32Array([r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8]]);        // kolom-utama R^T
+  return { R: cm, Ri: ci };
+}
+// Menyiapkan tekstur tahap 1 seukuran kanvas. false = tidak tersedia (pakai cadangan).
+function lv3Target(W, H) {
+  var gl = LV3.gl;
+  if (LV3.noFbo) return false;
+  if (LV3.tw === W && LV3.th === H) return true;
+  var mx = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 2048;
+  if (W > mx || H > mx) { LV3.noFbo = true; return false; }
+  gl.bindTexture(gl.TEXTURE_2D, LV3.tex);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, W, H, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+  gl.bindFramebuffer(gl.FRAMEBUFFER, LV3.fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, LV3.tex, 0);
+  var ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+  if (!ok) { LV3.noFbo = true; return false; }
+  LV3.tw = W; LV3.th = H; return true;
+}
+// p: parameter lensa (lihat lvBuild). v: {rot (matriks 3x3) atau yaw dan pitch, zoom, ar, dark, aa, w, h}
+// aa = jumlah sampel tambahan (0 sampai 8) yang hanya dipakai di piksel tepi. Pantulan, pembiasan, dan semua efek optik tetap dihitung penuh di setiap piksel.
+function lv3Draw(p, v) {
+  var gl = LV3.gl, U = LV3.U; if (!gl || LV3.lost) return false;
+  var W = LV3.canvas.width, H = LV3.canvas.height;
+  gl.viewport(0, 0, W, H);
+  var m = v.rot ? lv3Pack(v.rot) : lv3Mats(v.yaw, v.pitch);
+  var focal = 1 / Math.tan(13 * Math.PI / 180);
+  var dist = p.h * focal / (0.60 * v.zoom);
+  var aa = Math.max(0, Math.min(8, v.aa == null ? 4 : v.aa | 0));
+  gl.uniform2f(U.uRes, W, H);
+  gl.uniformMatrix3fv(U.uRot, false, m.R); gl.uniformMatrix3fv(U.uRotI, false, m.Ri);
+  gl.uniform3f(U.uCam, 0, 0, dist); gl.uniform1f(U.uFocal, focal);
+  gl.uniform1f(U.uH, p.h); gl.uniform1f(U.uCT, p.CT3);
+  gl.uniform1f(U.uKf, p.kf); gl.uniform1f(U.uKb1, p.kb1); gl.uniform1f(U.uKb2, p.kb2);
+  gl.uniform2f(U.uAx, Math.cos(p.axRad), Math.sin(p.axRad));
+  gl.uniform1f(U.uCirc, p.circ ? 1 : 0); gl.uniform1f(U.uN, p.n);
+  gl.uniform1f(U.uZhi, p.zhi); gl.uniform1f(U.uZlo, p.zlo);
+  gl.uniform1f(U.uAR, v.ar ? 1 : 0); gl.uniform1f(U.uDark, v.dark ? 1 : 0);
+  gl.uniform1f(U.uMarks, p.marks && v.marks ? 1 : 0);
+  gl.uniform1f(U.uBgZ, 55);
+  gl.uniform1f(U.uAA, aa); gl.uniform1f(U.uThr, 0.04);
+  gl.uniform1f(U.uPx, 2 * dist / (H * focal));   // ukuran satu piksel layar (mm) pada jarak lensa
+  // penyerapan ringan: kaca tebal terlihat sedikit lebih gelap di tepi (per mm)
+  gl.uniform3f(U.uAbs, 0.0030, 0.0026, 0.0036);
+  if (aa > 0 && lv3Target(W, H)) {
+    // tahap 1: satu sampel per piksel ke tekstur. Tekstur dilepas dari unit 0 dulu supaya tidak terjadi umpan balik (membaca dan menulis tekstur yang sama).
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, LV3.fbo);
+    gl.uniform1f(U.uPass, 0); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    // tahap 2: ke kanvas. Piksel tepi dilacak ulang dengan sampel tambahan, sisanya disalin.
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, LV3.tex);
+    gl.uniform1f(U.uPass, 1); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  } else {
+    // cadangan (tanpa tekstur perantara, atau tanpa anti-aliasing): satu lintasan. Bila diminta anti-aliasing, semua piksel disampel ulang (dibatasi 3 sampel tambahan).
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.uniform1f(U.uAA, Math.min(aa, 3));
+    gl.uniform1f(U.uPass, aa > 0 ? 2 : 0); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  }
+  return true;
+}
+
+/* ---------- Gambar lensa 2D dan 3D ---------- */
+// Gambar lensa hanya ada di halaman Isi Kartu Kerja Surfacing (satu kartu, #kk-viz), karena di sana datanya lengkap. Gambar dibuat dari hasil hitung yang sama
+// dengan tabel OD dan OS, jadi berubah mengikuti isian, dan keempat tampilannya (Sagita, Base Curve, Tools, Ketebalan) berasal dari lensa yang sama.
+// Lensa digambar sebagai meniskus: permukaan depan bola (BC), permukaan belakang torik (dari F2 atau dari sagita).
+// Kedua permukaan mengikuti rumus Tools dengan indeks bias dari isian: radius = 1000 × (n − 1) ÷ F, F1 = BC dan F2 = power meridian − F1.
+var LV_READY = false;
+var LV_VIEWS = ['bc', 'ft', 'sag', 'et'];   // urutan tombol, sama untuk 2D dan 3D
+var LVP = { mode: '2d', ar: false, spin: true, view: 'et', v3: 'et', q: lvQDefault() };   // v3: keterangan di gambar 3D (bc, ft, sag, et, atau off = polos)   // pilihan tampilan: 2D atau 3D, dan jenis gambar 2D
+try {
+  var lvp0 = JSON.parse(localStorage.getItem('kks-lensviz-v1') || 'null');
+  if (lvp0) { if (lvp0.mode === '3d') LVP.mode = '3d'; if (lvp0.ar === true) LVP.ar = true; if (lvp0.spin === false) LVP.spin = false; if (LV_VIEWS.indexOf(lvp0.view) >= 0) LVP.view = lvp0.view; if (['low', 'mid', 'high'].indexOf(lvp0.q) >= 0) LVP.q = lvp0.q; if (['sag', 'bc', 'ft', 'et', 'off'].indexOf(lvp0.v3) >= 0) LVP.v3 = lvp0.v3; }
+} catch (e) {}
+function lvSaveP() { try { localStorage.setItem('kks-lensviz-v1', JSON.stringify({ mode: LVP.mode, ar: LVP.ar, spin: LVP.spin, view: LVP.view, v3: LVP.v3, q: LVP.q })); } catch (e) {} }
+function LT(k) { return _T('viz.' + k); }
+
+// Sag permukaan (mm) dengan lengkung k (1/mm) pada jari-jari r. Bertanda: k > 0 = melengkung ke arah mata.
+// circ = false: parabola (rumus approximate, sama dengan kalkulator). circ = true: lingkaran (rumus exact).
+function lvSag(k, r, circ) {
+  if (!circ) return 0.5 * k * r * r;
+  var d = 1 - k * k * r * r; if (d < 1e-4) d = 1e-4;
+  return k * r * r / (1 + Math.sqrt(d));
+}
+function lvCurv(s, r, circ) { return circ ? 2 * s / (r * r + s * s) : 2 * s / (r * r); }
+
+// o: { kind, dia, n, circ, BC, P[], kinds[], sag[], axes[], thick, t, rem, noAxis }
+function lvBuild(o) {
+  var h = o.dia / 2, nb = o.n - 1;   // n = indeks bias dari isian pengguna
+  var th = calcThickness(o.kinds, o.sag, o.thick);
+  function mk(circ) {
+    var kf = o.BC / (1000 * nb), s1 = lvSag(kf, h, circ), fit = !circ || Math.abs(kf) * h < 0.95;
+    var mer = o.kinds.map(function (kd, i) {
+      var F2 = o.P[i] - o.BC;                // F2 = power meridian - F1
+      var kb = -F2 / (1000 * nb);            // lengkung belakang dari F2 (F2 negatif = cekung ke arah mata)
+      if (circ && Math.abs(kb) * h >= 0.95) fit = false;
+      var delta = lvSag(kb, h, circ);        // sag permukaan belakang di tepi
+      return { P: o.P[i], kind: kd, ax: o.axes[i], sag: o.sag[i], delta: delta, kb: kb, CT: th.CT[i], ET: th.ET[i], F2: F2 };
+    });
+    return { circ: circ, kf: kf, s1: s1, mer: mer, fit: fit };
+  }
+  var g = mk(!!o.circ);
+  if (!g.fit) g = mk(false);   // lengkung lebih curam dari setengah diameter: bentuk lingkaran tidak mungkin, pakai parabola
+  var mer = g.mer;
+  var CT3 = Math.max.apply(null, mer.map(function (m) { return m.CT; }));
+  var dmax = Math.max.apply(null, mer.map(function (m) { return m.delta; }).concat([0]));
+  return { kind: o.kind, dia: o.dia, h: h, n: o.n, circ: g.circ, BC: o.BC, kf: g.kf, s1: g.s1, mer: mer, two: mer.length > 1, mixed: o.kinds.length > 1 && o.kinds[0] !== o.kinds[1],
+    CT3: CT3, zhi: CT3 / 2 + Math.max(0, -g.s1) + 0.05, zlo: -CT3 / 2 - dmax - 0.05, t: o.t == null ? 0 : o.t, rem: o.rem || null, noAxis: !!o.noAxis, thick: o.thick };
+}
+function lvP3(M) {
+  var m0 = M.mer[0], m1 = M.mer[1] || m0;
+  return { h: M.h, CT3: M.CT3, kf: M.kf, kb1: m0.kb, kb2: m1.kb, axRad: (m0.ax || 0) * Math.PI / 180, circ: M.circ, n: M.n, zhi: M.zhi, zlo: M.zlo, marks: M.two && !M.noAxis };
+}
+function lvLerp(a, b, u) {
+  if (typeof a === 'number' && typeof b === 'number') return a + (b - a) * u;
+  if (Array.isArray(a) && Array.isArray(b)) return a.length === b.length ? b.map(function (x, i) { return lvLerp(a[i], x, u); }) : b;
+  if (a && b && typeof a === 'object' && typeof b === 'object' && !Array.isArray(b)) { var o = {}; for (var k in b) o[k] = (k in a) ? lvLerp(a[k], b[k], u) : b[k]; return o; }
+  return b;
+}
+
+/* ---------- Gambar 2D (SVG) ---------- */
+function lv2d(M, mi, W, H) {
+  var kind = M.kind, m = M.mer[mi], h = M.h, circ = M.circ, dia = M.dia;
+  var f1 = function (v) { return String(Math.round(v * 10) / 10); };
+  var fv = function (v) { return Lx(fD(v)); };
+  var Lmax = Math.max(fv(m.ET).length, fv(m.CT).length, fv(m.sag).length, fv(Math.abs(M.s1)).length);
+  var padX = Math.max(58, 30 + 6.8 * Lmax), padT = 34, padB = 66;
+  var thin = kind === 'et' ? M.t - (m.kind === 'minus' ? m.ET : m.CT) : 0; if (!(thin > 0)) thin = 0;
+  var tp = kind === 'ft' ? 36 : 0;      // tool: tebal 30 px + celah 6 px
+  var N = 56, mid = N / 2, xs = [], yf = [], yb = [], i, x;
+  for (i = 0; i <= N; i++) { x = -h + 2 * h * i / N; xs.push(x); yf.push(lvSag(M.kf, Math.abs(x), circ)); yb.push(m.CT + lvSag(m.kb, Math.abs(x), circ)); }
+  var ymin = Math.min.apply(null, yf), ymaxL = Math.max.apply(null, yb), ymax = ymaxL + thin;
+  var ext = Math.max(ymax - ymin, 0.6);
+  var S = Math.min((W - 2 * padX) / dia, 14);
+  var availH = H - padT - padB - 2 * tp;
+  if (ext * S > availH) S = availH / ext;   // skala asli: gambar hanya dikecilkan bila tidak muat
+  var cx = W / 2, y0 = padT + tp + (availH - ext * S) / 2;
+  var X = function (v) { return cx + v * S; }, Y = function (v) { return y0 + (v - ymin) * S; };
+  var pf = xs.map(function (v, k) { return [X(v), Y(yf[k])]; });
+  var pb = xs.map(function (v, k) { return [X(v), Y(yb[k])]; });
+  var sh = function (a, dy) { return a.map(function (p) { return [p[0], p[1] + dy]; }); };
+  var pts = function (a) { return a.map(function (p) { return f1(p[0]) + ',' + f1(p[1]); }).join('L'); };
+  var line = function (a) { return 'M' + pts(a); };
+  var poly = function (a, b) { return 'M' + pts(a) + 'L' + pts(b.slice().reverse()) + 'Z'; };
+  var tx = function (px, py, s, cls, anc) {
+    var cc = (cls || '').split(' ').filter(Boolean).map(function (c) { return 'lvc-' + c; }).join(' ');
+    return '<text x="' + f1(px) + '" y="' + f1(py) + '" class="lv-t ' + cc + '" text-anchor="' + (anc || 'start') + '">' + s + '</text>';
+  };
+  var ln = function (x1, y1, x2, y2, cls) { return '<line class="' + cls + '" x1="' + f1(x1) + '" y1="' + f1(y1) + '" x2="' + f1(x2) + '" y2="' + f1(y2) + '"/>'; };
+  var tri = function (px, py, dir) { var s = dir === 'u' ? 7 : -7; return '<polygon class="lv-ar" points="' + f1(px) + ',' + f1(py) + ' ' + f1(px - 2.6) + ',' + f1(py + s) + ' ' + f1(px + 2.6) + ',' + f1(py + s) + '"/>'; };
+  var triH = function (px, py, dir) { var s = dir === 'l' ? 7 : -7; return '<polygon class="lv-ar" points="' + f1(px) + ',' + f1(py) + ' ' + f1(px + s) + ',' + f1(py - 2.6) + ' ' + f1(px + s) + ',' + f1(py + 2.6) + '"/>'; };
+  var dimV = function (px, ya, yb2, cls) {
+    cls = cls || 'lv-dm';
+    if (yb2 - ya >= 15) return ln(px, ya + 3, px, yb2 - 3, cls) + tri(px, ya, 'u') + tri(px, yb2, 'd');
+    return ln(px, ya - 14, px, ya - 6, cls) + tri(px, ya, 'd') + ln(px, yb2 + 6, px, yb2 + 14, cls) + tri(px, yb2, 'u');
+  };
+  var dlabel = function (px, py, name, val, side, cls) {
+    var a = side === 'r' ? 'start' : 'end', xx = side === 'r' ? px + 7 : px - 7;
+    return tx(xx, py - 2, name, 'm ' + (cls || ''), a) + tx(xx, py + 10, val, 'b ' + (cls || ''), a);
+  };
+  var xr = X(h) + 15, xl = X(-h) - 15;
+  var o = [];
+  o.push('<svg class="lv-svg" viewBox="0 0 ' + Math.round(W) + ' ' + Math.round(H) + '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">');
+
+  // tool (halaman Tools): F1 cekung di atas lensa, F2 cembung di bawah lensa
+  var yTopT, yBotT;
+  if (kind === 'ft') {
+    yTopT = Y(ymin) - tp;
+    yBotT = Y(ymaxL) + tp;
+    o.push('<path class="lv-tool" d="' + line(sh(pf, -6)) + 'L' + f1(X(h)) + ',' + f1(yTopT) + 'L' + f1(X(-h)) + ',' + f1(yTopT) + 'Z"/>');
+    o.push('<path class="lv-tool" d="' + line(sh(pb, 6)) + 'L' + f1(X(h)) + ',' + f1(yBotT) + 'L' + f1(X(-h)) + ',' + f1(yBotT) + 'Z"/>');
+  }
+  // blank dan tebal yang dibuang (halaman Ketebalan Lensa)
+  if (kind === 'et' && thin > 0) {
+    var tpx = thin * S;
+    if (M.rem) {
+      var g = M.rem.grinding[mi] * S, fn = M.rem.finning[mi] * S, pl = M.rem.polishing[mi] * S;
+      var b1 = sh(pb, pl), b2 = sh(b1, fn), b3 = sh(b2, g);
+      o.push('<path class="lv-pol" d="' + poly(pb, b1) + '"/>');
+      o.push('<path class="lv-fin" d="' + poly(b1, b2) + '"/>');
+      o.push('<path class="lv-grd" d="' + poly(b2, b3) + '"/>');
+    } else {
+      o.push('<path class="lv-blk" d="' + poly(pb, sh(pb, tpx)) + '"/>');
+    }
+    o.push('<path class="lv-blkl" d="' + line(sh(pb, tpx)) + '"/>');
+  }
+  // lensa
+  o.push('<path class="lv-lens" d="' + poly(pf, pb) + '"/>');
+  // sagita: bagian lensa di atas lapisan setebal bagian tertipis
+  if (kind === 'sag') {
+    var T0 = Math.min(m.CT, m.ET);
+    var shell = xs.map(function (v, k) { return [X(v), Y(yf[k] + T0)]; });
+    o.push('<path class="lv-wedge" d="' + poly(shell, pb) + '"/>');
+    o.push('<path class="lv-shell" d="' + line(shell) + '"/>');
+  }
+  // sumbu optik
+  o.push(ln(cx, y0 - 14 - (kind === 'ft' ? tp : 0), cx, Y(ymax) + 12 + (kind === 'ft' ? tp : 0), 'lv-ax'));
+  // permukaan
+  o.push('<path class="lv-sf' + (kind === 'bc' || kind === 'ft' ? ' lvh' : '') + '" d="' + line(pf) + '"/>');
+  o.push('<path class="lv-sb' + (kind === 'bc' ? ' lvd' : (kind === 'ft' ? ' lvh' : '')) + '" d="' + line(pb) + '"/>');
+  o.push(ln(X(-h), pf[0][1], X(-h), pb[0][1], 'lv-rim') + ln(X(h), pf[N][1], X(h), pb[N][1], 'lv-rim'));
+
+  var yMidT;
+  if (kind === 'sag') {
+    var T1 = Math.min(m.CT, m.ET);
+    if (m.sag > 0) {
+      var ya, yb2, px, side;
+      if (m.kind === 'minus') { ya = Y(yf[N] + T1); yb2 = Y(yb[N]); px = xr; side = 'r'; o.push(ln(X(h), ya, px + 4, ya, 'lv-ex') + ln(X(h), yb2, px + 4, yb2, 'lv-ex')); }
+      else { ya = Y(T1); yb2 = Y(m.CT); px = xl; side = 'l'; o.push(ln(cx, ya, px - 4, ya, 'lv-ex') + ln(cx, yb2, px - 4, yb2, 'lv-ex')); }
+      o.push(dimV(px, ya, yb2, 'lv-dm lvh'));
+      o.push(dlabel(px, (ya + yb2) / 2, 's', fv(m.sag), side, 'hi'));
+    }
+  } else if (kind === 'bc') {
+    o.push(tx(cx, Y(ymin) - 12, 'BC ' + Lx(sgn(M.BC)) + ' D' + (M.BC !== 0 ? '  ·  r ' + Lx((1000 * (M.n - 1) / Math.abs(M.BC)).toFixed(1)) + ' mm' : ''), 'b f', 'middle'));
+    if (Math.abs(M.s1) > 0.005) {
+      var a1 = Y(yf[mid]), a2 = Y(yf[N]);
+      o.push(ln(cx, a1, xr + 4, a1, 'lv-ex') + ln(X(h), a2, xr + 4, a2, 'lv-ex'));
+      o.push(dimV(xr, Math.min(a1, a2), Math.max(a1, a2)));
+      o.push(dlabel(xr, (a1 + a2) / 2, 's1', fv(Math.abs(M.s1)), 'r'));
+    }
+  } else if (kind === 'ft') {
+    var rr = function (d) { return d === 0 ? '' : 'r ' + Lx((1000 * (M.n - 1) / Math.abs(d)).toFixed(1)) + ' mm'; };
+    o.push(tx(cx, yTopT + 13, 'F1 ' + Lx(sgn(M.BC)) + ' D', 'b f', 'middle') + tx(cx, yTopT + 25, rr(M.BC), 'm', 'middle'));
+    o.push(tx(cx, yBotT - 15, 'F2 ' + Lx(sgn(m.F2)) + ' D', 'b bk', 'middle') + tx(cx, yBotT - 3, rr(m.F2), 'm', 'middle'));
+  } else if (kind === 'et') {
+    var c1 = Y(0), c2 = Y(m.CT);
+    o.push(ln(cx, c1, xl - 4, c1, 'lv-ex') + ln(cx, c2, xl - 4, c2, 'lv-ex'));
+    o.push(dimV(xl, c1, c2) + dlabel(xl, (c1 + c2) / 2, 'CT', fv(m.CT), 'l'));
+    var e1 = Y(yf[N]), e2 = Y(yb[N]);
+    o.push(ln(X(h), e1, xr + 4, e1, 'lv-ex') + ln(X(h), e2, xr + 4, e2, 'lv-ex'));
+    o.push(dimV(xr, e1, e2) + dlabel(xr, (e1 + e2) / 2, 'ET', fv(m.ET), 'r'));
+    if (thin > 0) {
+      var tl = m.kind === 'minus' ? X(h) : cx, ty = Y(m.kind === 'minus' ? yb[N] + thin : yb[mid] + thin);
+      o.push('<circle class="lv-dot" cx="' + f1(tl) + '" cy="' + f1(ty) + '" r="2.4"/>');
+      o.push(tx(tl + (m.kind === 'minus' ? 6 : 0), ty + 14, 't ' + Lx(String(M.t)) + ' mm', 'b g', m.kind === 'minus' ? 'end' : 'middle'));
+    }
+  }
+  // diameter
+  var rimB = pb[0][1] + thin * S + (kind === 'ft' ? tp : 0);
+  var yD = rimB + (kind === 'et' ? 38 : 26);
+  o.push(ln(X(-h), rimB + 3, X(-h), yD + 4, 'lv-ex') + ln(X(h), rimB + 3, X(h), yD + 4, 'lv-ex'));
+  o.push(ln(X(-h) + 3, yD, X(h) - 3, yD, 'lv-dm') + triH(X(-h), yD, 'l') + triH(X(h), yD, 'r'));
+  o.push(tx(cx, yD + 15, 'Ø ' + Lx(trim(dia)) + ' mm', 'b', 'middle'));
+  // keterangan sudut
+  if (M.two) o.push(tx(8, 15, M.noAxis ? (mi === 0 ? LT('m_sph') : LT('m_sc')) : LT('meridian') + ' ' + m.ax + '°', 'm', 'start'));
+  o.push(tx(W - 8, 15, LT('skala_asli_s'), 'm', 'end'));
+  o.push('</svg>');
+  return { svg: o.join('') };
+}
+
+/* ---------- Keterangan di gambar 3D ---------- */
+// Kanvas 2D di atas WebGL. Titik pada bidang meridian terpilih diproyeksikan dengan kamera dan rotasi yang sama dengan shader,
+// jadi garis ukur ikut berputar bersama lensa. Nilainya sama dengan tabel dan gambar 2D (CT, ET, sagita, BC, tebal yang dibuang).
+function lvOv(I, M, R, zoom) {
+  var cv = I.ov; if (!cv) return;
+  var w = I.gl.clientWidth || 320, hg = I.gl.clientHeight || 256, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var pw = Math.round(w * dpr), ph = Math.round(hg * dpr);
+  if (cv.width !== pw || cv.height !== ph) { cv.width = pw; cv.height = ph; }
+  var c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, w, hg);
+  var vw = LVP.v3; if (vw === 'off' || !M) return;
+  var mi = Math.min(I.mi, M.mer.length - 1), m = M.mer[mi], h = M.h, circ = M.circ, C3 = M.CT3;
+  var tr = (m.ax || 0) * Math.PI / 180, cs = Math.cos(tr), sn = Math.sin(tr);
+  var fo = 1 / Math.tan(13 * Math.PI / 180), dist = h * fo / (0.60 * zoom);
+  var CY = '#62c3de', OR = '#f2a15c', MG = '#dc9be9', DM = '#d5e0e8', FONT = 'ui-monospace, Menlo, Consolas, monospace';
+  // s: jarak sepanjang meridian dari sumbu (mm). y: kedalaman dari puncak depan ke arah belakang (mm), sama dengan sumbu y gambar 2D.
+  var P = function (s, y) {
+    var X = s * cs, Y = s * sn, Z = C3 / 2 - y;
+    var px = R[0] * X + R[1] * Y + R[2] * Z, py = R[3] * X + R[4] * Y + R[5] * Z, pz = R[6] * X + R[7] * Y + R[8] * Z;
+    var k = fo / Math.max(1, dist - pz) * (hg / 2);
+    return [w / 2 + px * k, hg / 2 - py * k];
+  };
+  var yf = function (s) { return lvSag(M.kf, Math.abs(s), circ); }, yb = function (s) { return C3 + lvSag(m.kb, Math.abs(s), circ); };
+  var fv = function (v) { return Lx(fD(v)); };
+  var cen = P(0, C3 / 2), N = 36, ss = [], i;
+  for (i = 0; i <= N; i++) ss.push(-h + 2 * h * i / N);
+  var F = ss.map(function (s) { return P(s, yf(s)); }), B = ss.map(function (s) { return P(s, yb(s)); });
+  var rev = function (a) { return a.slice().reverse(); };
+  var shiftB = function (d) { return ss.map(function (s) { return P(s, yb(s) + d); }); };
+  var path = function (a) { c.beginPath(); a.forEach(function (q, k) { if (k) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); }); };
+  var stk = function (a, col, lw, dash) { path(a); c.setLineDash(dash || []); c.strokeStyle = col; c.lineWidth = lw; c.lineJoin = c.lineCap = 'round'; c.stroke(); c.setLineDash([]); };
+  var fil = function (a, col) { path(a); c.closePath(); c.fillStyle = col; c.fill(); };
+  var tx = function (q, t, col, al, big) {
+    c.font = (big ? '700 11px ' : '600 10px ') + FONT; c.textAlign = al; c.textBaseline = 'middle'; c.lineJoin = 'round'; c.lineWidth = 3.5;
+    c.strokeStyle = 'rgba(8,14,20,.92)'; c.strokeText(t, q[0], q[1]); c.fillStyle = col; c.fillText(t, q[0], q[1]);
+  };
+  // garis ukur pada s = so antara y1 dan y2, dengan garis bantu dari (s1, y1) dan (s2, y2). Tidak digambar bila sedang tegak lurus layar (tampak depan), nilainya tetap ada di pojok kiri atas.
+  var dim = function (s1, y1, s2, y2, so, name, val, col) {
+    var a = P(so, y1), b = P(so, y2), dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy);
+    if (L < 8) return;
+    var n = [-dy / L, dx / L];
+    stk([P(s1, y1), a], col, 1, [3, 3]); stk([P(s2, y2), b], col, 1, [3, 3]); stk([a, b], col, 1.6);
+    [a, b].forEach(function (q) { stk([[q[0] - n[0] * 4, q[1] - n[1] * 4], [q[0] + n[0] * 4, q[1] + n[1] * 4]], col, 1.6); });
+    var mp = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], sg = ((mp[0] - cen[0]) * n[0] + (mp[1] - cen[1]) * n[1]) >= 0 ? 1 : -1;
+    var q2 = [mp[0] + n[0] * sg * 8, mp[1] + n[1] * sg * 8], al = n[0] * sg >= 0 ? 'left' : 'right';
+    tx([q2[0], q2[1] - 6], name, col, al); tx([q2[0], q2[1] + 6], val, '#fff', al, 1);
+  };
+  var T0 = Math.min(m.CT, m.ET), so = h * 1.1, so2 = h * 1.24, side = m.kind === 'minus' ? 1 : -1, thin = 0, rd = [];
+  if (vw === 'et') { thin = M.t - (m.kind === 'minus' ? m.ET : m.CT); if (!(thin > 0)) thin = 0; }
+  // tool (halaman Tools): F1 cekung di depan lensa, F2 cembung di belakang lensa. Celah dan tebalnya dalam mm, ikut berputar bersama lensa.
+  var yTopT = 0, yBotT = 0, TLg = h * 0.06, TLk = h * 0.18;
+  if (vw === 'ft') {
+    yTopT = Math.min.apply(null, ss.map(yf)) - TLg - TLk;
+    yBotT = Math.max.apply(null, ss.map(yb)) + TLg + TLk;
+    var tool1 = ss.map(function (s) { return P(s, yf(s) - TLg); }).concat([P(h, yTopT), P(-h, yTopT)]);
+    var tool2 = ss.map(function (s) { return P(s, yb(s) + TLg); }).concat([P(h, yBotT), P(-h, yBotT)]);
+    [tool1, tool2].forEach(function (tp) { fil(tp, 'rgba(213,224,232,.16)'); path(tp); c.closePath(); c.setLineDash([4, 3]); c.strokeStyle = 'rgba(213,224,232,.75)'; c.lineWidth = 1.2; c.lineJoin = 'round'; c.stroke(); c.setLineDash([]); });
+  }
+  fil(F.concat(rev(B)), 'rgba(98,195,222,.16)');                  // potongan lensa pada meridian terpilih
+  var sh = null;
+  if (vw === 'sag') { sh = ss.map(function (s) { return P(s, yf(s) + T0); }); fil(sh.concat(rev(B)), 'rgba(220,155,233,.34)'); }
+  if (thin > 0) {                                                  // blank: tebal yang dibuang, dari sisi belakang
+    var rm = M.rem, bands = rm ? [[rm.polishing[mi], .85], [rm.finning[mi], .6], [rm.grinding[mi], .35]] : [[thin, .4]], d0 = 0;
+    bands.forEach(function (bd) { fil(shiftB(d0).concat(rev(shiftB(d0 + bd[0]))), 'rgba(242,161,92,' + bd[1] + ')'); d0 += bd[0]; });
+    stk(shiftB(thin), OR, 1.4, [4, 3]);
+  }
+  stk(F, CY, (vw === 'bc' || vw === 'ft') ? 3.4 : 2.2); stk(B, OR, vw === 'ft' ? 3.4 : 2.2, vw === 'bc' ? [5, 3] : null);
+  stk([F[0], B[0]], 'rgba(213,224,232,.7)', 1.3); stk([F[N], B[N]], 'rgba(213,224,232,.7)', 1.3);
+  stk([P(0, (vw === 'ft' ? yTopT : 0) - h * 0.1), P(0, (vw === 'ft' ? yBotT : Math.max(yb(0), yb(h)) + thin) + h * 0.1)], 'rgba(255,255,255,.6)', 1, [8, 3, 2, 3]);   // sumbu optik
+  if (M.two) rd.push(M.noAxis ? (mi === 0 ? LT('m_sph') : LT('m_sc')) : LT('meridian') + ' ' + m.ax + '°');
+  if (vw === 'sag') {
+    stk(sh, MG, 1.4, [4, 3]);
+    if (m.sag > 0) { if (m.kind === 'minus') dim(h, yf(h) + T0, h, yb(h), so, 's', fv(m.sag), MG); else dim(0, T0, 0, yb(0), -so, 's', fv(m.sag), MG); }
+    rd.push('s ' + fv(m.sag));
+  } else if (vw === 'bc') {
+    var bct = 'BC ' + Lx(sgn(M.BC)) + ' D' + (M.BC !== 0 ? ' · r ' + Lx((1000 * (M.n - 1) / Math.abs(M.BC)).toFixed(1)) + ' mm' : '');
+    tx(P(0, -h * 0.16), bct, CY, 'center', 1);
+    if (Math.abs(M.s1) > 0.005) dim(0, 0, h, yf(h), so, 's1', fv(Math.abs(M.s1)), CY);
+    rd.push(bct);
+  } else if (vw === 'ft') {
+    var rr = function (d) { return d === 0 ? '' : 'r ' + Lx((1000 * (M.n - 1) / Math.abs(d)).toFixed(1)) + ' mm'; };
+    var f1t = 'F1 ' + Lx(sgn(M.BC)) + ' D', f2t = 'F2 ' + Lx(sgn(m.F2)) + ' D';
+    var yA = (yTopT + yf(0) - TLg) / 2, yB = (yBotT + yb(0) + TLg) / 2;
+    // Label di dalam tool. Jarak antar baris dalam piksel layar (bukan mm), supaya tetap terbaca saat lensa diputar.
+    // Bila bidang potong hampir sejajar arah pandang (tampak depan atau belakang), F1 dan F2 berimpit di layar: label disembunyikan, nilainya tetap di pojok kiri atas.
+    var qA = P(0, yA), qB = P(0, yB), gap2 = Math.hypot(qA[0] - qB[0], qA[1] - qB[1]);
+    var at = function (q, dy) { return [q[0], q[1] + dy]; };
+    if (gap2 >= 34) {
+      var two = gap2 >= 52;
+      tx(at(qA, two ? -6 : 0), f1t, CY, 'center', 1); tx(at(qB, two ? -6 : 0), f2t, OR, 'center', 1);
+      if (two) { if (rr(M.BC)) tx(at(qA, 7), rr(M.BC), DM, 'center'); if (rr(m.F2)) tx(at(qB, 7), rr(m.F2), DM, 'center'); }
+    }
+    rd.push(f1t + (rr(M.BC) ? ' · ' + rr(M.BC) : ''), f2t + (rr(m.F2) ? ' · ' + rr(m.F2) : ''));
+  } else {
+    dim(0, 0, 0, C3, -so, 'CT', fv(m.CT), DM); dim(h, yf(h), h, yb(h), so, 'ET', fv(m.ET), DM);
+    rd.push('CT ' + fv(m.CT), 'ET ' + fv(m.ET));
+    if (thin > 0) {
+      var sa = m.kind === 'minus' ? h : 0;
+      dim(sa, yb(sa), sa, yb(sa) + thin, side * so2, LT('dibuang'), fv(thin), OR);
+      rd.push(LT('dibuang') + ' ' + fv(thin), 't ' + Lx(String(M.t)) + ' mm');
+    }
+  }
+  rd.forEach(function (t, k) { tx([8, 12 + k * 13], t, DM, 'left', 1); });
+}
+
+/* ---------- Instance halaman ---------- */
+var LVI = {};
+var LVV = { Q: null, zoom: 1, phase: 0, owner: null, raf: 0, last: 0, ema: 16, scale: 1, slow: 0, good: 0, upNeed: 90, drag: null, pausedUntil: 0, pts: {}, pinch0: 0, zoom0: 1, bound: false };
+function lvDark() { var t = document.documentElement.getAttribute('data-theme'); return t === 'dark' || (t !== 'light' && !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)); }
+
+// Petunjuk "Seret ke segala arah…": hilang setelah gambar 3D disentuh atau diklik, muncul lagi hanya saat pindah mode 2D/3D.
+function lvHint(el, show) { var h = el && el.querySelector ? el.querySelector('.lv-hint') : null; if (h) h.classList.toggle('off', !show); }
+function lv3Bind() {
+  if (LVV.bound) return; LVV.bound = true;
+  var c = LV3.canvas;
+  c.className = 'lv-canvas'; c.tabIndex = 0; c.setAttribute('role', 'img');
+  c.addEventListener('webglcontextlost', function (e) { e.preventDefault(); LV3.lost = true; });
+  c.addEventListener('webglcontextrestored', function () { LV3.lost = false; LV3.gl = null; LVV.bound = true; if (lv3Init()) lv3Kick(); });
+  c.addEventListener('pointerdown', function (e) {
+    lvHint(c.closest ? c.closest('.lv-3d') : null, false);   // pengguna sudah menyentuh gambar: petunjuk disembunyikan
+    LVV.pts[e.pointerId] = { x: e.clientX, y: e.clientY };
+    try { c.setPointerCapture(e.pointerId); } catch (er) {}
+    var ids = Object.keys(LVV.pts);
+    if (ids.length === 2) { var a = LVV.pts[ids[0]], b = LVV.pts[ids[1]]; LVV.pinch0 = Math.hypot(a.x - b.x, a.y - b.y); LVV.zoom0 = LVV.zoom; }
+    LVV.drag = true; lvFoldSpin(); lv3Kick();
+  });
+  c.addEventListener('pointermove', function (e) {
+    var p = LVV.pts[e.pointerId]; if (!p) return;
+    var ids = Object.keys(LVV.pts);
+    if (ids.length >= 2) {
+      var a = LVV.pts[ids[0]], b = LVV.pts[ids[1]];
+      if (e.pointerId == ids[0]) a = { x: e.clientX, y: e.clientY }; else b = { x: e.clientX, y: e.clientY };
+      var d = Math.hypot(a.x - b.x, a.y - b.y);
+      if (LVV.pinch0 > 0) LVV.zoom = Math.min(2.6, Math.max(0.6, LVV.zoom0 * d / LVV.pinch0));
+    } else {
+      lvTurn((e.clientX - p.x) * 0.009, (e.clientY - p.y) * 0.009);   // kanan-kiri dan atas-bawah, tanpa batas sudut
+    }
+    p.x = e.clientX; p.y = e.clientY; lv3Kick();
+  });
+  var up = function (e) {
+    delete LVV.pts[e.pointerId];
+    if (!Object.keys(LVV.pts).length) { LVV.drag = false; LVV.pausedUntil = performance.now() + 2500; }
+    lv3Kick();
+  };
+  c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+  c.addEventListener('wheel', function (e) { if (!e.ctrlKey && !e.metaKey) return; e.preventDefault(); LVV.zoom = Math.min(2.6, Math.max(0.6, LVV.zoom * Math.exp(-e.deltaY * 0.01))); lv3Kick(); }, { passive: false });
+  c.addEventListener('dblclick', function () { lvView(-0.6, 0.18); });
+  c.addEventListener('keydown', function (e) {
+    var k = e.key, used = true;
+    if (k === 'ArrowLeft') lvTurn(-0.12, 0); else if (k === 'ArrowRight') lvTurn(0.12, 0);
+    else if (k === 'ArrowUp') lvTurn(0, -0.12); else if (k === 'ArrowDown') lvTurn(0, 0.12);
+    else if (k === '+' || k === '=') LVV.zoom = Math.min(2.6, LVV.zoom * 1.1); else if (k === '-') LVV.zoom = Math.max(0.6, LVV.zoom / 1.1);
+    else used = false;
+    if (used) { e.preventDefault(); lvFoldSpin(); LVV.pausedUntil = performance.now() + 2500; lv3Kick(); }
+  });
+}
+// goyangan otomatis dilebur ke sudut dasar supaya tidak melompat saat berhenti atau digeser
+// Loop gambar berhenti sendiri bila tidak ada yang perlu digerakkan (jeda setelah geser, gambar di luar layar, tab tersembunyi).
+// Tanpa pembangun ulang, putar otomatis tidak pernah lanjut walau saklarnya masih nyala. Jadi: bangunkan loop saat jeda selesai dan saat halaman tampil lagi.
+function lv3Wake(ms) {
+  clearTimeout(LVV.wake);
+  LVV.wake = setTimeout(function () { LVV.wake = 0; LVV.last = 0; lv3Kick(); }, Math.max(30, Math.min(3000, ms + 30)));
+}
+document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') { LVV.last = 0; lv3Kick(); } });
+// Orientasi lensa = matriks rotasi 3x3 (baris demi baris), jadi bisa diputar ke segala arah tanpa terkunci di sudut tertentu.
+// Seret mendatar memutar mengelilingi sumbu tegak layar, seret tegak mengelilingi sumbu mendatar layar. Goyangan otomatis memutar di sumbu tegak lensa sendiri.
+function lvMul(a, b) {
+  var r = new Array(9);
+  for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) r[i * 3 + j] = a[i * 3] * b[j] + a[i * 3 + 1] * b[3 + j] + a[i * 3 + 2] * b[6 + j];
+  return r;
+}
+function lvRx(a) { var c = Math.cos(a), s = Math.sin(a); return [1, 0, 0, 0, c, -s, 0, s, c]; }
+function lvRy(a) { var c = Math.cos(a), s = Math.sin(a); return [c, 0, s, 0, 1, 0, -s, 0, c]; }
+function lvOrtho(m) {   // koreksi pembulatan supaya matriks tetap rotasi murni setelah banyak putaran kecil
+  var n = Math.hypot(m[0], m[1], m[2]), a = [m[0] / n, m[1] / n, m[2] / n];
+  var d = a[0] * m[3] + a[1] * m[4] + a[2] * m[5], b = [m[3] - d * a[0], m[4] - d * a[1], m[5] - d * a[2]];
+  n = Math.hypot(b[0], b[1], b[2]); b = [b[0] / n, b[1] / n, b[2] / n];
+  return [a[0], a[1], a[2], b[0], b[1], b[2], a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+}
+function lvTurn(dyaw, dpitch) { LVV.pose = ''; LVV.Q = lvOrtho(lvMul(lvMul(lvRx(dpitch), lvRy(dyaw)), LVV.Q)); }
+function lvPose(yaw, pitch) { LVV.Q = lvMul(lvRx(pitch), lvRy(yaw)); }
+function lvFoldSpin() { LVV.Q = lvMul(LVV.Q, lvRy(LVV.phase)); LVV.phase = 0; }   // putar otomatis = satu putaran penuh (360°) mengelilingi sumbu tegak lensa
+LVV.amp = 0.75;
+lvPose(-0.6, 0.18);   // sudut awal: miring
+function lvView(yaw, pitch) { LVV.pose = ''; lvPose(yaw, pitch); LVV.phase = 0; LVV.zoom = 1; LVV.pausedUntil = performance.now() + 1500; lv3Kick(); }
+
+// Tampak samping: lensa dihadapkan tegak lurus pada bidang meridian terpilih, jadi profilnya terbaca seperti gambar 2D (depan di atas, CT tegak).
+function lvSide(I) {
+  var M = I.M, m = M && M.mer[Math.min(I.mi, M.mer.length - 1)], t = m ? (m.ax || 0) * Math.PI / 180 : 0, c = Math.cos(t), s = Math.sin(t);
+  LVV.Q = [c, s, 0, 0, 0, 1, s, -c, 0]; LVV.phase = 0; LVV.zoom = 1; LVV.pose = 'side'; LVV.pausedUntil = performance.now() + 1500; lv3Kick();
+}
+function lv3Kick() { if (!LVV.raf) LVV.raf = requestAnimationFrame(lv3Frame); }
+function lv3Frame(now) {
+  LVV.raf = 0;
+  var I = LVV.owner;
+  if (!I || LVP.mode !== '3d' || !I.M || !I.visible() || !LV3.gl || LV3.lost) return;
+  var first = !LVV.last;   // frame pertama setelah berhenti: langsung digambar. Tanpa ini dt selalu 0 dan gambar tidak pernah muncul.
+  var dt = first ? 0 : now - LVV.last;
+  var wantSpin = LVP.spin && aniOK() && !LVV.drag && I.inView && document.visibilityState === 'visible';
+  var spinning = wantSpin && now > LVV.pausedUntil;
+  if (wantSpin && !spinning) lv3Wake(LVV.pausedUntil - now);   // masih dalam jeda: lanjutkan putar otomatis begitu jeda habis
+  var cont = spinning || LVV.drag || !!I.tw;
+  var QP = LV_Q[LVP.q] || LV_Q.high;
+  if (cont && !first && dt < QP.gap) { lv3Kick(); return; }   // jarak minimum antar gambar sesuai pilihan grafik, hemat baterai
+  dt = Math.min(64, dt); LVV.last = now;
+  if (spinning) LVV.phase = (LVV.phase + dt * 0.0008) % (2 * Math.PI);   // sekitar 8 detik per putaran
+  // Resolusi menyesuaikan kecepatan perangkat saat animasi berjalan, dalam batas yang ditentukan pilihan grafik.
+  // Turun bila gambar terus terlambat. Naik lagi bila perangkat sudah mengejar selama beberapa detik. Tiap kali naik gagal (turun lagi), percobaan berikutnya
+  // ditunda dua kali lebih lama, jadi tidak bolak-balik. Dulu skala hanya bisa turun: satu kali tersendat membuat gambar buram selamanya.
+  // Perangkat yang tetap lambat di resolusi terendah: putar otomatis dimatikan.
+  if (cont) {
+    LVV.ema = LVV.ema * 0.9 + Math.min(dt, 200) * 0.1;
+    if (LVV.ema > Math.max(45, QP.gap * 1.5) && LVV.scale > QP.smin) { LVV.scale = Math.max(QP.smin, LVV.scale * 0.85); LVV.ema = QP.gap; LVV.good = 0; LVV.upNeed = Math.min(900, LVV.upNeed * 2); }
+    else {
+      if (!first) { if (dt <= QP.gap * 1.4) LVV.good++; else LVV.good = 0; }
+      if (LVV.scale < 1 && LVV.good >= LVV.upNeed) { LVV.scale = Math.min(1, LVV.scale * 1.1); LVV.good = 0; LVV.upNeed = Math.max(90, Math.round(LVV.upNeed / 2)); }
+    }
+    if (LVV.scale > 1) LVV.scale = 1; if (LVV.scale < QP.smin) LVV.scale = QP.smin;
+    if (spinning && LVV.scale <= QP.smin + 0.01 && LVV.ema > 90) { if (++LVV.slow > 12) { LVV.slow = 0; LVP.spin = false; lvFoldSpin(); LVP_apply(); return; } } else LVV.slow = 0;
+  } else LVV.last = 0;
+  var scale = cont ? LVV.scale : 1;
+  var w = I.gl.clientWidth || 320, hgt = I.gl.clientHeight || Math.round(w * 0.8);
+  var dpr = Math.min(window.devicePixelRatio || 1, QP.dpr) * scale;
+  var pw = Math.max(64, Math.min(1500, Math.round(w * dpr))), ph = Math.max(64, Math.round(pw * hgt / w));
+  var c = LV3.canvas;
+  if (c.width !== pw || c.height !== ph) { c.width = pw; c.height = ph; }
+  var Rm = lvMul(LVV.Q, lvRy(LVV.phase));
+  try { lv3Draw(lvP3(I.Mv || I.M), { rot: Rm, zoom: LVV.zoom, ar: LVP.ar, dark: lvDark(), aa: cont ? QP.aaMove : QP.aaStill, marks: true }); }
+  catch (err) { if (window.console && !LVV.errLogged) { LVV.errLogged = 1; console.error(err); } }   // satu gambar yang gagal tidak boleh mematikan loop putar
+  try { lvOv(I, I.Mv || I.M, Rm, LVV.zoom); } catch (err2) { if (window.console && !LVV.errLogged) { LVV.errLogged = 1; console.error(err2); } }
+  if (cont) lv3Kick();
+}
+function lv3Attach(I) {
+  if (!lv3Init()) return false;
+  lv3Bind();
+  if (LV3.canvas.parentNode !== I.gl) I.gl.appendChild(LV3.canvas);
+  LVV.owner = I; return true;
+}
+
+function lvMake(kind, hostSel) {
+  var host = $(hostSel); if (!host) return null;
+  var I = { kind: kind, host: host, M: null, Mv: null, mi: 0, tw: 0, inView: true, dirty: true, eye: 'od', eyeUsed: null, models: null };
+  host.classList.add('lv');
+  host.innerHTML =
+    '<div class="eye-h"><h2>' + LT('judul') + '</h2>' +
+      '<div class="lv-sg lv-seg" role="group" aria-label="' + LT('jenis') + '"><button type="button" data-lvm="2d">2D</button><button type="button" data-lvm="3d">3D</button></div></div>' +
+    '<div class="lv-bar" hidden>' +
+      '<div class="lv-sg lv-eyes" role="group" aria-label="' + LT('mata') + '"><button type="button" data-eye="od">OD</button><button type="button" data-eye="os">OS</button></div>' +
+      '<div class="lv-sg lv-mer" role="group" aria-label="' + LT('meridian') + '" hidden></div>' +
+    '</div>' +
+    '<div class="lv-sg lv-views" role="group" aria-label="' + LT('tampilan') + '" hidden>' +
+      LV_VIEWS.map(function (v) { return '<button type="button" data-vw="' + v + '">' + LT('v_' + v) + '</button>'; }).join('') + '</div>' +
+    '<div class="lv-sg lv-views lv-views3" role="group" aria-label="' + LT('lihat3d') + '" hidden>' +
+      LV_VIEWS.map(function (v) { return '<button type="button" data-v3="' + v + '">' + LT('v_' + v) + '</button>'; }).join('') + '</div>' +
+    '<div class="lv-stage">' +
+      '<div class="lv-2d" role="img"></div>' +
+      '<div class="lv-3d" hidden><div class="lv-gl"></div><p class="lv-hint">' + LT('bantuan3d') + '</p></div>' +
+      '<p class="lv-empty hint" hidden>' + LT('kosong') + '</p>' +
+    '</div>' +
+    '<div class="lv-ctl" data-c="3d" hidden>' +
+      '<button type="button" class="lv-sw" data-act="spin" aria-pressed="false"><i aria-hidden="true"></i><span>' + LT('putar') + '</span></button>' +
+      '<button type="button" class="lv-sw" data-act="ar" aria-pressed="false"><i aria-hidden="true"></i><span>' + LT('ar') + '</span></button>' +
+      '<div class="lv-sg lv-cam" role="group" aria-label="' + LT('sudut') + '">' +
+        '<button type="button" data-view="0,0">' + LT('depan') + '</button>' +
+        '<button type="button" data-view="3.14159,0">' + LT('belakang') + '</button>' +
+        '<button type="button" data-view="side">' + LT('samping') + '</button>' +
+      '</div>' +
+      '<div class="lv-qrow"><span class="lv-ql">' + LT('grafik') + '</span>' +
+        '<div class="lv-sg lv-q" role="group" aria-label="' + LT('grafik_aria') + '">' +
+          ['low', 'mid', 'high'].map(function (q) { return '<button type="button" data-q="' + q + '">' + LT('q_' + q) + '</button>'; }).join('') + '</div>' +
+        '<p class="lv-qh hint"></p></div>' +
+    '</div>' +
+    '<div class="lv-leg"></div><p class="lv-note hint"></p>';
+  var st = $('.lv-stage', host), d2 = $('.lv-2d', host), d3 = $('.lv-3d', host), merEl = $('.lv-mer', host), empty = $('.lv-empty', host), barEl = $('.lv-bar', host), vwEl = $('.lv-views', host), vw3El = $('.lv-views3', host);
+  I.gl = $('.lv-gl', host); I.ov = document.createElement('canvas'); I.ov.className = 'lv-ov'; I.ov.setAttribute('aria-hidden', 'true'); I.gl.appendChild(I.ov); I.stage = st;
+  I.visible = function () { return st.offsetParent !== null && st.clientWidth > 0; };
+
+  function syncUI() {
+    $$('[data-lvm]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.lvm === LVP.mode ? 'true' : 'false'); });
+    $('[data-act="spin"]', host).setAttribute('aria-pressed', LVP.spin ? 'true' : 'false');
+    $('[data-act="ar"]', host).setAttribute('aria-pressed', LVP.ar ? 'true' : 'false');
+    var has = !!I.M;
+    $('[data-c="3d"]', host).hidden = LVP.mode !== '3d' || !has;
+    $$('[data-eye]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.eye === I.eyeUsed ? 'true' : 'false'); b.disabled = !(I.models && I.models[b.dataset.eye]); });
+    $$('[data-vw]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.vw === LVP.view ? 'true' : 'false'); });
+    $$('[data-v3]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v3 === LVP.v3 ? 'true' : 'false'); });
+    $$('[data-q]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.q === LVP.q ? 'true' : 'false'); });
+    $('.lv-qh', host).textContent = LT('qh_' + LVP.q);
+    host.setAttribute('data-m', LVP.mode);
+    barEl.hidden = !has; vwEl.hidden = !has || LVP.mode !== '2d'; vw3El.hidden = !has || LVP.mode !== '3d';
+    host.setAttribute('data-eye', has && I.eyeUsed ? I.eyeUsed : '');
+    merEl.hidden = !(has && I.M.two);   // meridian bisa dipilih di 2D dan 3D
+    d2.hidden = LVP.mode !== '2d' || !has; d3.hidden = LVP.mode !== '3d' || !has; empty.hidden = has;
+    $('.lv-leg', host).hidden = !has || (LVP.mode === '3d' && LVP.v3 === 'off'); $('.lv-note', host).hidden = !has;
+  }
+  function paint() {
+    syncUI();
+    var M = I.Mv || I.M; if (!M) return;
+    if (!I.visible()) { I.dirty = true; return; }
+    I.dirty = false;
+    var W = st.clientWidth;
+    if (LVP.mode === '2d') {
+      var H = Math.round(Math.min(380, Math.max(240, W * 0.6)));
+      var r = lv2d(M, Math.min(I.mi, M.mer.length - 1), W, H);
+      d2.innerHTML = r.svg;
+      d2.setAttribute('aria-label', I.label || '');
+    } else {
+      var ok = lv3Attach(I);
+      if (!ok) { I.gl.innerHTML = ''; var msg = document.createElement('p'); msg.className = 'lv-nogl hint'; msg.textContent = LT('nogl'); I.gl.appendChild(msg); return; }
+      LV3.canvas.setAttribute('aria-label', I.label || '');
+      lv3Kick();
+    }
+  }
+  I.paint = paint;
+  // Model yang dipakai: mata terpilih (bila mata itu belum terisi, mata yang satunya). Gambar 3D selalu memakai model lengkap (Ketebalan), jadi tidak berubah saat jenis gambar 2D diganti.
+  I.choose = function () {
+    var ms = I.models, k = I.eye;
+    if (!ms) { I.eyeUsed = null; return null; }
+    if (!ms[k]) k = ms.od ? 'od' : (ms.os ? 'os' : null);
+    I.eyeUsed = k;
+    return k ? ms[k][LVP.mode === '3d' ? 'et' : LVP.view] : null;
+  };
+  I.setModels = function (ms) { I.models = ms; I.set(I.choose()); };
+  I.refresh = function () {
+    I.tw = 0;
+    if (I.models) { I.M = I.choose(); if (I.M && I.mi > I.M.mer.length - 1) I.mi = 0; }
+    I.Mv = I.M; tabs(); teks(); paint();
+  };
+  function teks() {
+    var M = I.M; if (!M) return;
+    var m = M.mer[Math.min(I.mi, M.mer.length - 1)];
+    var leg = $('.lv-leg', host), note = $('.lv-note', host), k = M.kind, lg = [];
+    var kv = LVP.mode === '3d' ? LVP.v3 : k;
+    if (kv === 'sag') lg = [['f', LT('l_depan')], ['b', LT('l_belakang')], ['w', LT('l_sagita')]];
+    else if (kv === 'bc') lg = [['f', LT('l_bc')], ['d', LT('l_belakang')]];
+    else if (kv === 'ft') lg = [['f', LT('l_f1')], ['b', LT('l_f2')], ['t', LT('l_tool')]];
+    else lg = [['f', LT('l_depan')], ['b', LT('l_belakang')]].concat(M.rem ? [['gr', LT('l_grinding')], ['fn', LT('l_finning')], ['pl', LT('l_polishing')]] : [['bl', LT('l_blank')]]);
+    leg.innerHTML = lg.map(function (x) { return '<span><i class="lg-' + x[0] + '"></i>' + x[1] + '</span>'; }).join('');
+    var tx = LVP.mode === '3d' ? (LVP.v3 !== 'off' ? LT('n_' + LVP.v3) + ' ' : '') + LT('n_3d') : LT('n_' + k);
+    if (LVP.mode === '3d' && M.two && !M.noAxis) tx += ' ' + LT('n_3d_cyl');
+    note.textContent = tx;
+    var sp = Lx(sgn(M.mer[0].P)) + (M.two ? ' / ' + Lx(sgn(M.mer[1].P)) : '');
+    I.label = LT('judul') + (I.eyeUsed ? ' ' + I.eyeUsed.toUpperCase() : '') + ': ' + sp + ' D, Ø ' + Lx(trim(M.dia)) + ' mm.';
+  }
+  function tabs() {
+    var M = I.M;
+    if (!M || !M.two) { merEl.innerHTML = ''; return; }
+    merEl.innerHTML = M.mer.map(function (m, i) {
+      var lb = M.noAxis ? (i === 0 ? LT('m_sph') : LT('m_sc')) : m.ax + '°' + (M.mixed ? ' ' + m.kind : '');
+      return '<button type="button" data-mi="' + i + '" aria-pressed="' + (i === I.mi ? 'true' : 'false') + '">' + lb + '</button>';
+    }).join('');
+  }
+  I.set = function (M, jump) {   // jump: ganti mata atau jenis gambar, tanpa animasi peralihan
+    var prev = I.M; I.M = M;
+    if (!M) { I.Mv = null; paint(); return; }
+    if (I.mi > M.mer.length - 1) I.mi = 0;
+    tabs(); teks();
+    var same = prev && prev.kind === M.kind && prev.mer.length === M.mer.length && prev.circ === M.circ;
+    if (same && !jump && aniOK() && I.visible() && !(prev.dia === M.dia && prev.kf === M.kf && prev.t === M.t && JSON.stringify(prev.mer) === JSON.stringify(M.mer))) {
+      var from = I.Mv || prev, t0 = performance.now(), dur = 240;
+      I.tw = (I.tw || 0) + 1; var id = I.tw;
+      (function step(now) {
+        if (id !== I.tw) return;
+        var u = Math.min(1, ((now || performance.now()) - t0) / dur), e = 1 - Math.pow(1 - u, 3);
+        I.Mv = u >= 1 ? M : lvLerp(from, M, e);
+        if (u >= 1) I.tw = 0;
+        paint();
+        if (u < 1) requestAnimationFrame(step);
+      })(t0);
+    } else { I.tw = 0; I.Mv = M; paint(); }
+  };
+  host.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button') : null; if (!b || !host.contains(b)) return;
+    if (b.dataset.lvm) { if (LVP.mode !== b.dataset.lvm) lvHint(host, true); LVP.mode = b.dataset.lvm; lvSaveP(); LVP_apply(); }   // pindah mode: petunjuk kembali
+    else if (b.dataset.mi !== undefined) { I.mi = +b.dataset.mi; $$('[data-mi]', host).forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); }); I.tw = 0; I.Mv = I.M; teks(); paint(); if (LVP.mode === '3d' && LVV.pose === 'side' && !LVP.spin) lvSide(I); }
+    else if (b.dataset.v3) { LVP.v3 = LVP.v3 === b.dataset.v3 ? 'off' : b.dataset.v3; lvSaveP(); LVP_apply(); }   // klik tombol yang sama lagi = gambar polos
+    else if (b.dataset.q) { lvSetQ(b.dataset.q); }
+    else if (b.dataset.act === 'spin') { LVP.spin = !LVP.spin; if (LVP.spin) { LVV.pausedUntil = 0; LVV.pose = ''; } else lvFoldSpin(); lvSaveP(); LVP_apply(); }
+    else if (b.dataset.act === 'ar') { LVP.ar = !LVP.ar; lvSaveP(); LVP_apply(); }
+    else if (b.dataset.eye) { I.eye = b.dataset.eye; I.set(I.choose(), true); }
+    else if (b.dataset.vw) { LVP.view = b.dataset.vw; lvSaveP(); I.set(I.choose(), true); }
+    else if (b.dataset.view) { var v = b.dataset.view.split(','); LVP.spin = false; lvSaveP(); lvFoldSpin(); if (b.dataset.view === 'side') lvSide(I); else lvView(+v[0], +v[1]); LVP_apply(); }
+  });
+  if ('ResizeObserver' in window) new ResizeObserver(function () { if (I.M && I.visible()) paint(); }).observe(st);
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { I.inView = es[es.length - 1].isIntersecting; if (I.inView && LVP.mode === '3d') { LVV.last = 0; lv3Kick(); } }).observe(st);
+  syncUI();
+  return I;
+}
+function lvSetQ(q) { if (!LV_Q[q]) return; LVP.q = q; LVV.scale = 1; LVV.ema = LV_Q[q].gap; LVV.good = 0; LVV.upNeed = 90; LVV.slow = 0; LVV.last = 0; lvSaveP(); LVP_apply(); }
+function LVP_apply() { Object.keys(LVI).forEach(function (k) { LVI[k].refresh(); }); }
+
+// Empat model gambar untuk satu mata, semuanya dari hasil hitung kartu kerja (ev.r) dan memakai lensa yang sama persis: tebal, sagita, dan BC sama dengan tabel.
+// Lengkung depan = F1 (BC) dan lengkung belakang = F2, keduanya dengan indeks bias isian: radius = 1000 × (n − 1) ÷ D.
+function lvEyeModels(e) {
+  var r = e.r, c = classifyLens(e.sph, e.cyl), axes = [e.ax, ((e.ax + 89) % 180) + 1];
+  var mk = function (kind, extra) {
+    var o = { kind: kind, dia: r.dia, n: e.n, BC: r.BC, P: c.P, kinds: c.kinds, sag: r.sag, axes: axes, thick: e.thick };
+    for (var k in extra) o[k] = extra[k];
+    return lvBuild(o);
+  };
+  return {
+    sag: mk('sag'), bc: mk('bc'), ft: mk('ft'),
+    et: mk('et', { t: r.t, rem: { grinding: r.grinding, finning: r.finning, polishing: r.polishing } })
+  };
+}
+// Dipanggil dari update(): ev = hasil hitung OD dan OS di kartu kerja
+function lvUpdateAll(ev) {
+  if (!LV_READY || !LVI.kk) return;
+  try {
+    var ms = {};
+    EYES.forEach(function (k) { ms[k] = ev[k].state === 'ok' ? lvEyeModels(ev[k]) : null; });
+    LVI.kk.setModels(ms);
+  } catch (err) { if (window.console) console.error(err); }   // gambar yang gagal tidak boleh menghentikan hitungan
+}
+function lvInit() {
+  try {
+    LVI.kk = lvMake('kk', '#kk-viz');
+    if (!LVI.kk) delete LVI.kk;
+    LV_READY = true;
+    if (window.MutationObserver) new MutationObserver(function () { Object.keys(LVI).forEach(function (k) { if (LVI[k].M && LVP.mode === '3d') LVI[k].paint(); }); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    if (window.matchMedia) { var mq = matchMedia('(prefers-color-scheme: dark)'); var fn = function () { Object.keys(LVI).forEach(function (k) { if (LVI[k].M && LVP.mode === '3d') LVI[k].paint(); }); }; if (mq.addEventListener) mq.addEventListener('change', fn); }
+  } catch (err) { LV_READY = false; if (window.console) console.error(err); }
+}
+lvInit();
+
+
 /* ---------- Perbarui layar ---------- */
 // Label jenis lensa (plus, minus, campuran) di pojok kanan atas kartu input. id = awalan isian: od, os, sag, bc.
 function setTypePill(id, ty) {
@@ -4290,146 +5345,6 @@ function setTypePill(id, ty) {
       ('<span><span class="lt">' + _T('js.lensa_2') + ' ' + '</span>') + (ty === 'minus' ? 'minus' : ty === 'plus' ? 'plus' : ty === 'mixed' ? 'campuran' : '') + '</span>';
   }
 }
-/* ---------- Gambar penampang lensa (Sagita, Base Curve, Tools, Ketebalan Lensa) ----------
-   Semua gambar dihitung dari hasil evalSag / evalBC / evalFT / evalET, jadi ikut berubah saat isian atau transposisi berubah. */
-var LF = { W: 380, XC: 232, VE: 2 };   // lebar gambar, titik tengah lensa, dan pembesaran tinggi standar
-function lfN(x) { return x.toFixed(1); }
-function lfVe(mm, k, maxPx) { return mm > 0 ? Math.min(LF.VE, Math.max(0.2, maxPx / (mm * k))) : LF.VE; }
-function lfNote(ve) { return Math.abs(ve - 1) < 0.05 ? '' : _T('gambar.skala_tinggi').replace('{x}', ve.toFixed(1)); }
-// Profil lengkung: tinggi (px) tiap titik, 0 di tepi dan s di puncak. r (mm) = lingkaran, null = parabola (rumus approx).
-function lfProf(c, s, r, k, ve) {
-  var pts = [], i, x, h;
-  for (i = 0; i <= 36; i++) {
-    x = -c + 2 * c * i / 36;
-    h = r ? s - (r - Math.sqrt(Math.max(0, r * r - x * x))) : s * (1 - (x / c) * (x / c));
-    pts.push([x * k, Math.max(0, h) * k * ve]);
-  }
-  return pts;
-}
-function lfPath(pts, xc, y0, dir) {   // dir -1: melengkung ke atas (cembung), 1: ke bawah (cekung)
-  return pts.map(function (p, i) { return (i ? 'L' : 'M') + lfN(xc + p[0]) + ' ' + lfN(y0 + dir * p[1]); }).join('');
-}
-function lfDimV(x, y1, y2, col) {
-  return '<path class="dm" style="stroke:' + col + '" d="M' + lfN(x) + ' ' + lfN(y1) + 'V' + lfN(y2) + 'M' + lfN(x - 3) + ' ' + lfN(y1) + 'h6M' + lfN(x - 3) + ' ' + lfN(y2) + 'h6"/>';
-}
-function lfCard(svg, note) {
-  return '<section class="card lf-card"><div class="eye-h"><h2>' + _T('gambar.judul') + '</h2></div>' + svg + (note ? '<p class="hint lf-note">' + note + '</p>' : '') + '</section>';
-}
-function lfSvg(h, alt, body) { return '<svg class="lf" viewBox="0 0 ' + LF.W + ' ' + Math.ceil(h) + '" role="img" aria-label="' + alt + '">' + body + '</svg>'; }
-function lfRender(id, html) {
-  var el = $('#' + id + '-fig'); if (!el) return;
-  el.hidden = !html; el.innerHTML = html ? L(html) : '';
-}
-
-// Sagita: potongan lengkung dengan garis diameter (Ø) dan tinggi lengkung (s) tiap meridian.
-function sagFig(ev) {
-  if (ev.state !== 'ok') return '';
-  var k = Math.min(3.4, 260 / ev.dia), c = ev.dia / 2, xc = LF.XC, exact = ev.mode === 'exact';
-  var smax = Math.max.apply(null, ev.sag), ve = lfVe(smax, k, ev.two ? 56 : 80), area = smax * k * ve;
-  var axes = [ev.ax, ev.ax2], col = ['var(--ray)', 'var(--ray2)'], bh = 40 + area + 40, g = '';
-  ev.P.forEach(function (p, i) {
-    var s = ev.sag[i], r = (exact && ev.R[i]) ? ev.R[i] : null, hp = s * k * ve, cc = ev.two ? col[i] : 'var(--accent)';
-    var y0 = i * bh, yA = y0 + 40, plus = p > 0, cy = plus ? yA + area : yA, vy = plus ? cy - hp : cy + hp;
-    var xl = xc - c * k, xr = xc + c * k, dy = yA + area + 16, dx = xl - 14, pts = lfProf(c, s, r, k, ve), d = lfPath(pts, xc, cy, plus ? -1 : 1);
-    g += '<text class="tx" x="8" y="' + (y0 + 14) + '">' + (ev.two ? _T('gambar.meridian') + ' ' + (i + 1) + ' (' + axes[i] + '°) · ' : '') + 'D ' + sgn(p) + '</text>' +
-      '<text class="tx tx2" x="8" y="' + (y0 + 28) + '">' + (p > 0 ? _T('gambar.cembung') : p < 0 ? _T('gambar.cekung') : _T('gambar.plano')) + (r ? ' · r = ' + trim(r) + ' mm' : '') + '</text>' +
-      '<path style="fill:' + cc + ';fill-opacity:.16;stroke:none" d="' + d + 'Z"/>' +
-      '<path class="dm" d="M' + lfN(xl) + ' ' + lfN(cy) + 'H' + lfN(xr) + '"/>' +
-      '<path style="fill:none;stroke:' + cc + ';stroke-width:2.4;stroke-linecap:round" d="' + d + '"/>';
-    if (s > 0) {
-      g += '<path class="xl" d="M' + lfN(xl) + ' ' + lfN(cy) + 'H' + lfN(dx) + 'M' + lfN(xc) + ' ' + lfN(vy) + 'H' + lfN(dx) + '"/>' + lfDimV(dx, cy, vy, 'var(--ink-2)') +
-        '<text class="tx num" text-anchor="end" x="' + lfN(dx - 6) + '" y="' + lfN((cy + vy) / 2 + 4) + '">s = ' + fD(s) + '</text>';
-    }
-    g += '<path class="xl" d="M' + lfN(xl) + ' ' + lfN(cy) + 'V' + lfN(dy) + 'M' + lfN(xr) + ' ' + lfN(cy) + 'V' + lfN(dy) + '"/>' +
-      '<path class="dm" d="M' + lfN(xl) + ' ' + lfN(dy) + 'H' + lfN(xr) + 'M' + lfN(xl) + ' ' + lfN(dy - 3) + 'v6M' + lfN(xr) + ' ' + lfN(dy - 3) + 'v6"/>' +
-      '<text class="tx num" text-anchor="middle" x="' + xc + '" y="' + lfN(dy + 15) + '">Ø ' + trim(ev.dia) + ' mm</text>';
-  });
-  return lfCard(lfSvg(bh * ev.P.length, _T('gambar.alt_sagita'), g), lfNote(ve));
-}
-
-// Base Curve: lengkung depan menurut BC (makin besar BC makin curam) dan grafik aturan SE -> BC dengan titik hasil.
-function bcFig(ev) {
-  if (ev.state !== 'ok') return '';
-  var BC = ev.BC, F = Math.max(-17, Math.min(17, BC)), r = F ? 530 / Math.abs(F) : 0, c = 30, k = 3.2, ve = 1.5, xc = LF.XC;
-  var s = r ? r - Math.sqrt(r * r - c * c) : 0, plus = F > 0, cy = plus ? 122 : 12, pts = lfProf(c, s, r || null, k, ve), d = lfPath(pts, xc, cy, plus ? -1 : 1);
-  var g = '<path style="fill:var(--accent-soft);stroke:none" d="' + d + 'Z"/>' +
-    '<path class="dm" d="M' + lfN(xc - c * k) + ' ' + lfN(cy) + 'H' + lfN(xc + c * k) + '"/>' +
-    '<path style="fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round" d="' + d + '"/>' +
-    '<text class="tx num" style="font-size:15px" x="8" y="24">BC ' + sgn(BC) + ' D</text>' +
-    '<text class="tx tx2 num" x="8" y="40">' + (BC ? 'r ≈ ' + mm(530 / Math.abs(BC)) + ' mm' : _T('gambar.datar')) + '</text>';
-  var yB = 140, lo = Math.min(-12, Math.floor(ev.SE) - 1), hi = Math.max(8, Math.ceil(ev.SE) + 1);
-  var fn = function (v) { return v <= 0 ? v / 2 + 6 : v + 6; }, ylo = Math.min(0, fn(lo)), yhi = Math.max(14, fn(hi));
-  var gx0 = 44, gx1 = 364, gy0 = yB + 26, gy1 = gy0 + 92, v;
-  var X = function (q) { return gx0 + (q - lo) / (hi - lo) * (gx1 - gx0); }, Y = function (q) { return gy1 - (q - ylo) / (yhi - ylo) * (gy1 - gy0); };
-  for (v = Math.ceil(lo / 4) * 4; v <= hi; v += 4) g += '<path class="ax" d="M' + lfN(X(v)) + ' ' + gy0 + 'V' + gy1 + '"/><text class="tx tx2 num" text-anchor="middle" x="' + lfN(X(v)) + '" y="' + (gy1 + 14) + '">' + String(v).replace('-', MIN) + '</text>';
-  for (v = Math.ceil(ylo / 4) * 4; v <= yhi; v += 4) g += '<path class="ax" d="M' + gx0 + ' ' + lfN(Y(v)) + 'H' + gx1 + '"/><text class="tx tx2 num" text-anchor="end" x="' + (gx0 - 6) + '" y="' + lfN(Y(v) + 4) + '">' + String(v).replace('-', MIN) + '</text>';
-  g += '<path style="fill:none;stroke:var(--ink-2);stroke-width:1.8;stroke-linejoin:round" d="M' + lfN(X(lo)) + ' ' + lfN(Y(fn(lo))) + 'L' + lfN(X(0)) + ' ' + lfN(Y(6)) + 'L' + lfN(X(hi)) + ' ' + lfN(Y(fn(hi))) + '"/>' +
-    '<path class="xl" style="stroke:var(--accent);opacity:1" d="M' + lfN(X(ev.SE)) + ' ' + gy1 + 'V' + lfN(Y(BC)) + 'H' + gx0 + '"/>' +
-    '<circle cx="' + lfN(X(ev.SE)) + '" cy="' + lfN(Y(BC)) + '" r="5.5" style="fill:var(--accent);stroke:var(--surface);stroke-width:2"/>' +
-    '<text class="tx tx2" x="8" y="' + (yB + 12) + '">BC (D)</text>' +
-    '<text class="tx num" text-anchor="end" x="372" y="' + (yB + 12) + '">SE ' + sgn(ev.SE) + ' → BC ' + sgn(BC) + '</text>' +
-    '<text class="tx tx2" text-anchor="end" x="' + gx1 + '" y="' + (gy1 + 28) + '">SE (D)</text>';
-  return lfCard(lfSvg(gy1 + 34, _T('gambar.alt_bc'), g), _T('gambar.catatan_bc'));
-}
-
-// Tools: penampang lensa dengan lengkung depan F1 (= BC) dan lengkung belakang F2 tiap meridian. Radius tool ≈ 530 ÷ F.
-function ftFig(ev) {
-  if (ev.state !== 'ok') return '';
-  var k = 3, c = 30, xc = LF.XC, clamp = false, axes = [ev.ax, ev.ax2], xs = [], j;
-  var dep = function (F, x) { var a = Math.abs(F); if (a > 17) { a = 17; clamp = true; } if (!a) return 0; var r = 530 / a; return r - Math.sqrt(r * r - x * x); };
-  for (j = 0; j <= 30; j++) xs.push(-c + 2 * c * j / 30);
-  var items = ev.F2.map(function (F2) {
-    var s1 = Math.sign(ev.F1), s2 = Math.sign(F2), Tc = Math.max(1.5, 1.5 + s1 * dep(ev.F1, c) + s2 * dep(F2, c));
-    var zf = xs.map(function (x) { return Tc - s1 * dep(ev.F1, x); }), zb = xs.map(function (x) { return s2 * dep(F2, x); });
-    return { F2: F2, zf: zf, zb: zb };
-  });
-  var zmax = Math.max.apply(null, items.map(function (o) { return Math.max.apply(null, o.zf); })), zmin = Math.min.apply(null, items.map(function (o) { return Math.min.apply(null, o.zb); }));
-  var area = (zmax - zmin) * k, bh = 46 + area + 14, g = '';
-  items.forEach(function (o, i) {
-    var y0 = i * bh, yT = y0 + 42, Y = function (z) { return yT + (zmax - z) * k; };
-    var fp = xs.map(function (x, q) { return lfN(xc + x * k) + ' ' + lfN(Y(o.zf[q])); }), bp = xs.map(function (x, q) { return lfN(xc + x * k) + ' ' + lfN(Y(o.zb[q])); });
-    var P = ev.P[i];
-    g += '<text class="tx" x="8" y="' + (y0 + 14) + '">' + (ev.two ? _T('gambar.meridian') + ' ' + (i + 1) + ' (' + axes[i] + '°) · ' : '') + 'power ' + sgn(P) + ' D</text>' +
-      '<path d="M8 ' + (y0 + 29) + 'h14" style="stroke:var(--accent);stroke-width:3;stroke-linecap:round"/><text class="tx tx2 num" x="28" y="' + (y0 + 33) + '">F1 ' + sgn(ev.F1) + ' D</text>' +
-      '<path d="M158 ' + (y0 + 29) + 'h14" style="stroke:var(--ray);stroke-width:3;stroke-linecap:round"/><text class="tx tx2 num" x="178" y="' + (y0 + 33) + '">F2 ' + sgn(o.F2) + ' D</text>' +
-      '<path style="fill:var(--accent-soft);stroke:none" d="M' + fp.join('L') + 'L' + bp.slice().reverse().join('L') + 'Z"/>' +
-      '<path class="dm" d="M' + fp[0] + 'L' + bp[0] + 'M' + fp[30] + 'L' + bp[30] + '"/>' +
-      '<path style="fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round" d="M' + fp.join('L') + '"/>' +
-      '<path style="fill:none;stroke:var(--ray);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round" d="M' + bp.join('L') + '"/>';
-  });
-  return lfCard(lfSvg(bh * items.length, _T('gambar.alt_tools'), g), _T('gambar.catatan_tools') + (clamp ? ' ' + _T('gambar.dibatasi') : ''));
-}
-
-// Ketebalan Lensa: lensa di dalam blank setebal t. CT di tengah, ET di tepi. Bila "tebal yang dibuang" dicentang, bagian yang dibuang diarsir.
-function etFig(ev) {
-  if (ev.state !== 'ok') return '';
-  var k = Math.min(2.5, 200 / ev.dia), c = ev.dia / 2, xc = LF.XC, ve = lfVe(ev.t, k, ev.two ? 64 : 90), kv = k * ve, axes = [ev.ax, ev.ax2];
-  var tp = ev.t * kv, bh = 38 + tp + 40, xl = xc - c * k, xr = xc + c * k, dc = 'var(--pos)', de = 'var(--ray)', dt = 'var(--ink-2)', dr = 'var(--warn)';
-  var g = '<defs><pattern id="lfh" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 0V6" style="stroke:var(--warn);stroke-width:1.4;opacity:.55"/></pattern></defs>';
-  ev.kinds.forEach(function (kd, i) {
-    var y0 = i * bh, base = y0 + 38 + tp, bt = base - tp, s = ev.sag[i], minus = kd === 'minus', pts = [], j, u;
-    var yE = base - ev.ET[i] * kv, yC = base - ev.CT[i] * kv, rm = ev.t - (minus ? ev.ET[i] : ev.CT[i]);
-    for (j = 0; j <= 30; j++) { u = -1 + j / 15; pts.push(lfN(xc + u * c * k) + ' ' + lfN(base - (minus ? ev.CT[i] + s * u * u : ev.ET[i] + s * (1 - u * u)) * kv)); }
-    var surf = 'M' + pts.join('L'), body = 'M' + lfN(xl) + ' ' + lfN(base) + 'L' + pts.join('L') + 'L' + lfN(xr) + ' ' + lfN(base) + 'Z';
-    g += '<text class="tx" x="8" y="' + (y0 + 14) + '">' + (ev.two ? _T('gambar.meridian') + ' ' + (i + 1) + ' (' + axes[i] + '°) · ' : '') + (minus ? 'minus' : 'plus') + ' · ' + _T('js.sagita') + ' ' + fD(s) + ' mm</text>';
-    if (ev.rem) g += '<path style="fill:url(#lfh);stroke:none" d="' + surf + 'L' + lfN(xr) + ' ' + lfN(bt) + 'L' + lfN(xl) + ' ' + lfN(bt) + 'Z"/>';
-    g += '<path style="fill:var(--accent-soft);stroke:none" d="' + body + '"/>' +
-      '<path style="fill:none;stroke:var(--accent);stroke-width:2;stroke-linejoin:round" d="' + body + '"/>' +
-      '<rect x="' + lfN(xl) + '" y="' + lfN(bt) + '" width="' + lfN(xr - xl) + '" height="' + lfN(tp) + '" style="fill:none;stroke:var(--ink-2);stroke-width:1.2;stroke-dasharray:4 3"/>' +
-      lfDimV(xl - 10, base, bt, dt) + '<text class="tx" text-anchor="end" x="' + lfN(xl - 16) + '" y="' + lfN((base + bt) / 2 + 4) + '">t</text>' +
-      lfDimV(xr + 10, base, yE, de) + '<text class="tx" style="fill:' + de + '" x="' + lfN(xr + 16) + '" y="' + lfN((base + yE) / 2 + 4) + '">ET</text>' +
-      lfDimV(xc, base, yC, dc) + '<text class="tx" style="fill:' + dc + '" x="' + lfN(xc + 6) + '" y="' + lfN((base + yC) / 2 + 4) + '">CT</text>';
-    if (ev.rem) g += minus ? lfDimV(xr + 10, yE, bt, dr) : lfDimV(xc, yC, bt, dr);
-    var lg = [['CT ' + fD(ev.CT[i]), dc], ['ET ' + fD(ev.ET[i]), de], ['t ' + ev.t, dt]], lx = 8;
-    if (ev.rem) lg.push([_T('gambar.dibuang') + ' ' + fD(rm), dr]);
-    lg.forEach(function (it) {
-      g += '<path d="M' + lx + ' ' + lfN(base + 21) + 'h10" style="stroke:' + it[1] + ';stroke-width:3;stroke-linecap:round"/><text class="tx tx2 num" x="' + (lx + 14) + '" y="' + lfN(base + 25) + '">' + it[0] + '</text>';
-      lx += 14 + it[0].length * 6.6 + 14;
-    });
-  });
-  return lfCard(lfSvg(bh * ev.kinds.length, _T('gambar.alt_tebal'), g), lfNote(ve));
-}
-
 function update() {
   syncPD('pre'); syncPD('mbs');
   var pre = evalPre();
@@ -4450,7 +5365,6 @@ function update() {
   // Halaman Sagita
   var sg = evalSag();
   $('#sag-out').innerHTML = L(sagHTML(sg));
-  lfRender('sag', sagFig(sg));
   $('#sag-rumus').innerHTML = L(sagFormulaRows(!!num(S.sag.cyl), sg).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
   var sm = sagMat(), sn = $('#sag-n');
   if (sm.id === 'custom') { sn.disabled = false; setVal(sn, S.sag.n); }
@@ -4462,7 +5376,6 @@ function update() {
   // Halaman Tools
   var fv = evalFT();
   $('#ft-out').innerHTML = L(ftHTML(fv));
-  lfRender('ft', ftFig(fv));
   $('#ft-rumus').innerHTML = L(ftFormulaRows(fv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
   setTypePill('ft', eyeType('ft'));
   var fs = num(S.ft.sph), fc = num(S.ft.cyl);   // isian BC yang kosong menampilkan nilai otomatis sebagai petunjuk
@@ -4471,7 +5384,6 @@ function update() {
   // Halaman Ketebalan Lensa
   var ev3 = evalET(), ety = eyeType('et'), em = etMat(), en = $('#et-n');
   $('#et-out').innerHTML = L(etHTML(ev3));
-  lfRender('et', etFig(ev3));
   $('#et-rumus').innerHTML = L(etFormulaRows(ev3).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
   if (em.id === 'custom') { en.disabled = false; setVal(en, S.et.n); }
   else { en.disabled = true; setVal(en, Lx(trim(em.n))); }
@@ -4481,8 +5393,9 @@ function update() {
   // Halaman Base Curve
   var bv = evalBC();
   $('#bc-out').innerHTML = L(bcHTML(bv));
-  lfRender('bc', bcFig(bv));
   $('#bc-rumus').innerHTML = L(bcFormulaRows(bv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+
+  lvUpdateAll(ev);   // gambar lensa 2D dan 3D di kartu kerja
 
   lkRender();   // halaman Parameter LK: dijalankan sebelum cek isian supaya H dan V yang dikunci (sumber Keratometer) tidak ditandai merah
 
@@ -4711,10 +5624,10 @@ var FEATURES = [
     ico: SVG('<circle cx="12" cy="9.5" r="6.5"/><path d="M3 20.5h18M3 18.5v4M21 18.5v4"/>') },
   { cat: 'refraksi', route: 'bagan', ready: true, title: _T('js.bagan_refraksi'), desc: _T('js.gambar_jatuhnya_cahaya_ke'),
     ico: SVG('<path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/>') },
-  { cat: 'refraksi', route: 'tentatif', ready: true, title: _T('js.tentative_visus'), desc: _T('js.perkiraan_awal_lensa_spheris'),
-    ico: SVG('<path d="M4 5h16M4 10h11M4 15h7M4 20h3"/>') },
   { cat: 'refraksi', route: 'snellen', ready: true, title: _T('js.snellen_chart'), desc: _T('js.chart_visus_interaktif_ukuran'),
-    ico: SVG('<path d="M8 3h8M8 3v6M8 6h6M8 9h8"/><path d="M7 14h10M9.5 18.5h5"/>') }
+    ico: SVG('<path d="M8 3h8M8 3v6M8 6h6M8 9h8"/><path d="M7 14h10M9.5 18.5h5"/>') },
+  { cat: 'refraksi', route: 'tentatif', ready: true, title: _T('js.tentative_visus'), desc: _T('js.perkiraan_awal_lensa_spheris'),
+    ico: SVG('<path d="M4 5h16M4 10h11M4 15h7M4 20h3"/>') }
 ];
 FEATURES.push({ route: 'lenso', ready: true, title: 'Simulator Lensometer', desc: 'Busur sumbu dan garis mires hijau untuk lensa spheris, silinder, dan ADD',
   ico: SVG('<circle cx="12" cy="12" r="8.5"/><path d="M7 9.5h10M7 12h10M7 14.5h10"/>') });
@@ -5176,7 +6089,7 @@ var SEARCH_KW = {
   bagan: 'retina cahaya mata miopia hiperopia emetropia astigmatisme sturm fokus lensa koreksi',
   tentatif: 'tentatif visus trial frame pinhole spheris minus koreksi mar menit busur',
   snellen: 'visus chart optotipe huruf landolt c e jarak uji kalibrasi logmar mar menit busur',
-  kalkulator: 'hitung sin cos tan log ln pangkat akar pecahan faktorial trigonometri logaritma',
+  kalkulator: 'hitung sin cos tan log ln pangkat akar pecahan faktorial trigonometri logaritma riwayat history',
   rumus: 'formula semua rumus cari',
   pengaturan: 'setting tema animasi gerak gelap terang desimal digit pemisah koma titik diameter maksimum hapus data',
   lenso: 'lensometer focimeter mires garis hijau busur sumbu axis spheris silinder cylinder add bifokal progresif lensa kacamata daya drum badal power wheel',
@@ -5566,21 +6479,23 @@ function calcEvalStr(s, deg, ans) {
   var isOp = function (v) { var x = tk[p]; return !!x && x.k === 'op' && x.v === v; };
   var starts = function (x) { return !!x && (x.k === 'num' || x.k === 'fn' || x.k === 'nrt' || (x.k === 'op' && x.v === '(')); };
   var fin = function (v) { if (!isFinite(v)) throw cerr('math'); return v; };
+  // Persen: A + B% = A + A×B/100 dan A − B% = A − A×B/100 (seperti kalkulator bawaan HP). Untuk × ÷ atau B% berdiri sendiri, % hanya ÷ 100.
+  var pctF = false, termPct = false;   // pctF: faktor yang baru dibaca berakhir dengan %. termPct: suku yang baru dibaca hanya satu faktor berakhiran % (mis. 10%)
   function expr() {
-    var v = term();
+    var v = term(), r;
     for (;;) {
-      if (isOp('+')) { p++; v += term(); }
-      else if (isOp('−')) { p++; v -= term(); }
+      if (isOp('+')) { p++; r = term(); v += termPct ? v * r : r; }
+      else if (isOp('−')) { p++; r = term(); v -= termPct ? v * r : r; }
       else return v;
     }
   }
   function term() {
-    var v = unary();
+    var v = unary(), pc = pctF, multi = false;
     for (;;) {
-      if (isOp('×')) { p++; v = fin(v * unary()); }
-      else if (isOp('÷')) { p++; var d = unary(); if (d === 0) throw cerr('math'); v = fin(v / d); }
-      else if (starts(tk[p])) v = fin(v * unary());   // perkalian tersirat: 2π, 3(4), 2sin(30)
-      else return v;
+      if (isOp('×')) { p++; multi = true; v = fin(v * unary()); }
+      else if (isOp('÷')) { p++; multi = true; var d = unary(); if (d === 0) throw cerr('math'); v = fin(v / d); }
+      else if (starts(tk[p])) { multi = true; v = fin(v * unary()); }   // perkalian tersirat: 2π, 3(4), 2sin(30)
+      else { termPct = pc && !multi; return v; }
     }
   }
   function unary() {
@@ -5590,7 +6505,7 @@ function calcEvalStr(s, deg, ans) {
   }
   function power() {
     var b = postfix();
-    if (isOp('^')) { p++; return fin(Math.pow(b, powRHS())); }
+    if (isOp('^')) { p++; var pw = fin(Math.pow(b, powRHS())); pctF = false; return pw; }
     return b;
   }
   function powRHS() {
@@ -5599,16 +6514,16 @@ function calcEvalStr(s, deg, ans) {
     return power();
   }
   function postfix() {
-    var v = primary();
+    var v = primary(), lp = false;
     for (;;) {
       var x = tk[p];
-      if (!x || x.k !== 'op') return v;
-      if (x.v === '!') { p++; v = fact(v); }
-      else if (x.v === '%') { p++; v = v / 100; }
-      else if (x.v === '²') { p++; v = fin(v * v); }
-      else if (x.v === '³') { p++; v = fin(v * v * v); }
-      else if (x.v === '⁻¹') { p++; if (v === 0) throw cerr('math'); v = 1 / v; }
-      else return v;
+      if (!x || x.k !== 'op') { pctF = lp; return v; }
+      if (x.v === '!') { p++; v = fact(v); lp = false; }
+      else if (x.v === '%') { p++; v = v / 100; lp = true; }
+      else if (x.v === '²') { p++; v = fin(v * v); lp = false; }
+      else if (x.v === '³') { p++; v = fin(v * v * v); lp = false; }
+      else if (x.v === '⁻¹') { p++; if (v === 0) throw cerr('math'); v = 1 / v; lp = false; }
+      else { pctF = lp; return v; }
     }
   }
   function fact(n) {
@@ -5691,15 +6606,40 @@ var CALC_DEL = /(asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|A
 function calcMigrate(x) {
   return x.replace(/(\d+)⌟(\d*)⁄(\d*)/g, '⟪$1¦$2¦$3⟫').replace(/(\d+)⌟(\d*)/g, '⟪$1¦$2¦⟫').replace(/(\d+)⁄(\d*)/g, '⟦$1¦$2⟧');
 }
+// ---- Riwayat: tiap ketukan = yang berhasil dihitung disimpan di c.hist, terbaru di depan ----
+var CALC_HIST_MAX = 50;
+function calcHistValid(h) { return !!h && typeof h.e === 'string' && h.e !== '' && typeof h.v === 'number' && isFinite(h.v); }
+// Ans diganti nilainya, supaya entri riwayat selalu menghasilkan angka yang sama bila dipakai ulang (Ans berubah setiap kali menekan =).
+// Dibungkus kurung bila menempel pada angka atau fungsi lain, supaya 2Ans (Ans = 5) tidak terbaca 25.
+function calcInlineAns(s, ans) {
+  if (s.indexOf('Ans') < 0) return s;
+  var lit = calcLit(ans);
+  return s.replace(/Ans/g, function (m, off) {
+    var pv = s.charAt(off - 1), nx = s.charAt(off + 3);
+    var wrap = ans >= 0 && ((pv !== '' && !/[+−×÷^(¦⟦⟪⟮⟅]/.test(pv)) || (nx !== '' && !/[+−×÷^)!%²³¦⟧⟫⟯⟆]/.test(nx)));
+    return wrap ? '(' + lit + ')' : lit;
+  });
+}
+function calcHistAdd(expr, v, deg, prevAns) {
+  var c = CS(), e = calcInlineAns(expr, prevAns), open;
+  if (!/[⟦⟪⟮⟅√∛]/.test(e)) {   // kurung yang belum ditutup di ujung ditutup otomatis oleh hitungan, jadi di riwayat ikut ditutup
+    open = (e.match(/\(/g) || []).length - (e.match(/\)/g) || []).length;
+    for (; open > 0; open--) e += ')';
+  }
+  c.hist.unshift({ e: e, v: v, d: deg });
+  if (c.hist.length > CALC_HIST_MAX) c.hist.length = CALC_HIST_MAX;
+}
 function CS() {
   var c = S.calc;
-  if (!c || typeof c !== 'object') c = S.calc = { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false };
+  if (!c || typeof c !== 'object') c = S.calc = { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false, hist: [] };
   if (typeof c.expr !== 'string') c.expr = '';
   else if (c.expr.indexOf('⁄') >= 0 || c.expr.indexOf('⌟') >= 0) c.expr = calcMigrate(c.expr);
   if (typeof c.deg !== 'boolean') c.deg = true;
   if (typeof c.mem !== 'number' || !isFinite(c.mem)) c.mem = 0;
   if (typeof c.ans !== 'number' || !isFinite(c.ans)) c.ans = 0;
   if (typeof c.sci !== 'boolean') c.sci = false; if (typeof c.fr !== 'boolean') c.fr = false; if (typeof c.mx !== 'boolean') c.mx = false;   // tombol scientific: standar tersembunyi
+  if (!Array.isArray(c.hist)) c.hist = [];
+  else if (!c.hist.every(calcHistValid) || c.hist.length > CALC_HIST_MAX) c.hist = c.hist.filter(calcHistValid).slice(0, CALC_HIST_MAX);   // buang entri rusak dari penyimpanan lama
   return c;
 }
 function calcShow(x) { return calcFmt(x).replace('.', SEP); }
@@ -5956,10 +6896,27 @@ function calcPress(act) {
     case 'ac':
       pre = ''; suf = ''; calcDone = false;
       break;
+    case 'hexp': {   // dari riwayat: ekspresi menggantikan isi layar, kursor di ujung
+      var he = c.hist[+arg];
+      if (!he) break;
+      pre = he.e; suf = ''; calcDone = false;
+      break;
+    }
+    case 'hres': {   // dari riwayat: hasil disisipkan di kursor, dibungkus kurung bila menempel pada angka lain
+      var hr = c.hist[+arg], lit;
+      if (!hr) break;
+      startNew();
+      lit = calcLit(hr.v);
+      if (hr.v >= 0 && (CALC_VALUE_END.test(pre) || /^[0-9.]/.test(suf))) lit = '(' + lit + ')';
+      pre += lit;
+      break;
+    }
     case 'eq':
       if (calcDone || c.expr === '') break;
       try {
+        var prevAns = c.ans;
         v = calcEvalStr(c.expr, c.deg, c.ans);
+        calcHistAdd(c.expr, v, c.deg, prevAns);
         c.ans = v; calcLast = v; calcDone = true;
         $('#calc-sr').textContent = (_T('js.hasil') + ' ') + calcShowR(v).replace('⁄', ' per ');
       } catch (er) { calcErr = calcMsg(er); }
@@ -6086,6 +7043,33 @@ function calcRender() {
     if (k.a === 'sd') { b.classList.toggle('on', c.fr); b.setAttribute('aria-pressed', c.fr ? 'true' : 'false'); }
     if (k.a === 'mf') { b.classList.toggle('on', c.fr && c.mx); b.setAttribute('aria-pressed', (c.fr && c.mx) ? 'true' : 'false'); }
   });
+  calcHistView();
+}
+// Riwayat: panel menggantikan papan tombol selama terbuka. Daftar hanya digambar saat panel terbuka.
+var calcHistOpen = false, histWipeTimer = null;
+var CALC_TRIG = /(sin|cos|tan)\(/;
+function disarmHist() { clearTimeout(histWipeTimer); histWipeTimer = null; var b = $('#ch-clr'); if (!b) return; b.textContent = _T('kalkulator.hapus_riwayat'); b.classList.remove('armed'); }
+function calcHistView() {
+  var panel = $('#calc-hist');
+  if (!panel) return;
+  var c = CS(), n = c.hist.length, i, h, html = '', none = { at: function () { return false; } };
+  panel.hidden = !calcHistOpen;
+  $('#calc-keys').hidden = calcHistOpen;
+  $('#ch-tog').setAttribute('aria-expanded', calcHistOpen ? 'true' : 'false');
+  $('#ch-clr').disabled = n === 0;
+  if (n === 0) disarmHist();
+  if (!calcHistOpen) return;
+  if (n === 0) html = '<li class="ch-empty">' + esc(_T('js.riwayat_kosong')) + '</li>';
+  for (i = 0; i < n; i++) {
+    h = c.hist[i];
+    html += '<li class="ch-i"><div class="ch-sc"><div class="ch-in">' +
+      '<button type="button" class="ch-e" data-hx="' + i + '" title="' + esc(_T('js.pakai_ekspresi_ini')) + '">' +
+      (CALC_TRIG.test(h.e) ? '<span class="cs">' + (h.d ? _T('js.deg') : _T('js.rad')) + '</span>' : '') +
+      '<span>' + calcSeq(calcTree(h.e), 0, none, false) + '</span></button>' +
+      '<button type="button" class="ch-r" data-hr="' + i + '" title="' + esc(_T('js.sisipkan_hasil_ini')) + '">= ' + calcResHTML(h.v) + '</button>' +
+      '</div></div></li>';
+  }
+  $('#ch-list').innerHTML = html;
 }
 // Ketuk di ekspresi = pindahkan kursor ke sela terdekat: sebelum atau sesudah karakter, di awal atau akhir kotak isian, atau di kiri atau kanan pecahan dan akar.
 // Ketuk di luar semuanya: kiri teks = awal, kanan teks = akhir.
@@ -6110,7 +7094,30 @@ $('#ck-tog').addEventListener('click', function () {
   if (!c.sci) calcSec = false;
   save(); calcRender();
 });
-$('#calc-keys').addEventListener('mousedown', function (e) { if (e.target.closest && e.target.closest('.ck')) e.preventDefault(); });   // fokus tetap di halaman, jadi Enter dari keyboard tidak mengulang tombol terakhir
+$('#ch-tog').addEventListener('click', function () {
+  calcHistOpen = !calcHistOpen; disarmHist();
+  $('#calc-sr').textContent = calcHistOpen ? _T('js.riwayat_dibuka') : _T('js.riwayat_ditutup');
+  calcHistView();
+});
+$('#ch-list').addEventListener('click', function (e) {
+  var b = e.target.closest ? e.target.closest('button') : null;
+  if (!b) return;
+  var ex = b.hasAttribute('data-hx');
+  calcHistOpen = false; disarmHist();   // setelah memilih, papan tombol kembali supaya bisa lanjut mengetik
+  calcSec = false;
+  calcPress((ex ? 'hexp:' : 'hres:') + (ex ? b.dataset.hx : b.dataset.hr));
+});
+$('#ch-clr').addEventListener('click', function () {
+  var b = this;
+  if (!histWipeTimer) { b.textContent = _T('js.ketuk_lagi_untuk_menghapus'); b.classList.add('armed'); histWipeTimer = setTimeout(disarmHist, 3500); return; }
+  disarmHist();
+  CS().hist = []; save();
+  $('#calc-sr').textContent = _T('js.riwayat_dihapus');
+  calcHistView();
+});
+$('#ch-tog').addEventListener('mousedown', function (e) { e.preventDefault(); });   // sama seperti papan tombol: fokus tidak pindah ke tombol, jadi Enter dari keyboard tetap menjadi =
+$('#calc-hist').addEventListener('mousedown', function (e) { if (e.target.closest && e.target.closest('button')) e.preventDefault(); });
+$('#calc-keys').addEventListener('mousedown', function (e) { if (e.target.closest && e.target.closest('.ck, .ck-tog')) e.preventDefault(); });   // fokus tetap di halaman, jadi Enter dari keyboard tidak mengulang tombol terakhir
 $('#calc-keys').addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('.ck') : null;
   if (!b) return;
@@ -6138,7 +7145,7 @@ document.addEventListener('keydown', function (e) {
   else if (k === '=') a = 'eq';
   else if (k === 'Enter') { if (tag === 'BUTTON') return; a = 'eq'; }   // Enter pada tombol yang sedang fokus tetap menekan tombol itu
   else if (k === 'Backspace') a = 'del';
-  else if (k === 'Escape') a = 'ac';
+  else if (k === 'Escape') { if (calcHistOpen) { e.preventDefault(); calcHistOpen = false; calcHistView(); return; } a = 'ac'; }   // saat riwayat terbuka, Esc menutupnya dulu
   else if (k === 'Delete') a = 'fdel';
   else if (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowUp' || k === 'ArrowDown' || k === 'Home' || k === 'End') {
     e.preventDefault();
@@ -6163,7 +7170,7 @@ var ABOUT = {
   links: [
     { label: _T('js.email'),     text: '', href: '' },
     { label: _T('js.whatsapp'),  text: '', href: '' },
-    { label: _T('js.instagram'), text: '@cryst4lz', href: 'https://www.instagram.com/cryst4lz' },
+    { label: _T('js.instagram'), text: 'Instagram', href: 'https://www.instagram.com/cryst4lz' },
     { label: _T('js.website'),   text: '', href: '' }
   ]
 };
