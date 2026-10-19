@@ -143,6 +143,25 @@ a.mi:active { background: var(--accent-soft); }
 body.no-tabs { padding-bottom: 2.5rem; }
 .note { background: var(--accent-soft); border-radius: 10px; padding: 10px 12px; font-size: .86rem; margin-bottom: 14px; }
 
+/* ajakan pasang aplikasi di beranda */
+.inst { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: start; margin: 0 0 14px; padding: 14px; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: var(--r); }
+.inst-ico { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
+.inst-ico svg { width: 26px; height: 26px; }
+.inst-b { min-width: 0; align-self: center; }
+.inst h2 { font-size: 1rem; line-height: 1.3; }
+.inst-b p { margin-top: 2px; font-size: .86rem; line-height: 1.4; color: var(--ink-2); }
+.inst-act { grid-column: 1 / -1; display: flex; gap: 10px; margin-top: 6px; }
+.inst-act .primary { flex: 1 1 auto; width: auto; height: 46px; padding: 0 16px; touch-action: manipulation; }
+.inst-act .ghost { flex: none; height: 46px; max-width: none; touch-action: manipulation; }
+.inst-dlg { width: min(26rem, calc(100vw - 32px)); max-height: calc(100vh - 32px); padding: 0; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); box-shadow: 0 16px 40px rgba(0,0,0,.3); overflow: auto; }
+.inst-dlg::backdrop { background: rgba(0,0,0,.5); }
+.inst-dlg-b { padding: 18px; display: grid; gap: 14px; }
+.inst-dlg h2 { font-size: 1.1rem; }
+.inst-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; counter-reset: ist; }
+.inst-steps li { counter-increment: ist; display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start; font-size: .95rem; line-height: 1.45; }
+.inst-steps li::before { content: counter(ist); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: .9rem; }
+.inst-dlg .hint { margin: 0; font-size: .85rem; }
+
 /* layout */
 .cols { display: grid; gap: 14px; }
 .panel { display: grid; gap: 14px; align-content: start; min-width: 0; }
@@ -779,6 +798,28 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       </button>
       <div class="pop" id="logo-menu" role="menu" data-t-aria-label="home.menu_aplikasi" hidden></div>
     </header>
+    <!-- ajakan pasang aplikasi. tampil hanya di HP yang belum memasangnya, diatur oleh blok "Pasang aplikasi" di script -->
+    <section class="inst" id="inst" aria-labelledby="inst-t" hidden>
+      <div class="inst-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="2.5" width="11" height="19" rx="2.6"/><path d="M12 7.5v6M9.2 11.2l2.8 2.8 2.8-2.8"/><path d="M11 18.2h2"/></svg>
+      </div>
+      <div class="inst-b">
+        <h2 id="inst-t" data-t="install.judul"></h2>
+        <p id="inst-p"></p>
+      </div>
+      <div class="inst-act">
+        <button type="button" class="primary" id="inst-go" data-t="install.pasang"></button>
+        <button type="button" class="ghost" id="inst-no" data-t="install.nanti"></button>
+      </div>
+    </section>
+    <dialog class="inst-dlg" id="inst-dlg" aria-labelledby="inst-dlg-t">
+      <div class="inst-dlg-b">
+        <h2 id="inst-dlg-t" data-t="install.petunjuk_judul"></h2>
+        <ol class="inst-steps" id="inst-steps"></ol>
+        <p class="hint" id="inst-extra"></p>
+        <button type="button" class="primary" id="inst-ok" data-t="install.mengerti"></button>
+      </div>
+    </dialog>
     <div class="srch" role="search">
       <svg class="srch-ic" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6L17 17"/></svg>
       <input type="search" id="srch-q" data-t-placeholder="home.cari_menu_mis_sagita" data-t-aria-label="home.cari_menu" aria-controls="srch-res" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search">
@@ -1645,6 +1686,23 @@ var TEKS = {
   "home.cari_menu_mis_sagita": "Cari menu",
   "home.cari_menu": "Cari menu",
   "home.hapus_pencarian": "Hapus pencarian",
+
+  // ----- Halaman: install (tombol pasang aplikasi di beranda) -----
+  "install.judul": "Pasang di HP Anda",
+  "install.isi": "Buka seperti aplikasi biasa dari layar utama, tanpa perlu mencari lewat Chrome. Tetap bisa dipakai tanpa internet.",
+  "install.isi_manual": "Ikon Kalkulator Optik akan muncul di layar utama HP. Ketuk tombol di bawah, nanti ada petunjuk singkat.",
+  "install.pasang": "Pasang aplikasi",
+  "install.nanti": "Nanti saja",
+  "install.petunjuk_judul": "Cara memasang",
+  "install.android_1": "Ketuk tombol titik tiga (⋮) di pojok kanan atas Chrome.",
+  "install.android_2": "Pilih “Instal aplikasi” atau “Tambahkan ke layar utama”.",
+  "install.android_3": "Ketuk “Instal”, lalu tunggu sebentar. Ikon Kalkulator Optik akan muncul di layar utama.",
+  "install.android_cat": "Tidak ada pilihan itu? Buka alamat ini lewat Chrome, lalu ulangi langkah di atas.",
+  "install.ios_1": "Buka halaman ini lewat Safari, lalu ketuk tombol Bagikan (kotak dengan panah ke atas) di bagian bawah layar.",
+  "install.ios_2": "Gulir ke bawah, lalu pilih “Tambah ke Layar Utama” (Add to Home Screen).",
+  "install.ios_3": "Ketuk “Tambah” di pojok kanan atas. Ikon Kalkulator Optik akan muncul di layar utama.",
+  "install.ios_cat": "Tombol Bagikan hanya ada di Safari. Jika memakai aplikasi lain, buka alamat ini lewat Safari dulu.",
+  "install.mengerti": "Mengerti",
 
   // ----- Halaman: kartu -----
   "kartu.kembali_ke_beranda": "Kembali ke beranda",
@@ -6071,6 +6129,81 @@ document.addEventListener('keydown', function (e) {
   else if (e.key === 'End') { e.preventDefault(); items[n - 1].focus(); }
   else if (e.key === 'Tab') closeMenu(false);
 });
+
+/* ---------- Pasang aplikasi (tombol install di beranda) ---------- */
+// Android/Chrome: tombol langsung memunculkan jendela pasang bawaan peramban (lewat beforeinstallprompt).
+// iPhone dan peramban tanpa fitur itu: tombol membuka petunjuk langkah demi langkah.
+// Tidak tampil bila aplikasi sudah terpasang/dibuka dari ikon, atau bila dibuka lewat file (bukan http/https).
+(function () {
+  var box = $('#inst'), go = $('#inst-go'), no = $('#inst-no'), dlg = $('#inst-dlg');
+  if (!box || !go || !no || !dlg) return;
+  var KEY = 'kks-install-v1';
+  var DAY = 24 * 60 * 60 * 1000;
+  var NANTI_HARI = 3;     // setelah "Nanti saja", ajakan muncul lagi sesudah sekian hari
+  var TERPASANG_HARI = 90; // setelah dipasang, ajakan tidak muncul di peramban selama sekian hari
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var isMobile = isIOS || /Android|Mobile/i.test(ua);
+  var deferred = null;    // peristiwa beforeinstallprompt yang disimpan
+  var siap = isIOS;       // peramban lain diberi jeda dulu: beforeinstallprompt biasanya muncul beberapa detik setelah dibuka
+
+  function baca() { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } }
+  function simpan(o) { try { localStorage.setItem(KEY, JSON.stringify(o)); } catch (e) {} }
+  function standalone() {
+    return (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true;
+  }
+  function disembunyikan() {
+    var st = baca(), now = Date.now();
+    if (st.done && now - st.done < TERPASANG_HARI * DAY) return true;
+    if (st.no && now - st.no < NANTI_HARI * DAY) return true;
+    return false;
+  }
+  function refresh() {
+    var tampil = /^https?:$/.test(location.protocol) && !standalone() && !disembunyikan() && (!!deferred || (isMobile && siap));
+    box.hidden = !tampil;
+    $('#inst-p').textContent = _T(deferred ? 'install.isi' : 'install.isi_manual');
+  }
+  function petunjuk() {
+    var p = isIOS ? 'ios' : 'android';
+    $('#inst-steps').innerHTML = [1, 2, 3].map(function (i) { return '<li><span>' + _T('install.' + p + '_' + i) + '</span></li>'; }).join('');
+    $('#inst-extra').textContent = _T('install.' + p + '_cat');
+    if (typeof dlg.showModal === 'function') dlg.showModal(); else dlg.setAttribute('open', '');
+  }
+  function tutup() { if (typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); }
+
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();   // jendela bawaan Chrome ditahan; dipanggil lewat tombol di beranda
+    deferred = e;
+    refresh();
+  });
+  window.addEventListener('appinstalled', function () {
+    deferred = null;
+    simpan({ done: Date.now() });
+    refresh();
+  });
+  go.addEventListener('click', function () {
+    if (!deferred) { petunjuk(); return; }
+    var ev = deferred;
+    deferred = null;      // satu peristiwa hanya bisa dipakai sekali
+    try {
+      ev.prompt();
+      Promise.resolve(ev.userChoice).then(function (r) {
+        if (r && r.outcome === 'accepted') simpan({ done: Date.now() });
+        else simpan({ no: Date.now() });
+        refresh();
+      }, refresh);
+    } catch (err) { petunjuk(); }
+    refresh();
+  });
+  no.addEventListener('click', function () { simpan({ no: Date.now() }); refresh(); });
+  $('#inst-ok').addEventListener('click', tutup);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) tutup(); });   // ketuk bagian gelap di luar kotak
+  if (window.matchMedia) {
+    try { matchMedia('(display-mode: standalone)').addEventListener('change', refresh); } catch (e) {}
+  }
+  if (!siap) setTimeout(function () { siap = true; refresh(); }, 2500);
+  refresh();
+})();
 
 /* ---------- Pencarian menu di beranda ---------- */
 // Mencari di semua menu yang bisa dibuka dari beranda: fitur di FEATURES, kalkulator scientific, dan menu logo.
