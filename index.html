@@ -574,7 +574,10 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   /* pindah halaman */
   .app > [id^="v-"]:not([hidden]) { animation: a-view .3s cubic-bezier(.2,.7,.2,1) backwards; }
   /* animasi buka aplikasi */
-  .a-intro #v-home { animation: none; }
+  /* Jangan pakai "animation: none" di sini. Saat kelas a-intro dilepas, nama animasi berubah dari none ke a-view,
+     jadi a-view mulai dari awal dan seluruh halaman beranda terlihat berkedip (opacity 0 lalu naik lagi).
+     Nama animasi dibiarkan sama, hanya durasinya 0, jadi tidak ada yang diputar ulang saat kelas dilepas. */
+  .a-intro #v-home { animation-duration: 0s; animation-delay: 0s; }
   .a-intro #menu > .cat { animation: a-rise .6s cubic-bezier(.2,.7,.2,1) backwards; }
   .a-intro #menu > .cat:nth-child(2) { animation-delay: .09s; }
   .a-intro #menu > .cat:nth-child(3) { animation-delay: .18s; }
