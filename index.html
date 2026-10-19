@@ -2159,6 +2159,7 @@ var TEKS = {
   "js.h_lebih_curam_against": "H lebih curam: against-the-rule, minus cylinder × 90",
   "js.radius_dibulatkan_0_01": "Radius dibulatkan 0.01 mm. D dibulatkan 0.01 D sebelum dipakai menghitung astigmat.",
   "js.isi_radius_v_dan": "Isi radius V dan H untuk melihat astigmat kornea.",
+  "js.pakai_di_parameter_lk": "Pakai di Parameter LK",
 
   // ----- Dari skrip: Parameter LK (kategori Lensa Kontak) -----
   "js.hvid_tidak_valid_isi": "HVID tidak valid. Isi dalam mm, lebih dari 0.",
@@ -3539,7 +3540,8 @@ function krHTML(ev) {
         row(_T('js.astigmat_kornea_d'), [f2(ev.diff)], 2, { key: true, note: kt }) +
       '</div>' +
       '<p class="how">' + ln('H', ev.rh, ev.Kh) + '<br>' + ln('V', ev.rv, ev.Kv) + '<br>Astigmat = |' + f2(ev.Kv) + ' ' + MIN + ' ' + f2(ev.Kh) + '| = ' + f2(ev.diff) + ' D</p>' +
-      '<div class="msg info">' + note + '</div>';
+      '<div class="msg info">' + note + '</div>' +
+      '<div class="stack" style="margin-top:12px"><button type="button" class="ghost block" data-krgo="lk">' + _T('js.pakai_di_parameter_lk') + '</button></div>';
   }
   return '<section class="card">' + head + body + '</section>';
 }
@@ -3652,6 +3654,15 @@ document.addEventListener('focusout', function (e) {
   if (bad(v) || v < KR_MIN || v > KR_MAX) return;
   var s = rd2(v).toFixed(2), m = t.dataset.k.slice(3);
   t.value = Lx(s); S.kr[m] = s; save(); krRender();
+});
+// Tombol 'Pakai di Parameter LK': sumber H dan V di Parameter LK diset ke Keratometer, lalu pindah halaman (cara sama dengan Snellen ke Tentative Visus)
+document.addEventListener('click', function (e) {
+  var b = e.target.closest ? e.target.closest('[data-krgo]') : null;
+  if (!b) return;
+  S.lk.src = 'kr';
+  save(); hydrate(); update();
+  try { history.replaceState(history.state, '', '#/parlk'); } catch (er) { location.hash = '#/parlk'; }
+  route(true);
 });
 // Atur ulang: kedua jendela kembali ke 44 D (radius 7.67 mm, 337.5 ÷ 7.67 = 44.00 D)
 var KR_RESET = { v: '7.67', h: '7.67' };
