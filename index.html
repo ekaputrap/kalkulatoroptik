@@ -233,6 +233,8 @@ input:disabled, select:disabled { opacity: .62; }
 .seg input { position: absolute; inset: 0; opacity: 0; margin: 0; }
 .seg span { display: block; text-align: center; padding: 12px 6px; font-size: .9rem; font-weight: 600; white-space: nowrap; }
 .seg input:checked + span { background: var(--accent); color: var(--accent-ink); }
+.seg input:disabled { cursor: not-allowed; }
+.seg input:disabled + span { opacity: .45; }
 .seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: -3px; }
 .stack { display: grid; gap: 14px; margin-top: 14px; }
 .live { margin-top: 14px; padding: 10px 12px; background: var(--surface-2); border-radius: 10px; font-family: var(--f-num); font-size: .9rem; font-variant-numeric: tabular-nums; }
@@ -888,6 +890,14 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
               <label><input type="radio" name="shape" data-k="pre.shape" value="bulat"><span data-t="kartu.bulat"></span></label>
             </div>
           </div>
+          <div class="f" role="radiogroup" aria-labelledby="lbl-ed">
+            <span class="lbl" id="lbl-ed" data-t="kartu.rumus_ed"></span>
+            <div class="seg">
+              <label><input type="radio" name="ed" data-k="pre.ed" value="biasa"><span data-t="kartu.ed_biasa"></span></label>
+              <label><input type="radio" name="ed" data-k="pre.ed" value="pyth"><span data-t="kartu.ed_pythagoras"></span></label>
+            </div>
+            <p class="hint" id="pre-ed-note" style="margin:8px 0 0"></p>
+          </div>
         </div>
         <p class="live dim" id="pre-live" aria-live="polite"></p>
       </section>
@@ -927,8 +937,9 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
       <section class="panel" data-t-aria-label="mbs.input">
         <section class="card" id="in-mbs">
           <div class="eye-h"><h2 data-t="mbs.data_frame"></h2></div>
-          <div class="grid2">
+          <div class="grid3">
             <div class="f"><label for="mbs-A"><span data-t="mbs.a"></span> <small data-t="mbs.mm"></small></label><input type="text" id="mbs-A" data-k="mbs.A" data-rule="pos" inputmode="decimal" autocomplete="off" placeholder="0" enterkeyhint="next"></div>
+            <div class="f"><label for="mbs-B"><span data-t="mbs.b"></span> <small data-t="mbs.mm"></small></label><input type="text" id="mbs-B" data-k="mbs.B" data-rule="pos" inputmode="decimal" autocomplete="off" placeholder="0" enterkeyhint="next"></div>
             <div class="f"><label for="mbs-DBL"><span data-t="mbs.dbl"></span> <small data-t="mbs.mm"></small></label><input type="text" id="mbs-DBL" data-k="mbs.DBL" data-rule="pos" inputmode="decimal" autocomplete="off" placeholder="0" enterkeyhint="next"></div>
           </div>
           <div class="grid2" id="mbs-g" style="margin-top:12px">
@@ -944,6 +955,14 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
                 <label><input type="radio" name="mbs-shape" data-k="mbs.shape" value="kotak"><span data-t="mbs.kotak"></span></label>
                 <label><input type="radio" name="mbs-shape" data-k="mbs.shape" value="bulat"><span data-t="mbs.bulat"></span></label>
               </div>
+            </div>
+            <div class="f" role="radiogroup" aria-labelledby="lbl-mbs-ed">
+              <span class="lbl" id="lbl-mbs-ed" data-t="mbs.rumus_ed"></span>
+              <div class="seg">
+                <label><input type="radio" name="mbs-ed" data-k="mbs.ed" value="biasa"><span data-t="mbs.ed_biasa"></span></label>
+                <label><input type="radio" name="mbs-ed" data-k="mbs.ed" value="pyth"><span data-t="mbs.ed_pythagoras"></span></label>
+              </div>
+              <p class="hint" id="mbs-ed-note" style="margin:8px 0 0"></p>
             </div>
           </div>
         </section>
@@ -1729,6 +1748,10 @@ var TEKS = {
   "kartu.bentuk_frame": "Bentuk frame",
   "kartu.kotak": "Kotak",
   "kartu.bulat": "Bulat",
+  "kartu.rumus_ed": "Rumus ED",
+  "kartu.ed_biasa": "Biasa",
+  "kartu.ed_pythagoras": "Pythagoras",
+  "kartu.ed_pythagoras_catatan": "B wajib diisi. Bentuk frame tidak dipakai.",
   "kartu.lihat_hasil": "Lihat hasil",
   "kartu.hasil": "Hasil",
   "kartu.rumus_yang_dipakai": "Rumus yang dipakai",
@@ -1750,6 +1773,11 @@ var TEKS = {
   "mbs.bentuk_frame": "Bentuk frame",
   "mbs.kotak": "Kotak",
   "mbs.bulat": "Bulat",
+  "mbs.b": "B",
+  "mbs.rumus_ed": "Rumus ED",
+  "mbs.ed_biasa": "Biasa",
+  "mbs.ed_pythagoras": "Pythagoras",
+  "mbs.ed_pythagoras_catatan": "B wajib diisi. Bentuk frame tidak dipakai.",
   "mbs.hasil": "Hasil",
   "mbs.rumus_yang_dipakai": "Rumus yang dipakai",
 
@@ -2026,6 +2054,22 @@ var TEKS = {
   "js.precal": "Precal",
   "js.isi_a_dbl_dan": "Isi A, DBL, dan PD OD atau PD OS di tab Input untuk menghitung ED, DEC, MBS, dan diameter lensa.",
   "js.isi_a_dbl_dan_2": "Isi A, DBL, dan PD di tab Input untuk menghitung ED, DEC, MBS, dan diameter lensa.",
+  "js.isi_a_b_dbl_dan": "Isi A, B, DBL, dan PD OD atau PD OS di tab Input untuk menghitung ED, DEC, MBS, dan diameter lensa.",
+  "js.isi_a_b_dbl_dan_2": "Isi A, B, DBL, dan PD di tab Input untuk menghitung ED, DEC, MBS, dan diameter lensa.",
+  "js.isi_a_b_dbl_dan_3": "Isi A, B, DBL, dan PD OD atau PD OS untuk melihat ED, DEC, MBS, dan Ø.",
+  "js.isi_a_b_dbl_dan_4": "Isi A, B, DBL, dan PD untuk melihat ED, DEC, MBS, dan Ø.",
+  "js.lengkapi_data_precal_a_b": "Lengkapi data precal (A, B, DBL,",
+  "js.ed_sama_dengan_a": "ED sama dengan A",
+  "js.ed_sama_dengan_a_2": "ED sama dengan A ditambah 2",
+  "js.ed_biasa_kotak_catatan": "Frame kotak: A ditambah 2. B tidak dipakai.",
+  "js.ed_biasa_bulat_catatan": "Frame bulat: sama dengan A. B tidak dipakai.",
+  "js.ed_biasa_kotak_catatan_rf": "Rumus Biasa (standar) untuk frame kotak: A ditambah 2. B tidak dipakai.",
+  "js.ed_biasa_bulat_catatan_rf": "Rumus Biasa (standar) untuk frame bulat: sama dengan A. B tidak dipakai.",
+  "js.kotak": "Kotak",
+  "js.ed_sama_dengan_akar": "ED sama dengan akar dari, A kuadrat ditambah B kuadrat",
+  "js.ed_pythagoras_catatan": "Diagonal kotak A × B. Bentuk frame tidak dipakai.",
+  "js.ed_pythagoras_catatan_rf": "Dipakai bila Rumus ED di input precal dipilih Pythagoras. Diagonal kotak A × B, bentuk frame tidak dipakai.",
+  "js.pythagoras": "Pythagoras",
   "js.dec": "DEC",
   "js.diameter_2": "Diameter",
   "js.dec_2": ": DEC = |(",
@@ -2076,8 +2120,6 @@ var TEKS = {
   "js.dibuang": "Dibuang",
   "js.meridian_minus_t_et": "Meridian minus: t − ET. Meridian plus: t − CT.",
   "js.grinding_70_finning_20": "Grinding 70%, Finning 20%, Polishing 10%.",
-  "js.a_frame_bulat": "A (frame bulat)",
-  "js.a_2_frame_kotak": "A + 2 (frame kotak)",
   "js.a_dbl_2_pd": "|(A + DBL) ÷ 2 − PD|, decentration tiap lensa, dengan PD OD untuk OD dan PD OS untuk OS",
   "js.a_dbl_pd_2": "|A + DBL − PD| ÷ 2, decentration tiap lensa",
   "js.ed_2_2_dec": "ED + 2 + 2 × DEC, dihitung tiap mata",
@@ -2406,6 +2448,8 @@ var TEKS = {
   // ----- Dari skrip: Perbarui layar -----
   "js.isi_a_dbl_dan_5": "Isi A, DBL, dan PD OD atau PD OS untuk menghitung ED, DEC, MBS, dan diameter lensa.",
   "js.isi_a_dbl_dan_6": "Isi A, DBL, dan PD untuk menghitung ED, DEC, MBS, dan diameter lensa.",
+  "js.isi_a_b_dbl_dan_5": "Isi A, B, DBL, dan PD OD atau PD OS untuk menghitung ED, DEC, MBS, dan diameter lensa.",
+  "js.isi_a_b_dbl_dan_6": "Isi A, B, DBL, dan PD untuk menghitung ED, DEC, MBS, dan diameter lensa.",
   "js.et_diketahui": "ET diketahui",
   "js.ct_diketahui": "CT diketahui",
   "js.ct_et_diketahui": "CT / ET diketahui",
@@ -2462,8 +2506,6 @@ var TEKS = {
 
   // ----- Dari skrip: Halaman Kumpulan Rumus -----
   "js.data_precal_frame": "Data precal (frame)",
-  "js.frame_kotak_a_2": "Frame kotak: A + 2",
-  "js.frame_bulat_a": "Frame bulat: A",
   "js.pd_binocular_a_dbl": "PD binocular: |A + DBL − PD| ÷ 2",
   "js.pd_monocular_a_dbl": "PD monocular: |(A + DBL) ÷ 2 − PD mata itu|",
   "js.pd_binocular_ed_2": "PD binocular: ED + 2 + |A + DBL − PD|",
@@ -2687,9 +2729,15 @@ function classifyLens(sph, cyl) {
 // Diameter lensa dari MBS: MBS <= 60 jadi 60, di atasnya naik tiap 5 mm.
 function diaOfMBS(MBS) { return MBS <= 60 ? 60 : Math.ceil(MBS / 5 - 1e-9) * 5; }
 
+// ED. Biasa (default): frame bulat = A, frame kotak = A + 2. Pythagoras (p.ed === 'pyth'): √(A² + B²), bentuk frame tidak dipakai.
+function edOf(p) {
+  if (p.ed === 'pyth') return Math.sqrt(p.A * p.A + p.B * p.B);
+  return p.shape === 'bulat' ? p.A : p.A + 2;
+}
+
 // PD binocular (satu angka PD untuk kedua mata).
 function calcPrecal(p) {
-  const ED = p.shape === 'bulat' ? p.A : p.A + 2;
+  const ED = edOf(p);
   const diff = Math.abs(p.A + p.DBL - p.PD);   // selisih total frame dan PD
   const DEC = diff / 2;                         // decentration tiap lensa
   const MBS = ED + 2 + diff;
@@ -2700,7 +2748,7 @@ function calcPrecal(p) {
 // MBS tiap mata = ED + 2 + 2 × DEC. Bila PD OD = PD OS = PD ÷ 2, hasilnya sama dengan calcPrecal.
 // Mata yang PD-nya belum diisi (null) hasilnya null.
 function calcPrecalMono(p) {
-  const ED = p.shape === 'bulat' ? p.A : p.A + 2;
+  const ED = edOf(p);
   const half = (p.A + p.DBL) / 2;
   const one = pd => {
     if (pd === null || pd === undefined) return null;
@@ -2837,8 +2885,8 @@ function blank() {
     od: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', thick: '1.4', tr: false },
     os: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', thick: '1.4', tr: false },
     osSame: true,
-    pre: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, frame: 'full', shape: 'kotak' },   // mono: false = PD binocular, true = PD monocular (PDod dan PDos)
-    mbs: { A: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, shape: 'kotak' },   // halaman Data Precal, terpisah dari kartu kerja
+    pre: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, frame: 'full', shape: 'kotak', ed: 'biasa' },   // mono: false = PD binocular, true = PD monocular (PDod dan PDos). ed: rumus ED, biasa (A + 2 atau A) atau pyth (√(A² + B²))
+    mbs: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, shape: 'kotak', ed: 'biasa' },   // halaman Data Precal, terpisah dari kartu kerja
     sag: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', tr: false, mode: 'approx' },   // halaman Sagita, terpisah dari kartu kerja. mode: approx atau exact
     ft: { sph: '', cyl: '', axis: '', bc: '', tr: false },   // halaman Tools, terpisah dari kartu kerja. bc kosong = otomatis dari resep
     bc: { sph: '', cyl: '', tr: false },
@@ -3017,18 +3065,22 @@ function evalPre(p) {
   p = p || S.pre;   // S.pre = kartu kerja, S.mbs = halaman Data Precal (rumus sama)
   var A = num(p.A), DBL = num(p.DBL);
   var good = function (v) { return !bad(v) && v > 0; };
+  var pyth = p.ed === 'pyth', B = pyth ? num(p.B) : null;   // B hanya dipakai rumus ED Pythagoras
+  if (pyth && !good(B)) return null;
   if (p.mono) {
     // PD monocular: tiap mata dihitung dari PD-nya sendiri. Mata yang PD-nya kosong atau tidak valid hasilnya null.
     var R = num(p.PDod), L = num(p.PDos);
     if (!good(A) || !good(DBL) || (!good(R) && !good(L))) return null;
-    var m = calcPrecalMono({ A: A, DBL: DBL, PDod: good(R) ? R : null, PDos: good(L) ? L : null, shape: p.shape });
-    m.mono = true; m.A = A; m.DBL = DBL;
+    var m = calcPrecalMono({ A: A, DBL: DBL, PDod: good(R) ? R : null, PDos: good(L) ? L : null, shape: p.shape, ed: p.ed, B: B });
+    m.mono = true; m.A = A; m.DBL = DBL; m.shape = p.shape === 'bulat' ? 'bulat' : 'kotak';
+    if (pyth) { m.ed = 'pyth'; m.B = B; }
     return m;
   }
   var PD = num(p.PD);
   if (![A, DBL, PD].every(good)) return null;
-  var r = calcPrecal({ A: A, DBL: DBL, PD: PD, shape: p.shape });
-  r.A = A; r.DBL = DBL; r.PD = PD;
+  var r = calcPrecal({ A: A, DBL: DBL, PD: PD, shape: p.shape, ed: p.ed, B: B });
+  r.A = A; r.DBL = DBL; r.PD = PD; r.shape = p.shape === 'bulat' ? 'bulat' : 'kotak';
+  if (pyth) { r.ed = 'pyth'; r.B = B; }
   return r;
 }
 // Data precal milik satu mata: mode binocular = objek yang sama untuk kedua mata, monocular = hasil mata itu (bisa null).
@@ -3082,9 +3134,12 @@ function evalEye(k, pre) {
 function rangeOf(p) { return p.MBS <= 60 ? _T('js.mbs_60_atau_kurang') : (_T('js.mbs') + ' ') + mm(p.MBS) + ' ada di rentang ' + (p.dia - 4) + '–' + p.dia; }
 function preHTML(pre, o) {
   o = o || {};
+  // Baris rumus ED bila memakai Pythagoras (kosong untuk rumus biasa)
+  var edLine = !pre ? '' : (pre.ed === 'pyth' ? 'ED = √(' + mm(pre.A) + '² + ' + mm(pre.B) + '²) = ' + mm(pre.ED)
+    : pre.shape === 'bulat' ? 'ED = ' + mm(pre.A) : 'ED = ' + mm(pre.A) + ' + 2 = ' + mm(pre.ED)) + '<br>';
   var title = o.title || _T('js.precal');
   if (!pre) {
-    return '<section class="card"><div class="eye-h"><h2>' + title + '</h2></div><p class="hint">' + (o.hint || (o.mono ? _T('js.isi_a_dbl_dan') : _T('js.isi_a_dbl_dan_2'))) + '</p></section>';
+    return '<section class="card"><div class="eye-h"><h2>' + title + '</h2></div><p class="hint">' + (o.hint || (o.ed === 'pyth' ? (o.mono ? _T('js.isi_a_b_dbl_dan') : _T('js.isi_a_b_dbl_dan_2')) : (o.mono ? _T('js.isi_a_dbl_dan') : _T('js.isi_a_dbl_dan_2')))) + '</p></section>';
   }
   if (pre.mono) {
     // PD monocular: satu kolom tiap mata, ED sama untuk kedua mata
@@ -3098,7 +3153,7 @@ function preHTML(pre, o) {
       row(_T('js.dec'), cell(function (e) { return mm(e.DEC); }), 2) +
       row(_T('js.mbs'), cell(function (e) { return mm(e.MBS); }), 2) +
       row(_T('js.diameter_2'), cell(function (e) { return e.dia > DIA_MAX ? '<span class="over">' + e.dia + '</span>' : String(e.dia); }), 2, { key: true }) +
-      '</div><p class="how">' + eyes.filter(function (k) { return pre[k]; }).map(function (k) {
+      '</div><p class="how">' + (edLine ? edLine + '<br>' : '') + eyes.filter(function (k) { return pre[k]; }).map(function (k) {
         var e = pre[k];
         return k.toUpperCase() + _T('js.dec_2') + mm(pre.A) + ' + ' + mm(pre.DBL) + ') ÷ 2 ' + MIN + ' ' + mm(e.PD) + '| = ' + mm(e.DEC) +
           '<br>MBS = ' + mm(pre.ED) + ' + 2 + 2 × ' + mm(e.DEC) + ' = ' + mm(e.MBS) + '<br>' + rangeOf(e);
@@ -3115,7 +3170,7 @@ function preHTML(pre, o) {
     ('<div class="tile"><small>' + _T('js.dec') + '</small><b>') + mm(pre.DEC) + '</b></div>' +
     ('<div class="tile"><small>' + _T('js.mbs') + '</small><b>') + mm(pre.MBS) + '</b></div>' +
     '<div class="tile main' + (over ? ' over' : '') + ('"><small>' + _T('js.diameter_2') + '</small><b>') + pre.dia + '</b></div></div>' +
-    '<p class="how">DEC = |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '| ÷ 2 = ' + mm(pre.DEC) + '<br>MBS = ' + mm(pre.ED) + ' + 2 + |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '|<br>' + range + '</p>' +
+    '<p class="how">' + edLine + 'DEC = |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '| ÷ 2 = ' + mm(pre.DEC) + '<br>MBS = ' + mm(pre.ED) + ' + 2 + |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '|<br>' + range + '</p>' +
     (over ? ('<div class="msg bad">' + _T('js.diameter_2') + ' ') + pre.dia + ' mm melebihi ' + DIA_MAX + (' ' + _T('js.mm_di_luar_ukuran') + ' ') + (o.what || 'data precal') + '.</div>' : '') + '</section>';
 }
 function row(label, vals, cols, o) {
@@ -3133,7 +3188,7 @@ function eyeHTML(k, ev) {
   var head = '<div class="res-h"><span class="chip ' + k + '">' + nm + '</span><h2>' + long + '</h2>' + trBtn + '</div>';
   if (s === 'empty') body = ('<p class="empty">' + _T('js.belum_diisi_masukkan_spheris') + '</p>');
   else if (s === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
-  else if (s === 'wait') body = ('<div class="msg warn">' + _T('js.lengkapi_data_precal_a') + ' ') + (S.pre.mono ? 'PD ' + nm : 'PD') + (_T('js.supaya_diameter_dan_ketebalan') + '</div>');
+  else if (s === 'wait') body = ('<div class="msg warn">' + (S.pre.ed === 'pyth' ? _T('js.lengkapi_data_precal_a_b') : _T('js.lengkapi_data_precal_a')) + ' ') + (S.pre.mono ? 'PD ' + nm : 'PD') + (_T('js.supaya_diameter_dan_ketebalan') + '</div>');
   else {
     var r = ev.r, two = r.hasCyl, cols = two ? 2 : 1, mixed = r.type === 'mixed', minus = r.type === 'minus';
     var ax2 = ((ev.ax + 89) % 180) + 1;
@@ -3176,6 +3231,20 @@ function eyeHTML(k, ev) {
 var SAG_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.sama_dengan_nilai_mutlak') + '">=<span class="frac"><span class="num">|<i>' + _T('js.d') + '</i>| · Ø²</span><span class="den">8000 · (<i>' + _T('js.n') + '</i> − 1)</span></span></span>');
 // Rumus sagita exact: s = r − √(r² − (Ø/2)²), dengan r = 1000 · (n − 1) ÷ |D|. Garis akar digambar CSS + SVG (lihat .rad), tanpa pustaka luar.
 var SVG_RAD = '<svg class="rs" viewBox="0 0 12 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0.5 14L3 12L6 22L12 0"/></svg>';
+// Rumus ED Pythagoras: ED = √(A² + B²). Garis akar memakai gaya .rad yang sama dengan SAG_EXACT_EQ.
+// lhs = true menambah "ED" di depan tanda sama dengan (untuk tempat yang tidak punya label ED sendiri).
+function edPythEq(lhs) {
+  return '<span class="eq" role="math" aria-label="' + _T('js.ed_sama_dengan_akar') + '">' + (lhs ? '<span>ED</span>' : '') + '<span>=</span>' +
+    '<span class="rad">' + SVG_RAD + '<span class="rc"><span><i>A</i>²</span><span>+</span><span><i>B</i>²</span></span></span></span>';
+}
+// Rumus ED biasa: frame kotak ED = A + 2, frame bulat ED = A. Gaya sama dengan edPythEq. lhs = true menambah "ED" di depan tanda sama dengan.
+function edBiasaEq(bulat, lhs) {
+  return '<span class="eq" role="math" aria-label="' + _T(bulat ? 'js.ed_sama_dengan_a' : 'js.ed_sama_dengan_a_2') + '">' + (lhs ? '<span>ED</span>' : '') + '<span>=</span><i>A</i>' + (bulat ? '' : '<span>+</span><span>2</span>') + '</span>';
+}
+// Rumus ED + catatan penjelasnya untuk satu pilihan: pyth, atau biasa menurut bentuk frame (bulat atau kotak).
+function edFormulaHTML(pyth, bulat, lhs, note) {
+  return (pyth ? edPythEq(lhs) : edBiasaEq(bulat, lhs)) + '<span class="eq-note">' + note + '</span>';
+}
 var SAG_EXACT_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.s_sama_dengan_r') + '"><i>' + _T('js.s') + '</i><span>=</span><i>' + _T('js.r') + '</i><span>−</span>') +
   '<span class="rad">' + SVG_RAD + ('<span class="rc"><span><i>' + _T('js.r') + '</i>²</span><span>−</span>') +
   '<span class="pw"><span class="bp">(</span><span class="frac"><span class="num">Ø</span><span class="den">2</span></span><span class="bp">)</span><sup>2</sup></span></span></span></span>';
@@ -3202,9 +3271,9 @@ function eyeFormulas(r, ax) {
 }
 // Rumus precal (ED, MBS, diameter). Dipakai kartu kerja dan halaman Data Precal.
 // mono = PD monocular: DEC dan MBS dihitung tiap mata dari PD mata itu.
-function preFormulaRows(shape, mono) {
+function preFormulaRows(shape, mono, ed) {
   return [
-    { dt: 'ED', dd: shape === 'bulat' ? _T('js.a_frame_bulat') : _T('js.a_2_frame_kotak'), eyes: [] },
+    { dt: 'ED', dd: edFormulaHTML(ed === 'pyth', shape === 'bulat', false, _T(ed === 'pyth' ? 'js.ed_pythagoras_catatan' : shape === 'bulat' ? 'js.ed_biasa_bulat_catatan' : 'js.ed_biasa_kotak_catatan')), eyes: [] },
     mono ? { dt: _T('js.dec'), dd: _T('js.a_dbl_2_pd'), eyes: [] }
          : { dt: _T('js.dec'), dd: _T('js.a_dbl_pd_2'), eyes: [] },
     mono ? { dt: _T('js.mbs'), dd: _T('js.ed_2_2_dec'), eyes: [] }
@@ -4441,7 +4510,7 @@ $('#sn-reset').addEventListener('click', function () {
   S.sn = blank().sn; hydrate(); save(); update();
 });
 
-function setLive(el, pre, mono) {
+function setLive(el, pre, mono, pyth) {
   if (pre && pre.mono) {
     var over = ['od', 'os'].some(function (k) { return pre[k] && pre[k].dia > DIA_MAX; });
     el.className = 'live' + (over ? ' over' : '');
@@ -4451,7 +4520,7 @@ function setLive(el, pre, mono) {
     }).join(''));
   }
   else if (pre) { el.className = 'live' + (pre.dia > DIA_MAX ? ' over' : ''); el.textContent = Lx('ED ' + mm(pre.ED) + ('  ' + _T('js.dec_3') + ' ') + mm(pre.DEC) + ('  ' + _T('js.mbs_2') + ' ') + mm(pre.MBS) + '  ·  Ø ' + pre.dia + ' mm' + (pre.dia > DIA_MAX ? (' ' + _T('js.melebihi') + ' ') + DIA_MAX + ')' : '')); }
-  else { el.className = 'live dim'; el.textContent = mono ? _T('js.isi_a_dbl_dan_3') : _T('js.isi_a_dbl_dan_4'); }
+  else { el.className = 'live dim'; el.textContent = pyth ? (mono ? _T('js.isi_a_b_dbl_dan_3') : _T('js.isi_a_b_dbl_dan_4')) : (mono ? _T('js.isi_a_dbl_dan_3') : _T('js.isi_a_dbl_dan_4')); }
 }
 // Tombol PD binocular / monocular (satu tombol di tiap kartu input precal). k = kunci S: pre (kartu kerja) atau mbs (halaman Data Precal).
 // Tulisan tombol menunjukkan mode yang sedang aktif ("PD Binocular" atau "PD Monocular") dan berganti tiap diketuk.
@@ -4473,7 +4542,7 @@ function syncPD(k) {
 }
 function renderFormula(pre, ev) {
   var rows = [];
-  if (pre) rows = rows.concat(preFormulaRows(S.pre.shape, S.pre.mono));
+  if (pre) rows = rows.concat(preFormulaRows(S.pre.shape, S.pre.mono, S.pre.ed));
   var ok = EYES.filter(function (k) { return ev[k].state === 'ok'; });
   var lists = ok.map(function (k) { return eyeFormulas(ev[k].r, ev[k].ax); });
   for (var j = 0; lists.length && j < lists[0].length; j++) {
@@ -5417,22 +5486,36 @@ function setTypePill(id, ty) {
       ('<span><span class="lt">' + _T('js.lensa_2') + ' ' + '</span>') + (ty === 'minus' ? 'minus' : ty === 'plus' ? 'plus' : ty === 'mixed' ? 'campuran' : '') + '</span>';
   }
 }
+// Catatan rumus ED di bawah pilihan Rumus ED (kartu kerja dan halaman Data Precal), ikut pilihan rumus dan bentuk frame.
+// Rumus Pythagoras tidak memakai bentuk frame, jadi pilihan bentuk dinonaktifkan.
+function syncED() {
+  [{ k: 'pre', shape: 'shape', note: '#pre-ed-note', t: 'kartu.ed_pythagoras_catatan' }, { k: 'mbs', shape: 'mbs-shape', note: '#mbs-ed-note', t: 'mbs.ed_pythagoras_catatan' }].forEach(function (c) {
+    var pyth = S[c.k].ed === 'pyth', bulat = S[c.k].shape === 'bulat';
+    $$('input[name="' + c.shape + '"]').forEach(function (el) { el.disabled = pyth; });
+    var n = $(c.note); if (!n) return;
+    var key = pyth ? 'pyth' : bulat ? 'bulat' : 'kotak';
+    if (n.dataset.k !== key) {   // isi ulang hanya saat pilihan rumus atau bentuk frame berganti
+      n.dataset.k = key;
+      n.innerHTML = edFormulaHTML(pyth, bulat, true, _T(pyth ? c.t : bulat ? 'js.ed_biasa_bulat_catatan' : 'js.ed_biasa_kotak_catatan'));
+    }
+  });
+}
 function update() {
-  syncPD('pre'); syncPD('mbs');
+  syncPD('pre'); syncPD('mbs'); syncED();
   var pre = evalPre();
   var ev = { od: evalEye('od', preOf(pre, 'od')), os: evalEye('os', preOf(pre, 'os')) };
-  $('#out').innerHTML = L(preHTML(pre, { mono: S.pre.mono }) + eyeHTML('od', ev.od) + eyeHTML('os', ev.os));
+  $('#out').innerHTML = L(preHTML(pre, { mono: S.pre.mono, ed: S.pre.ed }) + eyeHTML('od', ev.od) + eyeHTML('os', ev.os));
   renderFormula(pre, ev);
 
   var okCount = (ev.od.state === 'ok' ? 1 : 0) + (ev.os.state === 'ok' ? 1 : 0);
   var badge = $('#badge'); badge.hidden = okCount === 0; badge.textContent = okCount;
 
-  setLive($('#pre-live'), pre, S.pre.mono);
+  setLive($('#pre-live'), pre, S.pre.mono, S.pre.ed === 'pyth');
 
   // Halaman Data Precal
   var mpre = evalPre(S.mbs);
-  $('#mbs-out').innerHTML = L(preHTML(mpre, { title: _T('js.hasil'), hint: S.mbs.mono ? _T('js.isi_a_dbl_dan_5') : _T('js.isi_a_dbl_dan_6'), what: 'data frame' }));
-  $('#mbs-rumus').innerHTML = L(preFormulaRows(S.mbs.shape, S.mbs.mono).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  $('#mbs-out').innerHTML = L(preHTML(mpre, { title: _T('js.hasil'), hint: S.mbs.ed === 'pyth' ? (S.mbs.mono ? _T('js.isi_a_b_dbl_dan_5') : _T('js.isi_a_b_dbl_dan_6')) : (S.mbs.mono ? _T('js.isi_a_dbl_dan_5') : _T('js.isi_a_dbl_dan_6')), what: 'data frame' }));
+  $('#mbs-rumus').innerHTML = L(preFormulaRows(S.mbs.shape, S.mbs.mono, S.mbs.ed).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
 
   // Halaman Sagita
   var sg = evalSag();
@@ -6335,7 +6418,9 @@ function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&
 function lnH() { return Array.prototype.map.call(arguments, function (x) { return '<span class="ln">' + x + '</span>'; }).join(''); }
 var RF = [
   { g: _T('js.data_precal_frame'), rows: [
-    ['ED', lnH(_T('js.frame_kotak_a_2'), _T('js.frame_bulat_a'))],
+    [_T('js.kotak'), edFormulaHTML(false, false, true, _T('js.ed_biasa_kotak_catatan_rf'))],
+    [_T('js.bulat'), edFormulaHTML(false, true, true, _T('js.ed_biasa_bulat_catatan_rf'))],
+    [_T('js.pythagoras'), edFormulaHTML(true, false, true, _T('js.ed_pythagoras_catatan_rf'))],
     [_T('js.dec'), lnH(_T('js.pd_binocular_a_dbl'), _T('js.pd_monocular_a_dbl'))],
     [_T('js.mbs'), lnH(_T('js.pd_binocular_ed_2'), _T('js.pd_monocular_ed_2'))],
     ['Ø', _T('js.dibulatkan_dengan_kelipatan_5')]
