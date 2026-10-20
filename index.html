@@ -898,6 +898,13 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
             </div>
             <p class="hint" id="pre-ed-note" style="margin:8px 0 0"></p>
           </div>
+          <div class="f" role="radiogroup" aria-labelledby="lbl-pre-sagmode">
+            <span class="lbl" id="lbl-pre-sagmode" data-t="kartu.rumus_sagita"></span>
+            <div class="seg">
+              <label><input type="radio" name="pre-sagmode" data-k="pre.sagmode" value="approx"><span data-t="kartu.approximate"></span></label>
+              <label><input type="radio" name="pre-sagmode" data-k="pre.sagmode" value="exact"><span data-t="kartu.exact"></span></label>
+            </div>
+          </div>
         </div>
         <p class="live dim" id="pre-live" aria-live="polite"></p>
       </section>
@@ -1752,6 +1759,9 @@ var TEKS = {
   "kartu.ed_biasa": "Biasa",
   "kartu.ed_pythagoras": "Pythagoras",
   "kartu.ed_pythagoras_catatan": "B wajib diisi. Bentuk frame tidak dipakai.",
+  "kartu.rumus_sagita": "Rumus sagita",
+  "kartu.approximate": "Approximate",
+  "kartu.exact": "Exact",
   "kartu.lihat_hasil": "Lihat hasil",
   "kartu.hasil": "Hasil",
   "kartu.rumus_yang_dipakai": "Rumus yang dipakai",
@@ -2516,7 +2526,7 @@ var TEKS = {
   "js.meridian_pertama_spheris_f1": "Meridian pertama: Spheris − F1",
   "js.meridian_kedua_spheris_cylinder": "Meridian kedua: (Spheris + Cylinder) − F1",
   "js.approx": "Approx",
-  "js.hasil_dalam_mm_dibulatkan": "Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3). Hanya ada di halaman Sagita.",
+  "js.hasil_dalam_mm_dibulatkan": "Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3).",
   "js.meridian_minus_ct_diketahui": "Meridian minus (CT diketahui): ET = Sagita + CT",
   "js.meridian_plus_et_diketahui": "Meridian plus (ET diketahui): CT = Sagita + ET",
   "js.meridian_minus_t_et_2": "Meridian minus: t − ET",
@@ -2763,7 +2773,7 @@ function calcPrecalMono(p) {
 //   approx (default): |D| × Ø² ÷ (8000 × (n − 1))
 //   exact: r = 1000 × (n − 1) ÷ |D|, s = r − √(r² − (Ø/2)²). D = 0 (plano) sagitanya 0.
 //          Bila Ø/2 > r permukaan tidak bisa menutup diameter itu: hasilnya NaN.
-// Kartu kerja (calcEye) dan halaman Ketebalan Lensa memakai approx. Halaman Sagita memilih.
+// Kartu kerja (calcEye) dan halaman Sagita memilih approx atau exact. Halaman Ketebalan Lensa memakai approx.
 function sagExact(p, dia, n) {
   if (p === 0) return 0;
   const r = 1000 * (n - 1) / Math.abs(p), h = dia / 2;
@@ -2809,8 +2819,10 @@ function calcRemoval(kinds, ET, CT, t) {
   return { rem, grinding: rem.map(r => fixD(r * 0.70)), finning: rem.map(r => fixD(r * 0.20)), polishing: rem.map(r => fixD(r * 0.10)) };
 }
 
-function calcEye(e, dia) {
+// mode: 'approx' (standar) atau 'exact', dipilih di kartu kerja. Exact bisa menghasilkan NaN pada sag (Ø/2 > r), pemanggil yang menanganinya.
+function calcEye(e, dia, mode) {
   const { sph, n, thick } = e;
+  mode = mode === 'exact' ? 'exact' : 'approx';
   const cyl = e.cyl || 0;
   const hasCyl = cyl !== 0;
   const { type, kinds, P } = classifyLens(sph, cyl);
@@ -2818,13 +2830,13 @@ function calcEye(e, dia) {
   const { SE, BCraw, BC } = calcBaseCurve(sph, cyl);
   const { F1, F2 } = calcTools(P, BC);
 
-  const sag = calcSagita(P, dia, n);
+  const sag = calcSagita(P, dia, n, mode);
 
   const { ET, CT, biggest, t } = calcThickness(kinds, sag, thick);
 
   const { rem, grinding, finning, polishing } = calcRemoval(kinds, ET, CT, t);
 
-  return { type, kinds, hasCyl, SE, BCraw, BC, F1, F2, sag, ET, CT, t, grinding, finning, polishing, dia, n };
+  return { type, kinds, hasCyl, SE, BCraw, BC, F1, F2, sag, ET, CT, t, grinding, finning, polishing, dia, n, mode };
 }
 if (typeof module !== 'undefined') module.exports = { SURF_MATERIALS, fixD, roundQuarter, classifyLens, diaOfMBS, calcPrecal, calcPrecalMono, sagExact, calcSagita, calcBaseCurve, calcTools, calcThickness, calcRemoval, calcEye };
 
@@ -2885,7 +2897,7 @@ function blank() {
     od: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', thick: '1.4', tr: false },
     os: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', thick: '1.4', tr: false },
     osSame: true,
-    pre: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, frame: 'full', shape: 'kotak', ed: 'biasa' },   // mono: false = PD binocular, true = PD monocular (PDod dan PDos). ed: rumus ED, biasa (A + 2 atau A) atau pyth (√(A² + B²))
+    pre: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, frame: 'full', shape: 'kotak', ed: 'biasa', sagmode: 'approx' },   // mono: false = PD binocular, true = PD monocular (PDod dan PDos). ed: rumus ED, biasa (A + 2 atau A) atau pyth (√(A² + B²)). sagmode: rumus sagita kartu kerja, approx atau exact
     mbs: { A: '', B: '', DBL: '', PD: '', PDod: '', PDos: '', mono: false, shape: 'kotak', ed: 'biasa' },   // halaman Data Precal, terpisah dari kartu kerja
     sag: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', tr: false, mode: 'approx' },   // halaman Sagita, terpisah dari kartu kerja. mode: approx atau exact
     ft: { sph: '', cyl: '', axis: '', bc: '', tr: false },   // halaman Tools, terpisah dari kartu kerja. bc kosong = otomatis dari resep
@@ -3124,8 +3136,14 @@ function evalEye(k, pre) {
   var orig = { sph: sph, cyl: cylv, ax: (axOK && !axEmpty) ? (ax === 0 ? 180 : ax) : 180 };
   var tr = !!e.tr && cylv !== 0;   // transposisi hanya berlaku bila ada cylinder
   var rx = tr ? transpose(orig) : orig;
-  var r = calcEye({ sph: rx.sph, cyl: rx.cyl, n: n, thick: thick }, pre.dia);
-  return { state: 'ok', r: r, sph: rx.sph, cyl: rx.cyl, n: n, thick: thick, ax: rx.ax, axOK: axOK, tr: tr, canTr: cylv !== 0, orig: orig };
+  var mode = S.pre.sagmode === 'exact' ? 'exact' : 'approx';
+  var r = calcEye({ sph: rx.sph, cyl: rx.cyl, n: n, thick: thick }, pre.dia, mode);
+  if (r.sag.some(function (x) { return Number.isNaN(x); })) {
+    // Exact: Ø/2 lebih besar dari r pada power ini, akar kuadrat tidak ada. r terkecil = power terbesar.
+    var rMin = Math.min.apply(null, classifyLens(rx.sph, rx.cyl).P.filter(function (p) { return p !== 0; }).map(function (p) { return 1000 * (n - 1) / Math.abs(p); }));
+    return { state: 'error', errs: [_T('js.rumus_exact_tidak_bisa') + trim(pre.dia / 2) + (' ' + _T('js.mm_lebih_besar_dari')) + trim(rMin) + (' ' + _T('js.mm_kecilkan_diameter_atau'))] };
+  }
+  return { state: 'ok', r: r, mode: mode, sph: rx.sph, cyl: rx.cyl, n: n, thick: thick, ax: rx.ax, axOK: axOK, tr: tr, canTr: cylv !== 0, orig: orig };
 }
 
 /* ---------- Tampilkan hasil ---------- */
@@ -3199,7 +3217,7 @@ function eyeHTML(k, ev) {
     var ctNote = mixed ? _T('js.minus_diketahui') : (minus ? 'diketahui' : _T('js.sagita_et'));
     var HIGH_INDEX = 1.60;   // indeks bias custom 1.60 ke atas disebut High Index
     var mname = matOf(k).id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : matOf(k).name;
-    var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · ' + (r.dia > DIA_MAX ? '<span class="over">Ø ' + r.dia + ' mm</span>' : 'Ø ' + r.dia + ' mm') + '</span></div>';
+    var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · ' + (r.dia > DIA_MAX ? '<span class="over">Ø ' + r.dia + ' mm</span>' : 'Ø ' + r.dia + ' mm') + ' · ' + (r.mode === 'exact' ? _T('js.exact') : _T('js.approximate')) + '</span></div>';
     if (ev.tr) t += trNote(ev);
     t += '<div class="tbl" style="--cols:' + cols + '">';
     if (two) t += '<div class="r hd"><span></span>' + [ev.ax, ax2].map(function (a, i) {
@@ -3253,8 +3271,9 @@ var R_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.r_sama_dengan_1
 var KR_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.d_sama_dengan_1000') + '"><i>' + _T('js.d') + '</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den"><i>' + _T('js.r') + '</i></span></span></span>');
 // ax = axis meridian pertama dari inputan (setelah transposisi bila aktif). Meridian kedua memakai rumus yang sama dengan nama kolom di kartu hasil.
 function eyeFormulas(r, ax) {
-  var minus = r.type === 'minus', mixed = r.type === 'mixed', two = r.hasCyl;
+  var minus = r.type === 'minus', mixed = r.type === 'mixed', two = r.hasCyl, exact = r.mode === 'exact';
   var ax2 = ((ax + 89) % 180) + 1;
+  var sagNote = '<span class="eq-note">D = ' + (two ? _T('js.spheris_dan_spheris_cylinder') : _T('js.spheris')) + '</span>';
   var tools = ['F1 = BC'].concat(two
     ? ['F2 ' + ax + _T('js.spheris_f1'), 'F2 ' + ax2 + _T('js.spheris_cylinder_f1')]
     : [_T('js.f2_spheris_f1')]);
@@ -3262,12 +3281,13 @@ function eyeFormulas(r, ax) {
     ['SE', two ? _T('js.spheris_cylinder') : _T('js.spheris')],
     ['BC', (r.SE <= 0 ? '½ SE + 6' : 'SE + 6') + _T('js.dibulatkan_ke_kelipatan_0')],
     [_T('js.tools'), tools.map(function (x) { return '<span class="ln">' + x + '</span>'; }).join('')],
-    [_T('js.sagita'), SAG_EQ + '<span class="eq-note">D = ' + (two ? _T('js.spheris_dan_spheris_cylinder') : _T('js.spheris')) + '</span>'],
+    [_T('js.sagita'), (exact ? SAG_EXACT_EQ : SAG_EQ) + sagNote]
+  ].concat(exact ? [['r', R_EQ + '<span class="eq-note">Jari-jari lengkung permukaan dalam mm. Ø ÷ 2 tidak boleh lebih besar dari r. Plano (D = 0) sagitanya 0.</span>']] : []).concat([
     mixed ? ['ET / CT', _T('js.meridian_minus_et_sagita')]
           : minus ? ['ET', _T('js.sagita_ct')] : ['CT', _T('js.sagita_et')],
     ['t', _T('js.et_atau_ct_terbesar')],
     [_T('js.dibuang'), (mixed ? _T('js.meridian_minus_t_et') : minus ? 't − ET.' : 't − CT.') + (' ' + _T('js.grinding_70_finning_20'))]
-  ];
+  ]);
 }
 // Rumus precal (ED, MBS, diameter). Dipakai kartu kerja dan halaman Data Precal.
 // mono = PD monocular: DEC dan MBS dihitung tiap mata dari PD mata itu.
@@ -5444,7 +5464,7 @@ function LVP_apply() { Object.keys(LVI).forEach(function (k) { LVI[k].refresh();
 function lvEyeModels(e) {
   var r = e.r, c = classifyLens(e.sph, e.cyl), axes = [e.ax, ((e.ax + 89) % 180) + 1];
   var mk = function (kind, extra) {
-    var o = { kind: kind, dia: r.dia, n: e.n, BC: r.BC, P: c.P, kinds: c.kinds, sag: r.sag, axes: axes, thick: e.thick };
+    var o = { kind: kind, dia: r.dia, n: e.n, BC: r.BC, P: c.P, kinds: c.kinds, sag: r.sag, axes: axes, thick: e.thick, circ: r.mode === 'exact' };   // exact: permukaan lingkaran, approx: parabola
     for (var k in extra) o[k] = extra[k];
     return lvBuild(o);
   };
@@ -6432,8 +6452,8 @@ var RF = [
     ['F2', lnH(_T('js.meridian_pertama_spheris_f1'), _T('js.meridian_kedua_spheris_cylinder'))]
   ] },
   { g: _T('js.sagita'), rows: [
-    [_T('js.approx'), SAG_EQ + '<span class="eq-note">D = power tiap meridian (Spheris, dan Spheris + Cylinder bila ada cylinder). Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3). Dipakai di Kartu Kerja dan Ketebalan Lensa.</span>'],
-    [_T('js.exact'), SAG_EXACT_EQ + ('<span class="eq-note">' + _T('js.hasil_dalam_mm_dibulatkan') + '</span>')],
+    [_T('js.approx'), SAG_EQ + '<span class="eq-note">D = power tiap meridian (Spheris, dan Spheris + Cylinder bila ada cylinder). Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3). Dipakai di Kartu Kerja (pilihan Approximate), halaman Sagita, dan Ketebalan Lensa.</span>'],
+    [_T('js.exact'), SAG_EXACT_EQ + ('<span class="eq-note">' + _T('js.hasil_dalam_mm_dibulatkan') + ' Dipakai di Kartu Kerja (pilihan Exact) dan halaman Sagita.</span>')],
     ['r', R_EQ + '<span class="eq-note">Jari-jari lengkung permukaan dalam mm. Ø ÷ 2 tidak boleh lebih besar dari r. Plano (D = 0) sagitanya 0.</span>']
   ] },
   { g: _T('js.ketebalan'), rows: [
