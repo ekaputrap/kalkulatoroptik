@@ -782,6 +782,7 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 #v-streak .st-lbl .lbl { font-size: .78rem; font-weight: 650; color: var(--ink-2); }
 #v-streak .st-pz { color: var(--pos); }
 #v-streak .st-mz { color: var(--neg); }
+#v-streak .tile.main b { font-size: clamp(.8rem, 5.2vw, 1.3rem); white-space: nowrap; }   /* Rx hasil muat satu baris */
 #v-streak .st-rows { display: grid; gap: 10px; }
 #v-streak .st-sub { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; margin-bottom: 8px; }
 #v-streak .st-sub .lbl { font-size: .78rem; font-weight: 650; color: var(--ink-2); }
@@ -857,9 +858,14 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 
 /* ===== Warna tanda: plus hijau, minus merah, nol putih ===== */
 /* Angka pada isian bertanda. Atribut data-sg diisi lewat JS: p = plus, m = minus, z = nol. */
-input[data-sg="p"] { color: var(--pos); }
-input[data-sg="m"] { color: var(--neg); }
-input[data-sg="z"] { color: var(--zero); }
+html[data-sgc="on"] input[data-sg="p"] { color: var(--pos); }
+html[data-sgc="on"] input[data-sg="m"] { color: var(--neg); }
+html[data-sgc="on"] input[data-sg="z"] { color: var(--zero); }
+/* Angka dioptri bertanda di teks hasil, rumus, dan gambar: JS membungkusnya dengan .sgp (plus) atau .sgm (minus). Hanya berwarna bila Pengaturan "Warna plus dan minus" nyala. */
+html[data-sgc="on"] .sgp { color: var(--pos); fill: var(--pos); }
+html[data-sgc="on"] .sgm { color: var(--neg); fill: var(--neg); }
+/* Di dalam kotak, tombol, dan label berlatar warna (mis. kotak Base Curve), angka mengikuti warna teks kotaknya supaya tetap terbaca. */
+html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .seg, .primary, .ch-tog, .mark, .mi-ico, .hbtn, button) :is(.sgp, .sgm) { color: inherit; fill: inherit; }
 /* Tombol tambah (+) hijau, tombol kurang (−) merah. Berlaku di semua halaman: data-dir (kalkulator, keratometer), data-d (Lensometer dan Streak).
    Tombol axis (.ax) tanpa warna: axis bukan plus atau minus. Tombol geser skala keratometer (.neu) dan tombol skala kalibrasi layar Snellen (data-snpx) juga tanpa warna: itu menggeser radius (mm), bukan menambah atau mengurangi dioptri. */
 .step[data-dir="up"], .step[data-d="1"], #dec-up { --pm: var(--pos); }
@@ -1962,6 +1968,14 @@ input[data-sg="z"] { color: var(--zero); }
           </div>
         </div>
         <p class="hint" style="margin-top:8px" data-t="pengaturan.gerak_halus_saat_membuka"></p>
+        <div class="f" role="radiogroup" aria-labelledby="lbl-sgc" style="margin-top:16px">
+          <span class="lbl" id="lbl-sgc" data-t="pengaturan.warna_plus_minus"></span>
+          <div class="seg">
+            <label><input type="radio" name="set-sgc" value="on"><span data-t="pengaturan.nyala"></span></label>
+            <label><input type="radio" name="set-sgc" value="off"><span data-t="pengaturan.mati"></span></label>
+          </div>
+        </div>
+        <p class="hint" style="margin-top:8px" data-t="pengaturan.warna_plus_minus_hint"></p>
       </section>
       <section class="card">
         <div class="eye-h"><h2 data-t="pengaturan.perhitungan"></h2></div>
@@ -2310,6 +2324,8 @@ var TEKS = {
   "pengaturan.nyala": "Nyala",
   "pengaturan.mati": "Mati",
   "pengaturan.gerak_halus_saat_membuka": "Otomatis mati bila perangkat meminta gerakan dikurangi.",
+  "pengaturan.warna_plus_minus": "Warna plus dan minus",
+  "pengaturan.warna_plus_minus_hint": "Angka dioptri plus berwarna hijau dan minus merah di semua halaman. Angka nol tetap berwarna biasa.",
   "pengaturan.perhitungan": "Perhitungan",
   "pengaturan.diameter_maksimum": "Diameter maksimum",
   "pengaturan.mm": "mm",
@@ -2549,8 +2565,8 @@ var TEKS = {
   "js.astigmat": "Astigmat",
   "js.d_vertikal_d_horizontal": "|D vertikal − D horizontal|",
   "js.arah": "Arah",
-  "js.v_lebih_curam_with": "V lebih curam: with-the-rule, minus cylinder × 180",
-  "js.h_lebih_curam_against": "H lebih curam: against-the-rule, minus cylinder × 90",
+  "js.v_lebih_curam_with": "V lebih curam: with-the-rule, minus cylinder X 180",
+  "js.h_lebih_curam_against": "H lebih curam: against-the-rule, minus cylinder X 90",
   "js.radius_dibulatkan_0_01": "Radius dibulatkan 0.01 mm. D dibulatkan 0.01 D sebelum dipakai menghitung astigmat.",
   "js.isi_radius_v_dan": "Isi radius V dan H untuk melihat astigmat kornea.",
   "js.pakai_di_parameter_lk": "Pakai di Parameter LK",
@@ -2651,7 +2667,7 @@ var TEKS = {
   "js.interval_sturm": "Interval Sturm",
   "js.fokus_1_fokus_2": "|fokus 1 − fokus 2|",
   "js.kabur_terkecil": "Kabur terkecil",
-  "js.sph_cyl_axis": "Sph Cyl × Axis",
+  "js.sph_cyl_axis": "Sph, Cyl, Axis",
   "js.perhitungan_dibatasi_sampai": "Perhitungan dibatasi sampai ±",
   "js.untuk_power_besar_jarak": "Untuk power besar, jarak fokus di gambar dimampatkan; angka mm tetap yang sebenarnya.",
   "js.gambar_digeser_agar_titik": "Gambar digeser agar titik fokus tetap terlihat.",
@@ -3198,7 +3214,7 @@ var DIA_MAX = DIA_DEFAULT;   // diameter lensa standar di pasaran, bisa diubah d
 /* ---------- Pengaturan (disimpan terpisah dari isian kartu kerja) ---------- */
 var SKEY = 'kks-settings-v1';
 var DEC_MIN = 2, DEC_MAX = 6, DEC_DEFAULT = 3;   // digit desimal hasil: tidak boleh kurang dari 2
-var SET = { theme: 'auto', anim: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0 };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
+var SET = { theme: 'auto', anim: true, sgc: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0 };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
 var SEP = '.';   // pemisah desimal yang ditampilkan: '.' atau ','
 // Lx: ubah titik desimal di teks biasa (nilai isian, placeholder). L: sama, untuk potongan HTML (tag dilewati).
 // Semua rumus dan hitungan tetap memakai titik di dalam. Hanya tampilan yang berganti.
@@ -3219,6 +3235,7 @@ try {
   if (so && typeof so.snPx === 'number' && so.snPx >= 2 && so.snPx <= 9) SET.snPx = so.snPx;
   if (so && so.snCal === true) SET.snCal = true;
   if (so && so.anim === false) SET.anim = false;
+  if (so && so.sgc === false) SET.sgc = false;
   if (so && typeof so.snDpr === 'number' && so.snDpr > 0) SET.snDpr = so.snDpr;
 } catch (e) {}
 DIA_MAX = SET.diaMax;
@@ -3239,6 +3256,55 @@ function tFade() {
   clearTimeout(tFade.t); tFade.t = setTimeout(function () { r.classList.remove('a-tfade'); }, 500);
 }
 applyAnim();
+
+/* ---------- Warna plus dan minus (angka dioptri bertanda) ----------
+   Angka berbentuk +1.25 atau −2.50 di teks mana pun dibungkus <span class="sgp|sgm"> (tspan di dalam SVG). Warnanya baru tampil bila html[data-sgc="on"].
+   Dilewati: angka nol, angka bersatuan mm, cm, °, %, dan seluruh halaman Kalkulator Scientific. */
+function applySgc() { document.documentElement.setAttribute('data-sgc', SET.sgc ? 'on' : 'off'); }
+applySgc();
+(function () {
+  var RE = /(^|[\s(\[|\/=:,;>\u00b7\u2192])([+\u2212-])(\d+(?:[.,]\d+)?)/g;
+  var UNIT = /^\s*(?:mm|cm|\u00b5m|\u03bcm|px|ft|\u00b0|%)/i;
+  var SKIP = /^(SCRIPT|STYLE|TEXTAREA|INPUT|SELECT|OPTION|TITLE|NOSCRIPT)$/;
+  var SVGNS = 'http://www.w3.org/2000/svg', done = new WeakSet();
+  function okParent(n) {
+    var p = n.parentNode;
+    return !!p && p.nodeType === 1 && !SKIP.test(p.nodeName.toUpperCase()) && !p.closest('.sgp,.sgm,#v-kalkulator');
+  }
+  function wrap(t) {
+    if (done.has(t) || !okParent(t)) return;
+    var str = t.nodeValue, last = 0, out = null, m, svg = t.parentNode instanceof SVGElement;
+    function piece(a, b) { var x = document.createTextNode(str.slice(a, b)); done.add(x); out.appendChild(x); }
+    RE.lastIndex = 0;
+    while ((m = RE.exec(str))) {
+      if (!parseFloat(m[3].replace(',', '.')) || UNIT.test(str.slice(RE.lastIndex))) continue;
+      var a = m.index + m[1].length, sp = svg ? document.createElementNS(SVGNS, 'tspan') : document.createElement('span');
+      out = out || document.createDocumentFragment();
+      if (a > last) piece(last, a);
+      sp.setAttribute('class', m[2] === '+' ? 'sgp' : 'sgm');
+      sp.textContent = m[2] + m[3];
+      out.appendChild(sp); last = RE.lastIndex;
+    }
+    if (!out) return;
+    if (last < str.length) piece(last, str.length);
+    t.parentNode.replaceChild(out, t);
+  }
+  function scan(root) {
+    if (root.nodeType === 3) { wrap(root); return; }
+    if (root.nodeType !== 1 || SKIP.test(root.nodeName.toUpperCase())) return;
+    var w = document.createTreeWalker(root, 4), n, list = [];
+    while ((n = w.nextNode())) if (/[+\u2212-]\d/.test(n.nodeValue)) list.push(n);
+    list.forEach(wrap);
+  }
+  var mo = new MutationObserver(function (recs) {
+    recs.forEach(function (r) {
+      if (r.type === 'characterData') wrap(r.target); else r.addedNodes.forEach(scan);
+    });
+    mo.takeRecords();   // buang catatan perubahan buatan sendiri
+  });
+  mo.observe(document.body, { childList: true, subtree: true, characterData: true });
+  scan(document.body); mo.takeRecords();
+})();
 
 /* ---------- Data awal ---------- */
 function blank() {
@@ -3579,7 +3645,7 @@ function evalEye(k, pre) {
 /* ---------- Tampilkan hasil ---------- */
 // o: { title, hint, what, mono } untuk dipakai di halaman lain (Data Precal). Tanpa o = tampilan precal di kartu kerja.
 // o.mono = mode PD monocular (dipakai untuk teks petunjuk bila belum ada hasil).
-function rangeOf(p) { return p.MBS <= 60 ? _T('js.mbs_60_atau_kurang') : (_T('js.mbs') + ' ') + mm(p.MBS) + ' ada di rentang ' + (p.dia - 4) + '–' + p.dia; }
+function rangeOf(p) { return p.MBS <= 60 ? _T('js.mbs_60_atau_kurang') : (_T('js.mbs') + ' ') + mm(p.MBS) + ' dibulatkan ke atas kelipatan 5 = ' + p.dia; }
 function preHTML(pre, o) {
   o = o || {};
   // Baris rumus ED bila memakai Pythagoras (kosong untuk rumus biasa)
@@ -3640,7 +3706,7 @@ function eyeHTML(k, ev) {
   else {
     var r = ev.r, two = r.hasCyl, cols = two ? 2 : 1, mixed = r.type === 'mixed', minus = r.type === 'minus';
     var ax2 = ((ev.ax + 89) % 180) + 1;
-    var spec = sgn(ev.sph) + (two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var spec = 'S ' + sgn(ev.sph) + (two ? ' C ' + sgn(ev.cyl) + ' X ' + ev.ax : '');
     var biggest = Math.max.apply(null, r.ET.concat(r.CT));
     var rem = mixed ? _T('js.minus_t_et_plus') : (minus ? 't − ET' : 't − CT');
     var etNote = mixed ? _T('js.plus_diketahui') : (minus ? _T('js.sagita_ct') : 'diketahui');
@@ -3653,21 +3719,21 @@ function eyeHTML(k, ev) {
       return '<span class="v">' + a + '°' + (mixed ? '<small>' + r.kinds[i] + '</small>' : '') + '</span>';
     }).join('') + '</div>';
     t += ('<div class="g">' + _T('js.base_curve_dan_tools') + '</div>');
-    t += row(_T('js.base_curve_bc'), [sgn(r.BC)], cols, { key: true, note: 'SE ' + sgn(r.SE) + ' → ' + r.BCraw.toFixed(DECP) });
+    t += row(_T('js.base_curve_bc'), [sgn(r.BC)], cols, { note: 'SE ' + sgn(r.SE) + ' → ' + r.BCraw.toFixed(DECP) });
     t += row('F1', [sgn(r.F1)], cols, { note: _T('js.sama_dengan_bc') });
     t += row('F2', r.F2.map(function (x) { return sgn(x); }), cols);
     t += '<div class="g">' + _T('js.radius_kelengkungan') + ' <i>' + _T('js.mm') + '</i></div>';
-    t += row(_T('js.radius_f1'), [fR(r.radF1)], cols, { key: true, note: _T('js.radius_dari_bc') });
-    t += row(_T('js.radius_f2'), r.radF2.map(fR), cols, { key: true, note: _T('js.radius_dari_f2') });
+    t += row(_T('js.radius_f1'), [fR(r.radF1)], cols, { note: _T('js.radius_dari_bc') });
+    t += row(_T('js.radius_f2'), r.radF2.map(fR), cols, { note: _T('js.radius_dari_f2') });
     t += ('<div class="g">' + _T('js.ketebalan') + '</div>');
     t += row(_T('js.sagita'), r.sag.map(fD), cols);
     t += row('ET', r.ET.map(fD), cols, { note: etNote });
     t += row('CT', r.CT.map(fD), cols, { note: ctNote });
-    t += row(_T('js.t_tebal_blank'), [String(r.t)], cols, { key: true, note: fD(biggest) + (' ' + _T('js.2_ke_atas')) });
+    t += row(_T('js.t_tebal_blank'), [String(r.t)], cols, { note: fD(biggest) + (' ' + _T('js.2_ke_atas')) });
     t += ('<div class="g">' + _T('js.tebal_yang_dibuang') + ' ' + '<i>') + rem + '</i></div>';
-    t += row(_T('js.grinding'), r.grinding.map(fD), cols, { key: true, note: '70%' });
-    t += row(_T('js.finning'), r.finning.map(fD), cols, { key: true, note: '20%' });
-    t += row(_T('js.polishing'), r.polishing.map(fD), cols, { key: true, note: '10%' });
+    t += row(_T('js.grinding'), r.grinding.map(fD), cols, { note: '70%' });
+    t += row(_T('js.finning'), r.finning.map(fD), cols, { note: '20%' });
+    t += row(_T('js.polishing'), r.polishing.map(fD), cols, { note: '10%' });
     t += '</div>';
     if (mixed) t += ('<div class="msg info">' + _T('js.lensa_campuran_tiap_meridian') + '</div>');
     if (two && !ev.axOK) t += ('<div class="msg warn">' + _T('js.axis_tidak_valid_isi') + ' ') + ev.ax + ' dan ' + ax2 + (_T('js.hitungan_tidak_terpengaruh') + '</div>');
@@ -3771,7 +3837,7 @@ function sagHTML(ev) {
   else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
   else {
     var axes = [ev.ax, ev.ax2], cols = ev.two ? 2 : 1;
-    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var spec = 'S ' + sgn(ev.sph) + (ev.two ? ' C ' + sgn(ev.cyl) + ' X ' + ev.ax : '');
     var HIGH_INDEX = 1.60;   // sama dengan kartu kerja: indeks bias custom 1.60 ke atas disebut High Index
     var mname = ev.m.id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
     var exact = ev.mode === 'exact';
@@ -3871,14 +3937,14 @@ function ftHTML(ev) {
   else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
   else {
     var cols = ev.two ? 2 : 1, axes = [ev.ax, ev.ax2], mixed = ev.type === 'mixed';
-    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var spec = 'S ' + sgn(ev.sph) + (ev.two ? ' C ' + sgn(ev.cyl) + ' X ' + ev.ax : '');
     var t = '<div class="spec"><b>' + spec + '</b></div>' + '<div class="tbl" style="--cols:' + cols + '">';
     if (ev.two) t += '<div class="r hd"><span></span>' + axes.map(function (a, i) {
       return '<span class="v">' + a + '°' + (mixed ? '<small>' + ev.kinds[i] + '</small>' : '') + '</span>';
     }).join('') + '</div>';
-    t += row(_T('js.base_curve_bc'), [sgn(ev.BC)], cols, { key: true, note: ev.auto ? 'SE ' + sgn(ev.SE) + ' → ' + ev.BCraw.toFixed(DECP) : 'diisi sendiri' });
-    t += row('F1', [sgn(ev.F1)], cols, { key: true, note: _T('js.sama_dengan_bc') });
-    t += row('F2', ev.F2.map(function (x) { return sgn(x); }), cols, { key: true });
+    t += row(_T('js.base_curve_bc'), [sgn(ev.BC)], cols, { note: ev.auto ? 'SE ' + sgn(ev.SE) + ' → ' + ev.BCraw.toFixed(DECP) : 'diisi sendiri' });
+    t += row('F1', [sgn(ev.F1)], cols, { note: _T('js.sama_dengan_bc') });
+    t += row('F2', ev.F2.map(function (x) { return sgn(x); }), cols);
     t += '</div><p class="how">' + ev.P.map(function (p, i) {
       return (ev.two ? axes[i] + '°: ' : '') + 'F2 = ' + sgn(p) + ' ' + MIN + ' ' + (ev.F1 < 0 ? '(' + sgn(ev.F1) + ')' : Math.abs(ev.F1).toFixed(2)) + ' = ' + sgn(ev.F2[i]);
     }).join('<br>') + '</p>';
@@ -3930,7 +3996,7 @@ function radHTML(ev) {
   else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
   else {
     var cols = ev.two ? 2 : 1, axes = [ev.ax, ev.ax2], mixed = ev.type === 'mixed', nn = trim(ev.n);
-    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var spec = 'S ' + sgn(ev.sph) + (ev.two ? ' C ' + sgn(ev.cyl) + ' X ' + ev.ax : '');
     var HIGH_INDEX = 1.60;   // sama dengan kartu kerja: indeks bias custom 1.60 ke atas disebut High Index
     var mname = ev.m.id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
     var how = function (lbl, D, R) {
@@ -3944,8 +4010,8 @@ function radHTML(ev) {
     t += row('F1', [sgn(ev.F1)], cols, { note: _T('js.sama_dengan_bc') });
     t += row('F2', ev.F2.map(function (x) { return sgn(x); }), cols);
     t += '<div class="g">' + _T('js.radius_kelengkungan') + ' <i>' + _T('js.mm') + '</i></div>';
-    t += row(_T('js.radius_f1'), [fR(ev.radF1)], cols, { key: true, note: _T('js.radius_dari_bc') });
-    t += row(_T('js.radius_f2'), ev.radF2.map(fR), cols, { key: true, note: _T('js.radius_dari_f2') });
+    t += row(_T('js.radius_f1'), [fR(ev.radF1)], cols, { note: _T('js.radius_dari_bc') });
+    t += row(_T('js.radius_f2'), ev.radF2.map(fR), cols, { note: _T('js.radius_dari_f2') });
     t += '</div><p class="how">' + how('R F1', ev.F1, ev.radF1) + '<br>' + ev.F2.map(function (f, i) {
       return how('R F2' + (ev.two ? ' ' + axes[i] + '°' : ''), f, ev.radF2[i]);
     }).join('<br>') + '</p>';
@@ -3997,7 +4063,7 @@ function etHTML(ev) {
   else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
   else {
     var cols = ev.two ? 2 : 1, axes = [ev.ax, ev.ax2], mixed = ev.type === 'mixed', minus = ev.type === 'minus';
-    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var spec = 'S ' + sgn(ev.sph) + (ev.two ? ' C ' + sgn(ev.cyl) + ' X ' + ev.ax : '');
     var mname = ev.m.id === 'custom' ? (ev.n >= 1.60 ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
     var etNote = mixed ? _T('js.plus_diketahui') : (minus ? _T('js.sagita_ct') : 'diketahui');
     var ctNote = mixed ? _T('js.minus_diketahui') : (minus ? 'diketahui' : _T('js.sagita_et'));
@@ -4009,12 +4075,12 @@ function etHTML(ev) {
     t += row(_T('js.sagita'), ev.sag.map(fD), cols);
     t += row('ET', ev.ET.map(fD), cols, { note: etNote });
     t += row('CT', ev.CT.map(fD), cols, { note: ctNote });
-    t += row(_T('js.t_tebal_blank'), [String(ev.t)], cols, { key: true, note: fD(ev.biggest) + (' ' + _T('js.2_ke_atas')) });
+    t += row(_T('js.t_tebal_blank'), [String(ev.t)], cols, { note: fD(ev.biggest) + (' ' + _T('js.2_ke_atas')) });
     if (ev.rem) {
       t += ('<div class="g">' + _T('js.tebal_yang_dibuang') + ' ' + '<i>') + (mixed ? _T('js.minus_t_et_plus') : minus ? 't − ET' : 't − CT') + '</i></div>';
-      t += row(_T('js.grinding'), ev.rem.grinding.map(fD), cols, { key: true, note: '70%' });
-      t += row(_T('js.finning'), ev.rem.finning.map(fD), cols, { key: true, note: '20%' });
-      t += row(_T('js.polishing'), ev.rem.polishing.map(fD), cols, { key: true, note: '10%' });
+      t += row(_T('js.grinding'), ev.rem.grinding.map(fD), cols, { note: '70%' });
+      t += row(_T('js.finning'), ev.rem.finning.map(fD), cols, { note: '20%' });
+      t += row(_T('js.polishing'), ev.rem.polishing.map(fD), cols, { note: '10%' });
     }
     t += '</div><p class="how">' + ev.kinds.map(function (kd, i) {
       return (ev.two ? axes[i] + '°: ' : '') + (kd === 'minus' ? 'ET = ' : 'CT = ') + fD(ev.sag[i]) + ' + ' + trim(ev.thick) + ' = ' + fD(kd === 'minus' ? ev.ET[i] : ev.CT[i]);
@@ -4122,7 +4188,7 @@ function krHTML(ev) {
     var cyl = ev.kind === 'wtr' ? 180 : 90;
     var kt = { wtr: _T('js.with_the_rule'), atr: _T('js.against_the_rule'), none: _T('js.tidak_ada_astigmat') }[ev.kind];
     var note = ev.kind === 'none' ? _T('js.radius_h_dan_v')
-      : (ev.kind === 'wtr' ? _T('js.with_the_rule_meridian') : _T('js.against_the_rule_meridian')) + (' ' + _T('js.bentuk_minus_cylinder') + ' ') + sgn(-ev.diff) + ' × ' + cyl + '.';
+      : (ev.kind === 'wtr' ? _T('js.with_the_rule_meridian') : _T('js.against_the_rule_meridian')) + (' ' + _T('js.bentuk_minus_cylinder') + ' ') + 'C ' + sgn(-ev.diff) + ' X ' + cyl + '.';
     var ln = function (nm, r, D) { return nm + ': ' + KR_K + ' ÷ ' + f2(r) + ' = ' + f2(D) + ' D'; };
     body = ('<div class="spec"><b>' + _T('js.k') + ' ') + f2(ev.Kh) + ' @ 180 / ' + f2(ev.Kv) + (' @ 90</b><br><span>' + _T('js.indeks_keratometri') + ' ') + KR_N + '</span></div>' +
       '<div class="tbl" style="--cols:2">' +
@@ -4428,7 +4494,7 @@ function bgOff(d) {
 }
 function bgPos(d) { return Math.abs(d) < 0.005 ? 'tepat di retina' : Math.abs(d).toFixed(2) + ' mm ' + (d < 0 ? 'di depan retina' : 'di belakang retina'); }
 var BG_NAME = { emm: _T('js.emetropia'), myo: _T('js.miopia'), hyp: _T('js.hiperopia'), smyo: _T('js.astigmatisme_miopia_simpleks'), cmyo: _T('js.astigmatisme_miopia_kompositus'), shyp: _T('js.astigmatisme_hiperopia_simpleks'), chyp: _T('js.astigmatisme_hiperopia_kompositu'), mix: _T('js.astigmatisme_mixtus') };
-function bgLensStr(sph, cyl, ax) { return cyl !== 0 ? sgn(sph) + ' ' + sgn(cyl) + ' × ' + ax : sgn(sph) + ' D'; }
+function bgLensStr(sph, cyl, ax) { return cyl !== 0 ? 'S ' + sgn(sph) + ' C ' + sgn(cyl) + ' X ' + ax : 'S ' + sgn(sph) + ' D'; }
 function bgText(ev) {
   var q = ev.m, lens = ev.cor ? (_T('js.dengan_lensa') + ' ') + bgLensStr(ev.ls, ev.lc, ev.la) + ': ' : '';
   if (ev.cor && ev.kind === 'emm') return lens + _T('js.semua_cahaya_jatuh_tepat');
@@ -6543,10 +6609,10 @@ window.addEventListener('popstate', function () { route(true); });
     $('#lm-live').textContent = msg + ' Axis wheel ' + Math.round(S.dial) + '°.';
     var cy = S.cyl, tr = S.sph + cy, ta = S.axis <= 90 ? S.axis + 90 : S.axis - 90;
     var tile = function (l, v, m) { return '<div class="tile' + (m ? ' main' : '') + '"><small>' + l + '</small><b>' + v + '</b></div>'; };
-    var hc = Math.abs(cy) > .01, fmt = function (a, b, x) { return fd(a) + (hc ? ' ' + fd(b) + ' × ' + f3(x) : ''); };
+    var hc = Math.abs(cy) > .01, fmt = function (a, b, x) { return 'S ' + fd(a) + (hc ? ' C ' + fd(b) + ' X ' + f3(x) : ''); };
     var out = '<div class="grid2">' + tile('Spheris', fd(S.sph), 1) + (hc ? tile('Silinder', fd(cy)) + tile('Axis', f3(S.axis) + '°') : '') + tile('ADD', fd(S.add)) + '</div>' +
       '<p class="spec"><span>Resep:</span> <b>' + fmt(S.sph, cy, S.axis) + (S.add ? ' ADD ' + fd(S.add) : '') + '</b></p>' +
-      (hc ? '<p class="spec"><span>Transposisi:</span> ' + fd(tr) + ' ' + fd(-cy) + ' × ' + f3(ta) + '</p>' : '') +
+      (hc ? '<p class="spec"><span>Transposisi:</span> S ' + fd(tr) + ' C ' + fd(-cy) + ' X ' + f3(ta) + '</p>' : '') +
       (S.add ? '<p class="spec"><span>Segmen:</span> ' + fmt(S.sph + S.add, cy, S.axis) + '</p>' : '') +
       (hc ? '<p class="spec"><span>Daya meridian di titik ukur:</span> ' + fd(base) + ' dan ' + fd(base + cy) + ' D</p>' : '');
     $('#lm-out').innerHTML = out;
@@ -6886,21 +6952,20 @@ function stRF() {
   function near(a, b) { var d = Math.abs(a - b) % 180; return Math.min(d, 180 - d) <= 8; }
   function resultHTML() {
     var m = M, wd = m.wd, hc = Math.abs(S.lcyl) > .01, mer = ax180(S.streak + 90);
-    var rx = function (s, c, a) { return q2(s) + (hc ? ' ' + q2(c) + ' × ' + f3(a) : ''); };
+    var rx = function (s, c, a) { return 'S ' + q2(s) + (hc ? ' C ' + q2(c) + ' X ' + f3(a) : ''); };
     var allN = Math.abs(m.ex.hi) <= TOL && Math.abs(m.ex.lo) <= TOL;
-    var o = '<div class="tiles" style="grid-template-columns:minmax(0,1fr)"><div class="tile main"><small>Rx pasien (net)</small><b>' + rx(S.lsph - wd, S.lcyl, S.laxis) + '</b></div></div>';
-    if (!allN) o += '<div class="msg warn">Belum netral, Rx masih sementara.</div>';
+    var o = '<div class="tiles" style="grid-template-columns:minmax(0,1fr)"><div class="tile main' + (allN ? '' : ' over') + '"><small>Rx pasien (net)</small><b>' + (allN ? rx(S.lsph - wd, S.lcyl, S.laxis) : 'Belum Netral') + '</b></div></div>';
     o += rowsOf(m.ex).map(function (r) {
       var ok = Math.abs(r.v) <= TOL, lbl = r.a === null ? 'Semua meridian' : 'Meridian ' + r.a + '°';
       return '<div class="bgr"><div class="l">' + lbl + (r.a !== null && near(r.a, mer) ? '<small>diuji streak</small>' : '') + '</div><div class="v">' + s2(r.v) + ' D · ' + (ok ? 'netral' : r.v > 0 ? 'tambah plus' : 'tambah minus') + '</div></div>';
     }).join('');
     o += '<p class="spec"><span>Gross (lensa sekarang):</span> <b>' + rx(S.lsph, S.lcyl, S.laxis) + '</b></p>' +
       '<p class="spec"><span>Jarak kerja (WD):</span> ' + q2(wd) + ' D (' + (Math.round(100 / wd * 10) / 10) + ' cm)</p>';
-    if (hc) o += '<p class="spec"><span>Transposisi net:</span> ' + q2(S.lsph - wd + S.lcyl) + ' ' + q2(-S.lcyl) + ' × ' + f3(S.laxis <= 90 ? S.laxis + 90 : S.laxis - 90) + '</p>';
+    if (hc && allN) o += '<p class="spec"><span>Transposisi net:</span> S ' + q2(S.lsph - wd + S.lcyl) + ' C ' + q2(-S.lcyl) + ' X ' + f3(S.laxis <= 90 ? S.laxis + 90 : S.laxis - 90) + '</p>';
     var se = S.lsph - wd + S.lcyl / 2;
-    o += '<p class="spec"><span>Spheris ekuivalen net:</span> ' + q2(se) + ' D</p>';
+    if (allN) o += '<p class="spec"><span>Spheris ekuivalen net:</span> ' + q2(se) + ' D</p>';
     var tse = S.sph + S.cyl / 2, dse = se - tse, tc = Math.abs(S.cyl) > .01;
-    o += '<p class="spec"><span>Kunci Rx pasien:</span> <b>' + q2(S.sph) + (tc ? ' ' + q2(S.cyl) + ' × ' + f3(S.axis) : '') + '</b></p>' +
+    o += '<p class="spec"><span>Kunci Rx pasien:</span> <b>S ' + q2(S.sph) + (tc ? ' C ' + q2(S.cyl) + ' X ' + f3(S.axis) : '') + '</b></p>' +
       '<p class="spec"><span>Selisih spheris ekuivalen:</span> ' + s2(dse) + ' D · ' + (Math.abs(dse) <= .25 ? 'sesuai (±0.25 D)' : 'belum sesuai') + '</p>';
     return o;
   }
@@ -6977,8 +7042,10 @@ function stRF() {
     $('#st-cond').value = S.cond; $('#st-chk-guide').checked = S.guide;
     var tr = S.mode === 'train', showRes = !tr || T.shown;
     $('#st-demo').hidden = tr; $('#st-train').hidden = !tr; $('#st-ans-card').hidden = !tr;
-    $('#st-res-card').hidden = !showRes; $('#st-fp-card').hidden = !showRes;
+    $('#st-fp-card').hidden = !showRes;
     M = model();
+    // Kartu hasil selalu tampil (mode Latihan: setelah jawaban benar atau kunci ditampilkan); bila belum netral, kotak Rx merah dan bertuliskan Belum Netral
+    $('#st-res-card').hidden = !showRes;
     var mer = ax180(S.streak + 90), ph = Math.round(S.streak), ori = near(ph, 180) ? 'horizontal' : near(ph, 90) ? 'vertikal' : 'oblique';
     $('#st-dial-l').setAttribute('transform', 'rotate(' + (-S.streak) + ')');
     $('#st-dial').setAttribute('aria-valuenow', ph);
@@ -7472,6 +7539,7 @@ function syncSettings() {
   $$('input[name="set-theme"]').forEach(function (r) { r.checked = r.value === SET.theme; });
   $$('input[name="set-sep"]').forEach(function (r) { r.checked = r.value === SET.sep; });
   $$('input[name="set-anim"]').forEach(function (r) { r.checked = r.value === (SET.anim ? 'on' : 'off'); });
+  $$('input[name="set-sgc"]').forEach(function (r) { r.checked = r.value === (SET.sgc ? 'on' : 'off'); });
   var d = $('#set-dia'); d.value = Lx(trim(SET.diaMax)); d.setAttribute('aria-invalid', 'false');
   var c = $('#set-dec'); c.value = String(SET.dec); c.setAttribute('aria-invalid', 'false');
   syncDec();
@@ -7498,6 +7566,7 @@ document.addEventListener('change', function (e) {
   var t = e.target;
   if (t.name === 'set-theme' && t.checked) { SET.theme = t.value; saveSet(); tFade(); applyTheme(); }
   if (t.name === 'set-anim' && t.checked) { SET.anim = t.value === 'on'; saveSet(); applyAnim(); }
+  if (t.name === 'set-sgc' && t.checked) { SET.sgc = t.value === 'on'; saveSet(); applySgc(); }
   if (t.name === 'set-sep' && t.checked) applySep(t.value);
 });
 $('#set-dia').addEventListener('input', function () {
@@ -7515,7 +7584,7 @@ $('#set-dec').addEventListener('input', function () {
 });
 $('#set-dec').addEventListener('blur', function () { this.value = String(SET.dec); this.setAttribute('aria-invalid', 'false'); });
 $('#set-defaults').addEventListener('click', function () {
-  SET.anim = true; applyAnim(); SET.theme = 'auto'; SET.diaMax = DIA_DEFAULT; DIA_MAX = DIA_DEFAULT; SET.dec = DEC_DEFAULT; DECP = DEC_DEFAULT; SET.sep = '.'; SEP = '.';
+  SET.anim = true; applyAnim(); SET.sgc = true; applySgc(); SET.theme = 'auto'; SET.diaMax = DIA_DEFAULT; DIA_MAX = DIA_DEFAULT; SET.dec = DEC_DEFAULT; DECP = DEC_DEFAULT; SET.sep = '.'; SEP = '.';
   saveSet(); applyTheme(); normSep(); save(); syncSettings(); renderRF(); update();
   setMsg(_T('js.pengaturan_dikembalikan_ke_stand'));
 });
