@@ -740,12 +740,11 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 .lv-sw:focus-visible, .lv-sg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .lv-sw i, .lv-sw i::after { transition: none; } }
 .lv-leg { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: .8rem; color: var(--ink-2); }
-.lv-leg[hidden], .lv-note[hidden] { display: none; }
+.lv-leg[hidden] { display: none; }
 .lv-leg i { display: inline-block; width: 18px; height: 8px; border-radius: 3px; margin-right: 6px; vertical-align: middle; }
 .lg-f { background: var(--lv-f); } .lg-b { background: var(--lv-b); } .lg-d { background: var(--ink-2); opacity: .6; }
 .lg-w { background: var(--lv-hi); opacity: .5; } .lg-t { background: var(--ink-2); opacity: .35; }
 .lg-gr { background: var(--lv-b); opacity: .35; } .lg-fn { background: var(--lv-b); opacity: .6; } .lg-pl { background: var(--lv-b); opacity: .9; } .lg-bl { background: var(--lv-b); opacity: .25; }
-.lv-note { margin-top: 8px; font-size: .8rem; line-height: 1.4; }
 /* isi SVG 2D: warna dari variabel tema, jadi ikut mode terang dan gelap */
 .lv-lens { fill: var(--accent-soft); fill-opacity: .8; stroke: none; }
 .lv-sf, .lv-sb, .lv-shell, .lv-blkl { fill: none; stroke-linejoin: round; stroke-linecap: round; }
@@ -791,11 +790,6 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 #v-streak .st-fold .eye-h { margin-bottom: 0; }
 #v-streak .st-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 #v-streak .st-row2 .primary, #v-streak .st-row2 .ghost { height: 46px; max-width: none; width: 100%; }
-#v-streak .st-rx b { margin: 3px 0 2px; overflow-wrap: anywhere; }
-#v-streak .st-rx.wrn { background: var(--warn-soft); color: var(--warn); box-shadow: inset 0 0 0 2px var(--warn); }
-#v-streak .st-rx.wrn small { color: inherit; opacity: 1; }
-#v-streak .st-rx .st-rxs svg { width: 14px; height: 14px; margin: 0 5px 2px 0; vertical-align: middle; }
-#v-streak .st-rx .st-wt { display: block; margin-top: 3px; font-size: .82rem; line-height: 1.35; font-weight: 600; }
 #v-streak .st-ok { color: var(--pos); font-weight: 700; }
 #v-streak .st-no { color: var(--bad); font-weight: 700; }
 #v-streak .st-ol { margin: 12px 0 0; padding-left: 1.2rem; display: grid; gap: 6px; font-size: .9rem; }
@@ -866,14 +860,14 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 input[data-sg="p"] { color: var(--pos); }
 input[data-sg="m"] { color: var(--neg); }
 input[data-sg="z"] { color: var(--zero); }
-/* Tombol tambah (+) hijau, tombol kurang (−) merah. Berlaku di semua halaman: data-dir (kalkulator, keratometer), data-d (Lensometer dan Streak), data-snpx.
-   Tombol axis (.ax) tanpa warna: axis bukan plus atau minus. Tombol geser skala keratometer (.neu) juga tanpa warna: itu menggeser radius (mm), bukan menambah atau mengurangi dioptri. */
-.step[data-dir="up"], .step[data-d="1"], .step[data-snpx="up"], #dec-up { --pm: var(--pos); }
-.step[data-dir="down"], .step[data-d="-1"], .step[data-snpx="down"], #dec-dn { --pm: var(--neg); }
-.step[data-dir]:not(.ax):not(.neu), .step[data-d]:not(.ax):not(.neu), .step[data-snpx], #dec-up, #dec-dn {
+/* Tombol tambah (+) hijau, tombol kurang (−) merah. Berlaku di semua halaman: data-dir (kalkulator, keratometer), data-d (Lensometer dan Streak).
+   Tombol axis (.ax) tanpa warna: axis bukan plus atau minus. Tombol geser skala keratometer (.neu) dan tombol skala kalibrasi layar Snellen (data-snpx) juga tanpa warna: itu menggeser radius (mm), bukan menambah atau mengurangi dioptri. */
+.step[data-dir="up"], .step[data-d="1"], #dec-up { --pm: var(--pos); }
+.step[data-dir="down"], .step[data-d="-1"], #dec-dn { --pm: var(--neg); }
+.step[data-dir]:not(.ax):not(.neu), .step[data-d]:not(.ax):not(.neu), #dec-up, #dec-dn {
   color: var(--pm); border-color: color-mix(in srgb, var(--pm) 45%, var(--line)); background: color-mix(in srgb, var(--pm) 9%, var(--surface));
 }
-.step[data-dir]:not(.ax):not(.neu):active, .step[data-d]:not(.ax):not(.neu):active, .step[data-snpx]:active, #dec-up:active, #dec-dn:active {
+.step[data-dir]:not(.ax):not(.neu):active, .step[data-d]:not(.ax):not(.neu):active, #dec-up:active, #dec-dn:active {
   background: color-mix(in srgb, var(--pm) 22%, var(--surface));
 }
 </style>
@@ -3040,12 +3034,6 @@ var TEKS = {
   "viz.l_finning": "Finning 20%",
   "viz.l_polishing": "Polishing 10%",
   "viz.l_blank": "Blank (tebal dibuang)",
-  "viz.n_sag": "Area berwarna adalah tebal tambahan akibat power: sagita (s) di tepi untuk lensa minus, di tengah untuk lensa plus.",
-  "viz.n_bc": "Radius = 1000 × (n − 1) ÷ BC. s1 adalah sagita lengkung depan.",
-  "viz.n_ft": "F1 = lengkung depan (sama dengan BC), F2 = lengkung belakang. Radius = 1000 × (n − 1) ÷ D. Tool digambar terpisah dari lensa.",
-  "viz.n_et": "CT = tebal pusat, ET = tebal tepi pada meridian ini, t = tebal blank. Selisih t dan bagian lensa tertebal dibuang dari sisi belakang.",
-  "viz.n_3d": "Grid di belakang lensa mengecil (minus) atau membesar (plus) sesuai power. Tepi lensa uncut tampak buram.",
-  "viz.n_3d_cyl": "Lensa dengan cylinder digambar dengan satu tebal pusat (CT terbesar). Garis tipis pada lensa menandai axis.",
 };
 function _T(k) { return Object.prototype.hasOwnProperty.call(TEKS, k) ? TEKS[k] : k; }
 (function () {
@@ -5831,7 +5819,7 @@ function lvMake(kind, hostSel) {
           ['low', 'mid', 'high'].map(function (q) { return '<button type="button" data-q="' + q + '">' + LT('q_' + q) + '</button>'; }).join('') + '</div>' +
         '<p class="lv-qh hint"></p></div>' +
     '</div>' +
-    '<div class="lv-leg"></div><p class="lv-note hint"></p>';
+    '<div class="lv-leg"></div>';
   var st = $('.lv-stage', host), d2 = $('.lv-2d', host), d3 = $('.lv-3d', host), merEl = $('.lv-mer', host), empty = $('.lv-empty', host), barEl = $('.lv-bar', host), vwEl = $('.lv-views', host), vw3El = $('.lv-views3', host);
   I.gl = $('.lv-gl', host); I.ov = document.createElement('canvas'); I.ov.className = 'lv-ov'; I.ov.setAttribute('aria-hidden', 'true'); I.gl.appendChild(I.ov); I.stage = st;
   I.visible = function () { return st.offsetParent !== null && st.clientWidth > 0; };
@@ -5852,7 +5840,7 @@ function lvMake(kind, hostSel) {
     host.setAttribute('data-eye', has && I.eyeUsed ? I.eyeUsed : '');
     merEl.hidden = !(has && I.M.two);   // meridian bisa dipilih di 2D dan 3D
     d2.hidden = LVP.mode !== '2d' || !has; d3.hidden = LVP.mode !== '3d' || !has; empty.hidden = has;
-    $('.lv-leg', host).hidden = !has || (LVP.mode === '3d' && LVP.v3 === 'off'); $('.lv-note', host).hidden = !has;
+    $('.lv-leg', host).hidden = !has || (LVP.mode === '3d' && LVP.v3 === 'off');
   }
   function paint() {
     syncUI();
@@ -5890,16 +5878,13 @@ function lvMake(kind, hostSel) {
   function teks() {
     var M = I.M; if (!M) return;
     var m = M.mer[Math.min(I.mi, M.mer.length - 1)];
-    var leg = $('.lv-leg', host), note = $('.lv-note', host), k = M.kind, lg = [];
+    var leg = $('.lv-leg', host), k = M.kind, lg = [];
     var kv = LVP.mode === '3d' ? LVP.v3 : k;
     if (kv === 'sag') lg = [['f', LT('l_depan')], ['b', LT('l_belakang')], ['w', LT('l_sagita')]];
     else if (kv === 'bc') lg = [['f', LT('l_bc')], ['d', LT('l_belakang')]];
     else if (kv === 'ft') lg = [['f', LT('l_f1')], ['b', LT('l_f2')], ['t', LT('l_tool')]];
     else lg = [['f', LT('l_depan')], ['b', LT('l_belakang')]].concat(M.rem ? [['gr', LT('l_grinding')], ['fn', LT('l_finning')], ['pl', LT('l_polishing')]] : [['bl', LT('l_blank')]]);
     leg.innerHTML = lg.map(function (x) { return '<span><i class="lg-' + x[0] + '"></i>' + x[1] + '</span>'; }).join('');
-    var tx = LVP.mode === '3d' ? (LVP.v3 !== 'off' ? LT('n_' + LVP.v3) + ' ' : '') + LT('n_3d') : LT('n_' + k);
-    if (LVP.mode === '3d' && M.two && !M.noAxis) tx += ' ' + LT('n_3d_cyl');
-    note.textContent = tx;
     var sp = Lx(sgn(M.mer[0].P)) + (M.two ? ' / ' + Lx(sgn(M.mer[1].P)) : '');
     I.label = LT('judul') + (I.eyeUsed ? ' ' + I.eyeUsed.toUpperCase() : '') + ': ' + sp + ' D, Ø ' + Lx(trim(M.dia)) + ' mm.';
   }
@@ -6779,7 +6764,7 @@ function stRF() {
   function mk(c, pre, lab) {   // satu isian: label dengan satuan di atas, lalu [isian] [±] [▼] [▲]
     return '<div class="f"><label for="st-in-' + c[0] + '">' + (lab || c[1]) + ' <small>' + (c[5] === 'd' ? 'D' : '°') + '</small></label>' + ed(c[0], 'st-in-' + c[0], pre + (lab || c[1])) + '</div>';
   }
-  var LL = ['S', 'C', 'Axis'];
+  var LL = ['Spheris', 'Cylinder', 'Axis'];
   $('#st-lens').innerHTML = CT.slice(3, 6).map(function (c, i) { return mk(c, 'Lensa coba ', LL[i]); }).join('');
   $('#st-pt').innerHTML = CT.slice(0, 3).map(function (c) { return mk(c, 'Pasien '); }).join('');
   $('#st-ans').innerHTML = CT.slice(6, 9).map(function (c) { return mk(c, 'Jawaban ', c[1].replace('Jawaban: ', '')); }).join('');
@@ -6903,14 +6888,11 @@ function stRF() {
     var m = M, wd = m.wd, hc = Math.abs(S.lcyl) > .01, mer = ax180(S.streak + 90);
     var rx = function (s, c, a) { return q2(s) + (hc ? ' ' + q2(c) + ' × ' + f3(a) : ''); };
     var allN = Math.abs(m.ex.hi) <= TOL && Math.abs(m.ex.lo) <= TOL;
-    var warnIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3L2 20H22Z"/><path d="M12 10V14M12 17V18"/></svg>';
-    var o = '<div class="tiles" style="grid-template-columns:minmax(0,1fr)"><div class="tile main st-rx' + (allN ? '' : ' wrn') + '"><small>Rx pasien · net = gross ' + MIN + ' WD</small>' +
-      '<b class="nc">' + rx(S.lsph - wd, S.lcyl, S.laxis) + '</b>' +
-      '<small class="st-rxs">' + (allN ? 'NETRAL ✓ · semua meridian' : warnIco + 'BELUM NETRAL') + '</small>' +
-      (allN ? '' : '<span class="st-wt">Rx masih sementara.</span>') + '</div></div>';
+    var o = '<div class="tiles" style="grid-template-columns:minmax(0,1fr)"><div class="tile main"><small>Rx pasien (net)</small><b>' + rx(S.lsph - wd, S.lcyl, S.laxis) + '</b></div></div>';
+    if (!allN) o += '<div class="msg warn">Belum netral, Rx masih sementara.</div>';
     o += rowsOf(m.ex).map(function (r) {
       var ok = Math.abs(r.v) <= TOL, lbl = r.a === null ? 'Semua meridian' : 'Meridian ' + r.a + '°';
-      return '<div class="bgr"><div class="l">' + lbl + (r.a !== null && near(r.a, mer) ? '<small>diuji streak</small>' : '') + '</div><div class="v">' + s2(r.v) + ' D · ' + (ok ? '<span class="st-ok">netral ✓</span>' : r.v > 0 ? 'tambah plus' : 'tambah minus') + '</div></div>';
+      return '<div class="bgr"><div class="l">' + lbl + (r.a !== null && near(r.a, mer) ? '<small>diuji streak</small>' : '') + '</div><div class="v">' + s2(r.v) + ' D · ' + (ok ? 'netral' : r.v > 0 ? 'tambah plus' : 'tambah minus') + '</div></div>';
     }).join('');
     o += '<p class="spec"><span>Gross (lensa sekarang):</span> <b>' + rx(S.lsph, S.lcyl, S.laxis) + '</b></p>' +
       '<p class="spec"><span>Jarak kerja (WD):</span> ' + q2(wd) + ' D (' + (Math.round(100 / wd * 10) / 10) + ' cm)</p>';
@@ -6919,7 +6901,7 @@ function stRF() {
     o += '<p class="spec"><span>Spheris ekuivalen net:</span> ' + q2(se) + ' D</p>';
     var tse = S.sph + S.cyl / 2, dse = se - tse, tc = Math.abs(S.cyl) > .01;
     o += '<p class="spec"><span>Kunci Rx pasien:</span> <b>' + q2(S.sph) + (tc ? ' ' + q2(S.cyl) + ' × ' + f3(S.axis) : '') + '</b></p>' +
-      '<p class="spec"><span>Selisih spheris ekuivalen:</span> <span class="nc">' + s2(dse) + ' D</span> ' + (Math.abs(dse) <= .25 ? '<span class="st-ok">sesuai (±0.25 D)</span>' : '<span class="st-no">belum sesuai</span>') + '</p>';
+      '<p class="spec"><span>Selisih spheris ekuivalen:</span> ' + s2(dse) + ' D · ' + (Math.abs(dse) <= .25 ? 'sesuai (±0.25 D)' : 'belum sesuai') + '</p>';
     return o;
   }
   function fpHTML() {
@@ -6944,7 +6926,7 @@ function stRF() {
       info += '<li>' + (r.a === null ? 'Semua meridian' : 'Meridian ' + r.a + '°') + ': ' + (virt ? 'di belakang mata (virtual), sisa ' + s2(v) + ' D' : (clip ? '>' : '') + Math.round(d) + ' cm di depan mata, sisa ' + s2(v) + ' D') + '</li>';
     });
     o += '</svg>';
-    return o + '<ul class="st-ul">' + cs(info) + '</ul>';
+    return o + '<ul class="st-ul">' + info + '</ul>';
   }
 
   /* ----- teks petunjuk (mengikuti pemisah desimal di Pengaturan) ----- */
@@ -7009,7 +6991,7 @@ function stRF() {
     $('#st-hide-live').textContent = UI.hidelive ? 'Tampilkan teks' : 'Sembunyikan teks'; $('#st-hide-live').setAttribute('aria-expanded', UI.hidelive ? 'false' : 'true');
     var pill = $('#st-pill'), lab = M.sc ? 'SCISSORS' : seen(M.st);
     pill.hidden = tr; pill.textContent = lab; pill.className = 'pill' + (M.st === 'n' && !M.sc ? ' grn' : '');
-    if (showRes) { $('#st-out').innerHTML = cs(L(resultHTML())); $('#st-fp').innerHTML = L(fpHTML()); }
+    if (showRes) { $('#st-out').innerHTML = L(resultHTML()); $('#st-fp').innerHTML = L(fpHTML()); }
     statics();
   }
   var pend = false;
