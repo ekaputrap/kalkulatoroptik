@@ -12,6 +12,7 @@ img{max-width:100%}
 </style>
 <title>Kalkulator Optik</title>
 <meta name="description" content="Alat bantu optik yang bisa dipakai tanpa internet">
+<meta name="author" content="Eka Putra Prasetya">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0d6480" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d1419" media="(prefers-color-scheme: dark)">
@@ -22,7 +23,6 @@ img{max-width:100%}
 <meta name="apple-mobile-web-app-title" content="Kalk. Optik">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="format-detection" content="telephone=no">
-<meta name="claude:viewport-fit-sides" content="cover">
 <style>
 :root {
   --bg: #edf1f4;
@@ -1234,6 +1234,39 @@ input[data-sg="z"] { color: var(--zero); }
     </main>
   </div>
 
+  <!-- halaman radius kelengkungan -->
+  <div id="v-radius" hidden>
+    <header class="top">
+      <div class="brand">
+        <button type="button" class="back" data-back data-t-aria-label="radius.kembali_ke_beranda" data-t-title="radius.kembali_ke_beranda">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        </button>
+        <div>
+          <h1 id="rad-h" tabindex="-1" data-t="radius.radius_kelengkungan"></h1>
+          <p data-t="radius.jari_jari_f1_dan_f2"></p>
+        </div>
+      </div>
+      <button type="button" class="ghost" id="rad-reset" data-t="radius.kosongkan"></button>
+    </header>
+
+    <main class="cols">
+      <section class="panel" data-t-aria-label="radius.input">
+        <section class="card" id="in-rad">
+          <div class="eye-h"><h2 data-t="radius.data_lensa"></h2><span class="pill" id="rad-type" hidden></span></div>
+          <div class="grid2" id="rad-fields"></div>
+        </section>
+      </section>
+
+      <section class="panel" data-t-aria-label="radius.hasil">
+        <div id="rad-out" class="panel"></div>
+        <details class="card formula">
+          <summary data-t="radius.rumus_yang_dipakai"></summary>
+          <dl class="rumus" id="rad-rumus"></dl>
+        </details>
+      </section>
+    </main>
+  </div>
+
   <!-- halaman kerato -->
   <div id="v-kerato" hidden>
     <header class="top">
@@ -1373,7 +1406,6 @@ input[data-sg="z"] { color: var(--zero); }
       <section class="panel bg-inp" data-t-aria-label="bagan.input">
         <section class="card" id="in-bg">
           <div class="eye-h"><h2 data-t="bagan.power_mata"></h2><span class="pill" id="bg-type" hidden></span></div>
-          <p class="hint" data-t="bagan.isi_power_refraksi_mata"></p>
           <div class="grid2" id="bg-fields" style="margin-top:14px"></div>
           <div class="stack">
             <div class="f" role="radiogroup" aria-labelledby="lbl-bg-cor">
@@ -1606,7 +1638,7 @@ input[data-sg="z"] { color: var(--zero); }
           </div>
           <div id="lm-demo"><div class="lm-rows" id="lm-lens"></div></div>
           <div id="lm-train" hidden>
-            <p class="hint">Nilai lensa disembunyikan. Ukur dengan Lensometer Badal, lalu isi jawaban Anda.</p>
+            <p class="hint">Nilai lensa disembunyikan. Ukur, lalu isi jawaban Anda.</p>
             <div class="f" style="margin-top:12px"><label for="lm-kind">Jenis soal</label>
               <select id="lm-kind"><option value="rand">Acak</option><option value="sph">Spheris saja</option><option value="cyl">Spheris + silinder</option><option value="add">Dengan ADD</option></select>
             </div>
@@ -1621,7 +1653,7 @@ input[data-sg="z"] { color: var(--zero); }
           </div>
           <div class="lm-lensrow" id="lm-lensrow" hidden>
             <svg viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="36" fill="currentColor" fill-opacity=".08" stroke="currentColor" stroke-width="1.5"/><path d="M25.4 50H94.6A36 36 0 0 1 25.4 50Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1"/><circle id="lm-ap" cx="60" cy="26" r="5.5" fill="none" stroke="#2fbf55" stroke-width="2.2"/></svg>
-            <p class="hint">Lingkaran hijau = posisi apertur lensometer. Ukur bagian induk dulu, lalu geser ke segmen. ADD = bacaan segmen − bacaan induk.</p>
+            <p class="hint">Lingkaran hijau = posisi apertur lensometer. Ukur induk dulu, lalu segmen. ADD = bacaan segmen − bacaan induk.</p>
           </div>
           </div>
         </section>
@@ -1639,10 +1671,10 @@ input[data-sg="z"] { color: var(--zero); }
           <summary>Cara membaca lensometer</summary>
           <ol class="lm-ol">
             <li>Mulai dari drum di 0 (kalibrasi), lalu putar drum sampai garis menjadi jelas.</li>
-            <li>Putar axis wheel sampai garis mires paling jelas. Garis 3 mengikuti axis wheel dan menunjuk angka axis di busur. Garis 2 tegak lurus padanya. Pada lensa spheris murni, axis wheel tidak berpengaruh.</li>
+            <li>Putar axis wheel sampai garis mires paling jelas. Garis 3 mengikuti axis wheel, garis 2 tegak lurus padanya. Pada lensa spheris murni, axis wheel tidak berpengaruh.</li>
             <li>Putar drum sampai garis 2 jelas. Catat angkanya sebagai spheris.</li>
             <li>Lanjutkan ke arah minus sampai garis 3 jelas. Selisih kedua bacaan = silinder (minus).</li>
-            <li>Axis dibaca di busur sumbu, pada angka yang ditunjuk garis 3 saat jelas untuk daya silinder.</li>
+            <li>Axis = angka di busur yang ditunjuk garis 3 saat jelas.</li>
             <li>Untuk ADD: ukur di segmen, lalu kurangkan spheris segmen dengan spheris induk.</li>
           </ol>
         </details>
@@ -1652,7 +1684,7 @@ input[data-sg="z"] { color: var(--zero); }
             <div><dt>Daya meridian</dt><dd>P(m) = S + C · sin²(m − axis)</dd></div>
             <div><dt>garis 3 jelas</dt><dd>drum = P(axis wheel + 90°)</dd></div>
             <div><dt>garis 2 jelas</dt><dd>drum = P(axis wheel)</dd></div>
-            <div><dt>Kabur</dt><dd>Selisih |drum − daya| dalam dioptri, makin besar makin kabur</dd></div>
+            <div><dt>Kabur</dt><dd>Selisih |drum − daya| dalam dioptri</dd></div>
             <div><dt>Segmen</dt><dd>S segmen = S induk + ADD</dd></div>
           </dl>
         </details>
@@ -1928,7 +1960,6 @@ input[data-sg="z"] { color: var(--zero); }
             <label><input type="radio" name="set-theme" value="dark"><span data-t="pengaturan.gelap"></span></label>
           </div>
         </div>
-        <p class="hint" style="margin-top:8px" data-t="pengaturan.otomatis_mengikuti_pengaturan_te"></p>
         <div class="f" role="radiogroup" aria-labelledby="lbl-anim" style="margin-top:16px">
           <span class="lbl" id="lbl-anim" data-t="pengaturan.animasi"></span>
           <div class="seg">
@@ -2017,26 +2048,26 @@ var TEKS = {
 
   // ----- Halaman: install (tombol pasang aplikasi di beranda) -----
   "install.judul": "Pasang di HP Anda",
-  "install.isi": "Buka seperti aplikasi biasa dari layar utama, tanpa perlu mencari lewat Chrome. Tetap bisa dipakai tanpa internet.",
-  "install.isi_manual": "Ikon Kalkulator Optik akan muncul di layar utama HP. Ketuk tombol di bawah, nanti ada petunjuk singkat.",
+  "install.isi": "Buka dari layar utama seperti aplikasi biasa. Tetap jalan tanpa internet.",
+  "install.isi_manual": "Tambahkan ikon ke layar utama HP. Ketuk tombol di bawah untuk petunjuknya.",
   "install.pasang": "Pasang aplikasi",
   "install.nanti": "Nanti saja",
   "install.petunjuk_judul": "Cara memasang",
   "install.android_1": "Ketuk tombol titik tiga (⋮) di pojok kanan atas Chrome.",
   "install.android_2": "Pilih “Instal aplikasi” atau “Tambahkan ke layar utama”.",
-  "install.android_3": "Ketuk “Instal”, lalu tunggu sebentar. Ikon Kalkulator Optik akan muncul di layar utama.",
-  "install.android_cat": "Tidak ada pilihan itu? Buka alamat ini lewat Chrome, lalu ulangi langkah di atas.",
-  "install.ios_1": "Buka halaman ini lewat Safari, lalu ketuk tombol Bagikan (kotak dengan panah ke atas) di bagian bawah layar.",
-  "install.ios_2": "Gulir ke bawah, lalu pilih “Tambah ke Layar Utama” (Add to Home Screen).",
-  "install.ios_3": "Ketuk “Tambah” di pojok kanan atas. Ikon Kalkulator Optik akan muncul di layar utama.",
-  "install.ios_cat": "Tombol Bagikan hanya ada di Safari. Jika memakai aplikasi lain, buka alamat ini lewat Safari dulu.",
+  "install.android_3": "Ketuk “Instal”. Ikon Kalkulator Optik muncul di layar utama.",
+  "install.android_cat": "Tidak ada pilihannya? Buka alamat ini lewat Chrome.",
+  "install.ios_1": "Di Safari, ketuk tombol Bagikan (kotak dengan panah ke atas) di bawah layar.",
+  "install.ios_2": "Pilih “Tambah ke Layar Utama”.",
+  "install.ios_3": "Ketuk “Tambah” di pojok kanan atas.",
+  "install.ios_cat": "Bukan Safari? Buka alamat ini lewat Safari dulu.",
   "install.mengerti": "Mengerti",
 
   // ----- Halaman: kartu -----
   "kartu.kembali_ke_beranda": "Kembali ke beranda",
   "kartu.kartu_kerja_surfacing": "Kartu Kerja Surfacing",
   "kartu.kosongkan": "Kosongkan",
-  "kartu.isian_di_bawah_adalah": "Isian di bawah adalah contoh dari kartu kerja. Ubah angka apa saja, atau ketuk Kosongkan untuk mulai dari awal.",
+  "kartu.isian_di_bawah_adalah": "Ini contoh isian. Ubah angkanya atau ketuk Kosongkan untuk mulai dari awal.",
   "kartu.input": "Input",
   "kartu.data_precal": "Data precal",
   "kartu.a": "A",
@@ -2046,7 +2077,7 @@ var TEKS = {
   "kartu.pd": "PD",
   "kartu.pd_od": "PD OD",
   "kartu.pd_os": "PD OS",
-  "kartu.ganti_pd_binocular_satu": "Ganti PD binocular (satu angka) dan monocular (PD OD dan PD OS)",
+  "kartu.ganti_pd_binocular_satu": "Ganti PD binocular / monocular",
   "kartu.jenis_frame": "Jenis frame",
   "kartu.full": "Full",
   "kartu.nylon": "Nylon",
@@ -2078,7 +2109,7 @@ var TEKS = {
   "mbs.pd": "PD",
   "mbs.pd_od": "PD OD",
   "mbs.pd_os": "PD OS",
-  "mbs.ganti_pd_binocular_satu": "Ganti PD binocular (satu angka) dan monocular (PD OD dan PD OS)",
+  "mbs.ganti_pd_binocular_satu": "Ganti PD binocular / monocular",
   "mbs.bentuk_frame": "Bentuk frame",
   "mbs.kotak": "Kotak",
   "mbs.bulat": "Bulat",
@@ -2133,6 +2164,16 @@ var TEKS = {
   "ft.hasil": "Hasil",
   "ft.rumus_yang_dipakai": "Rumus yang dipakai",
 
+  // ----- Halaman: radius (Radius Kelengkungan) -----
+  "radius.kembali_ke_beranda": "Kembali ke beranda",
+  "radius.radius_kelengkungan": "Radius Kelengkungan",
+  "radius.jari_jari_f1_dan_f2": "Jari-jari lengkung F1 dan F2",
+  "radius.kosongkan": "Kosongkan",
+  "radius.input": "Input",
+  "radius.data_lensa": "Data lensa",
+  "radius.hasil": "Hasil",
+  "radius.rumus_yang_dipakai": "Rumus yang dipakai",
+
   // ----- Halaman: kerato -----
   "kerato.kembali_ke_beranda": "Kembali ke beranda",
   "kerato.keratometer": "Keratometer",
@@ -2140,7 +2181,7 @@ var TEKS = {
   "kerato.atur_ulang": "Atur ulang",
   "kerato.input": "Input",
   "kerato.bacaan_keratometer": "Skala keratometer",
-  "kerato.geser_skala_ke_kiri": "Geser skala ke kiri atau kanan sampai garis tengah menunjuk angka yang terbaca di alat. Bisa pakai tombol panah atau ketik radiusnya.",
+  "kerato.geser_skala_ke_kiri": "Geser skala sampai garis tengah menunjuk angka di alat, atau ketik radiusnya.",
   "kerato.vertikal_v": "Vertikal (V)",
   "kerato.mm": "mm",
   "kerato.kurangi_radius_v_0": "Kurangi radius V 0,01 mm",
@@ -2163,7 +2204,7 @@ var TEKS = {
   "parlk.hvid": "HVID",
   "parlk.mm": "mm",
   "parlk.base_curve": "Base curve",
-  "parlk.h_dan_v_adalah": "H dan V adalah radius kornea (mm) dari keratometer. Flat adalah yang lebih besar di antara keduanya.",
+  "parlk.h_dan_v_adalah": "H dan V adalah radius kornea (mm) dari keratometer. Flat = yang lebih besar.",
   "parlk.sumber_h_dan_v": "Sumber H dan V",
   "parlk.isi_sendiri": "Isi sendiri",
   "parlk.dari_keratometer": "Dari Keratometer",
@@ -2187,7 +2228,6 @@ var TEKS = {
   "bagan.atur_ulang": "Atur ulang",
   "bagan.input": "Input",
   "bagan.power_mata": "Power mata",
-  "bagan.isi_power_refraksi_mata": "Isi power refraksi mata.",
   "bagan.lensa_koreksi": "Lensa koreksi",
   "bagan.tanpa_lensa": "Tanpa lensa",
   "bagan.dengan_lensa": "Dengan lensa",
@@ -2201,7 +2241,7 @@ var TEKS = {
   "tentatif.atur_ulang": "Atur ulang",
   "tentatif.input": "Input",
   "tentatif.cara_pakai": "Cara pakai",
-  "tentatif.pilih_visus_tanpa_koreksi": "Pilih visus tanpa koreksi tiap mata. Tabel memberi perkiraan awal lensa spheris minus untuk dipasang di trial frame. Lakukan pinhole: bila visus membaik, penyebabnya kelainan refraksi. Setelah lensa tentatif dicoba, isi visusnya untuk saran langkah berikutnya. Visus di bawah 2/60 tidak ada di tabel.",
+  "tentatif.pilih_visus_tanpa_koreksi": "Pilih visus tanpa koreksi tiap mata. Setelah lensa tentatif dicoba, isi visusnya untuk saran berikutnya. Tabel mulai dari 2/60.",
   "tentatif.hasil": "Hasil",
   "tentatif.rumus_yang_dipakai": "Rumus yang dipakai",
 
@@ -2226,11 +2266,11 @@ var TEKS = {
   "snellen.tampilan": "Tampilan",
   "snellen.semua_baris": "Semua baris",
   "snellen.satu_baris": "Satu baris",
-  "snellen.ukuran_huruf_mengikuti_jarak": "Ukuran huruf mengikuti jarak uji: makin dekat, makin kecil, sehingga sudut pandangnya sama dengan chart 6 m dan hasil tetap dibaca 6/x. Landolt C dan Huruf E untuk pasien yang tidak bisa membaca huruf.",
+  "snellen.ukuran_huruf_mengikuti_jarak": "Ukuran huruf mengikuti jarak uji, jadi hasil tetap dibaca 6/x. Landolt C dan Huruf E untuk pasien yang tidak bisa membaca huruf.",
   "snellen.chart": "Chart",
   "snellen.chart_snellen": "Chart Snellen",
   "snellen.kalibrasi_ukuran_layar": "Kalibrasi ukuran layar",
-  "snellen.agar_huruf_berukuran_sebenarnya": "Agar huruf berukuran sebenarnya, samakan kotak di bawah dengan kartu ATM atau KTP. Letakkan kartu di layar dengan sisi pendeknya (54 mm) melintang, lalu atur skala sampai lebar kotak sama dengan lebar kartu. Ulangi bila zoom layar berubah. Kalibrasi tersimpan di perangkat ini.",
+  "snellen.agar_huruf_berukuran_sebenarnya": "Samakan kotak di bawah dengan kartu ATM atau KTP (sisi pendek 54 mm) supaya huruf berukuran sebenarnya. Ulangi bila zoom layar berubah.",
   "snellen.kartu_54_mm": "Kartu 54 mm",
   "snellen.skala": "Skala",
   "snellen.px_per_mm": "px per mm",
@@ -2272,20 +2312,19 @@ var TEKS = {
   "pengaturan.otomatis": "Otomatis",
   "pengaturan.terang": "Terang",
   "pengaturan.gelap": "Gelap",
-  "pengaturan.otomatis_mengikuti_pengaturan_te": "Otomatis mengikuti pengaturan terang atau gelap di perangkat.",
   "pengaturan.animasi": "Animasi",
   "pengaturan.nyala": "Nyala",
   "pengaturan.mati": "Mati",
-  "pengaturan.gerak_halus_saat_membuka": "Gerak halus saat membuka halaman, menu, dan hasil hitung. Otomatis mati jika perangkat meminta gerakan dikurangi.",
+  "pengaturan.gerak_halus_saat_membuka": "Otomatis mati bila perangkat meminta gerakan dikurangi.",
   "pengaturan.perhitungan": "Perhitungan",
   "pengaturan.diameter_maksimum": "Diameter maksimum",
   "pengaturan.mm": "mm",
-  "pengaturan.diameter_lensa_di_atas": "Diameter lensa di atas angka ini diberi peringatan merah di semua halaman. Isi 60 sampai 200. Standarnya 80.",
+  "pengaturan.diameter_lensa_di_atas": "Diameter di atas angka ini diberi peringatan merah. Isi 60 sampai 200, standar 80.",
   "pengaturan.penulisan_angka": "Penulisan angka",
   "pengaturan.pemisah_desimal": "Pemisah desimal",
   "pengaturan.titik_1_25": "Titik (1.25)",
   "pengaturan.koma_1_25": "Koma (1,25)",
-  "pengaturan.berlaku_untuk_isian_dan": "Berlaku untuk isian dan hasil di semua halaman. Mengetik titik atau koma tetap dibaca sama.",
+  "pengaturan.berlaku_untuk_isian_dan": "Berlaku di semua halaman. Mengetik titik atau koma tetap dibaca sama.",
   "pengaturan.digit_desimal_hasil": "Digit desimal hasil",
   "pengaturan.paling_sedikit_2": "paling sedikit 2",
   "pengaturan.kurangi_satu_digit_desimal": "Kurangi satu digit desimal",
@@ -2293,7 +2332,7 @@ var TEKS = {
   "pengaturan.tambah_satu_digit_desimal": "Tambah satu digit desimal",
   "pengaturan.tambah": "Tambah",
   "pengaturan.data": "Data",
-  "pengaturan.isian_tersimpan_otomatis_di": "Isian tersimpan otomatis di perangkat ini saja dan tidak dikirim ke mana pun.",
+  "pengaturan.isian_tersimpan_otomatis_di": "Isian disimpan di perangkat ini saja.",
   "pengaturan.kembalikan_pengaturan_standar": "Kembalikan pengaturan standar",
   "pengaturan.hapus_semua_isian_tersimpan": "Hapus semua isian tersimpan",
 
@@ -2342,8 +2381,6 @@ var TEKS = {
   // ----- Dari skrip: Hitung -----
   "js.transposisi_sph_cyl_cyl": "Transposisi: Sph + Cyl, Cyl dibalik tandanya, Axis ± 90",
   "js.transposisi": "Transposisi",
-  "js.bentuk": "Bentuk",
-  "js.cylinder_transposisi_dari": "cylinder, transposisi dari",
   "js.se_tidak_berubah_jadi": "SE tidak berubah, jadi BC tetap sama.",
   "js.sagita_tiap_meridian_tidak": "Sagita tiap meridian tidak berubah, hanya kolomnya bertukar tempat.",
   "js.hasil_tiap_meridian_tidak": "Hasil tiap meridian tidak berubah, hanya kolomnya bertukar tempat. t tetap sama.",
@@ -2406,7 +2443,7 @@ var TEKS = {
   "js.grinding": "Grinding",
   "js.finning": "Finning",
   "js.polishing": "Polishing",
-  "js.lensa_campuran_tiap_meridian": "Lensa campuran: tiap meridian dihitung dengan rumus sesuai tandanya. Meridian minus memakai CT yang diketahui, meridian plus memakai ET yang diketahui.",
+  "js.lensa_campuran_tiap_meridian": "Lensa campuran: meridian minus memakai CT, meridian plus memakai ET.",
   "js.axis_tidak_valid_isi": "Axis tidak valid (isi 0–180).",
   "js.hitungan_tidak_terpengaruh": "",
 
@@ -2416,6 +2453,18 @@ var TEKS = {
   "js.s": "s",
   "js.r": "r",
   "js.r_sama_dengan_1000": "r sama dengan 1000 kali (n kurang 1), dibagi nilai mutlak D",
+  "js.radius_sama_dengan_1000": "R sama dengan 1000 kali (n kurang 1), dibagi nilai mutlak D",
+  "js.radius_kelengkungan": "Radius Kelengkungan",
+  "js.radius_kelengkungan_desc": "Jari-jari lengkung depan (F1) dan belakang (F2) dalam mm.",
+  "js.radius_f1": "Radius F1",
+  "js.radius_f2": "Radius F2",
+  "js.radius_dari_bc": "depan, dari BC",
+  "js.radius_dari_f2": "belakang, dari F2",
+  "js.radius_note": "D = BC untuk radius F1, D = F2 untuk radius F2, tiap meridian. n = indeks bias lensa. Power 0 = permukaan datar (radius ∞).",
+  "js.radius_note_rf": "D = power permukaan (BC, F1, atau F2), n = indeks bias lensa. Power 0 = permukaan datar (radius ∞).",
+  "js.isi_spheris_dan_cylinder_radius": "Isi spheris dan cylinder untuk menghitung radius F1 dan F2.",
+  "js.radius_power_nol": "power 0, permukaan datar",
+  "js.diisi_sendiri_kecil": "diisi sendiri",
   "js.d_sama_dengan_1000": "D sama dengan 1000 kali (n kurang 1), dibagi r",
   "js.spheris_f1": "° = Spheris − F1",
   "js.spheris_cylinder_f1": "° = (Spheris + Cylinder) − F1",
@@ -2449,7 +2498,7 @@ var TEKS = {
   "js.exact_hasil_dalam_mm": "Exact. Hasil dalam mm, dibulatkan",
   "js.desimal": "desimal.",
   "js.approximate_hasil_dalam_mm": "Approximate. Hasil dalam mm, dibulatkan",
-  "js.desimal_sedikit_lebih_kecil": "desimal. Sedikit lebih kecil dari exact, selisihnya makin besar pada power dan diameter besar.",
+  "js.desimal_sedikit_lebih_kecil": "desimal. Sedikit lebih kecil dari exact, terutama pada power dan diameter besar.",
   "js.spheris_dan_spheris_cylinder_2": "Spheris dan Spheris + Cylinder, satu sagita tiap meridian.",
   "js.spheris_2": "Spheris.",
   "js.diameter_lensa_dalam_mm": "Diameter lensa dalam mm.",
@@ -2542,14 +2591,14 @@ var TEKS = {
   "js.mm_periksa_kembali_isiannya": "mm). Periksa kembali isiannya.",
   "js.bc_sama_dengan_h": "BC sama dengan H ditambah V, dibagi 2, ditambah 10 persen",
   "js.diameter_total_hvid_2": "Diameter total = HVID + 2 mm",
-  "js.radius_terbesar_antara_h": "Radius terbesar antara H dan V (meridian yang lebih datar). H dan V adalah radius dalam mm, sama dengan bacaan di menu Keratometer.",
+  "js.radius_terbesar_antara_h": "Radius terbesar antara H dan V (meridian yang lebih datar).",
   "js.bc_flat_0_7": "BC = flat + 0.7",
   "js.flat_10": "flat + 10%",
   "js.flat_10_2": "Flat + 10%",
   "js.flat_10_3": "Flat + 10%:",
   "js.bc_flat_10": "BC = flat + 10%",
-  "js.flat_10_ket": "Flat ditambah 10% dari flat itu, jadi flat × 1.10. Hanya dipakai bila dipilih sendiri, tidak termasuk rumus Otomatis.",
-  "js.rata_rata_h_dan": "Rata-rata H dan V ditambah 10% dari rata-rata itu, jadi rata-rata × 1.10. Dipakai bila selisih H dan V jauh.",
+  "js.flat_10_ket": "Flat × 1.10. Hanya dipakai bila dipilih sendiri, tidak termasuk rumus Otomatis.",
+  "js.rata_rata_h_dan": "Rata-rata H dan V × 1.10. Dipakai bila selisih H dan V jauh.",
   "js.otomatis_2": "Otomatis",
   "js.selisih_h_dan_v": "Selisih H dan V ≤ batas: BC 1 (flat + 0.7)",
   "js.batas_bc_2_rata": "batas: BC 2 (rata-rata + 10%)",
@@ -2583,7 +2632,7 @@ var TEKS = {
   "js.lensa": ", lensa",
   "js.power": "Power",
   "js.gambar": "Gambar",
-  "js.isi_power_mata_untuk": "Isi power mata untuk melihat jatuhnya cahaya ke retina.",
+  "js.isi_power_mata_untuk": "Isi power mata untuk melihat gambarnya.",
   "js.gabungkan_kedua_meridian_dalam": "Gabungkan kedua meridian dalam satu gambar",
   "js.gabung_meridian": "Gabung meridian",
   "js.zoom_gambar": "Zoom gambar",
@@ -2617,12 +2666,12 @@ var TEKS = {
   "js.astigmatisme": "Astigmatisme",
   "js.dua_meridian_utama_punya": "Dua meridian utama punya R terbesar dan terkecil. Interval Sturm = selisih dua fokus (mm). Lingkaran kabur terkecil di rata-rata R. Keduanya di depan retina: Astigmatisme Miopia Kompositus. Keduanya di belakang: Astigmatisme Hiperopia Kompositus. Salah satu tepat di retina: Simpleks. Beda sisi: Astigmatisme Mixtus.",
   "js.titik_jauh_1_sph": "Titik jauh = 1 ÷ Sph (meter). Minus: di depan mata. Plus: di belakang mata (maya).",
-  "js.lensa_menempel_di_mata": "Lensa menempel di mata (jarak vertex diabaikan). Lensa yang mengoreksi penuh memakai Sph, Cyl, dan Axis yang sama dengan mata, sehingga R = 0 dan fokus tepat di retina. Kolom lensa dikosongkan = koreksi penuh.",
+  "js.lensa_menempel_di_mata": "Lensa dianggap menempel di mata (jarak vertex diabaikan). Kolom lensa dikosongkan = koreksi penuh, jadi R = 0 dan fokus tepat di retina.",
   "js.periksa_isian_power": "Periksa isian power.",
   "js.isi_power_mata_sph": "Isi power mata (Sph) dalam dioptri.",
   "js.spheris_sph": "Spheris (Sph)",
   "js.cylinder_cyl": "Cylinder (Cyl)",
-  "js.ukuran_lensa_koreksi_kosongkan": "Ukuran lensa koreksi. Kosongkan semua untuk koreksi penuh sesuai power mata, atau isi sendiri (tulis 0 untuk plano).",
+  "js.ukuran_lensa_koreksi_kosongkan": "Kosongkan semua untuk koreksi penuh sesuai power mata, atau isi sendiri (tulis 0 untuk plano).",
   "js.spheris_lensa": "Spheris lensa",
   "js.cylinder_lensa": "Cylinder lensa",
   "js.axis_lensa": "Axis lensa",
@@ -2649,9 +2698,9 @@ var TEKS = {
   "js.visus_dengan_tentatif": "Visus dengan tentatif:",
   "js.tabel_acuan": "Tabel acuan",
   "js.desimal_3": "Desimal",
-  "js.perkiraan_awal_untuk_trial": "Perkiraan awal untuk trial, bukan resep. Sesuaikan dengan tabel acuan yang dipakai di lab Anda.",
+  "js.perkiraan_awal_untuk_trial": "Perkiraan awal, bukan resep. Sesuaikan dengan tabel acuan di lab Anda.",
   "js.tentatif": "Tentatif",
-  "js.visus_dasar_tanpa_koreksi": "Visus dasar (tanpa koreksi) dicocokkan ke tabel acuan. Hasilnya lensa spheris minus pertama yang dipasang di trial frame. Ini perkiraan awal, bukan resep.",
+  "js.visus_dasar_tanpa_koreksi": "Visus dasar (tanpa koreksi) dicocokkan ke tabel acuan. Hasilnya lensa spheris minus pertama untuk trial frame.",
   "js.visus_desimal_d_d": "Visus desimal = d ÷ D. Contoh: 6/20 = 6 ÷ 20 = 0.30.",
   "js.feet": "Feet",
   "js.padanan_metrik_dan_feet": "Padanan metrik dan feet: 6/6 = 20/20, 6/12 = 20/40, 6/60 = 20/200.",
@@ -2695,13 +2744,13 @@ var TEKS = {
   "js.logmar_log10_desimal_padanan": "logMAR = −log10(desimal). Padanan feet sama dengan tabel Tentative Visus.",
   "js.mar_1_desimal_dalam": "MAR = 1 ÷ desimal = D ÷ 6, dalam menit busur (′). Baris 6/6 = 1.00, 6/60 = 10.00.",
   "js.huruf_salah": "Huruf salah",
-  "js.baris_ditulis_6_d": "Baris ditulis 6/D −m bila m huruf salah. Baris dianggap terbaca bila paling sedikit separuh hurufnya (dibulatkan ke atas) benar. Kurang dari itu: pakai baris di atasnya. Sesuaikan dengan protokol Anda.",
+  "js.baris_ditulis_6_d": "Baris ditulis 6/D −m bila m huruf salah. Baris dianggap terbaca bila paling sedikit separuh hurufnya (dibulatkan ke atas) benar. Kurang dari itu: pakai baris di atasnya.",
   "js.jarak": "Jarak",
   "js.otomatis_memilih_jarak_terjauh": "Otomatis memilih jarak terjauh (6, 5, 4, 3, 2, atau 1 m) di mana baris terlebar masih muat di layar.",
   "js.kalibrasi": "Kalibrasi",
-  "js.skala_px_per_mm": "Skala (px per mm) = lebar kotak di layar (px) ÷ 53.98 mm. Kartu ATM dan KTP berukuran 85.60 × 53.98 mm. Ulangi bila zoom layar berubah.",
+  "js.skala_px_per_mm": "Skala (px per mm) = lebar kotak di layar (px) ÷ 53.98 mm. Kartu ATM dan KTP berukuran 85.60 × 53.98 mm.",
   "js.hasil_baca": "Hasil baca",
-  "js.belum_ada_baris_dipilih": "Belum ada baris dipilih. Ketuk satu baris di chart, lalu ketuk huruf yang salah dibaca pasien.",
+  "js.belum_ada_baris_dipilih": "Belum ada baris dipilih.",
   "js.huruf_benar": "huruf · benar",
   "js.salah": "· salah",
   "js.logmar_2": "logMAR",
@@ -2718,7 +2767,7 @@ var TEKS = {
   "js.hapus_catatan": "Hapus catatan",
   "js.terpilih": ", terpilih",
   "js.kalibrasi_sekarang": "Kalibrasi sekarang",
-  "js.zoom_atau_ukuran_layar": "Zoom atau ukuran layar berubah sejak kalibrasi, jadi ukuran huruf belum akurat. Kalibrasi ulang.",
+  "js.zoom_atau_ukuran_layar": "Zoom atau ukuran layar berubah, jadi ukuran huruf belum akurat. Kalibrasi ulang.",
   "js.ukuran_layar_belum_dikalibrasi": "Ukuran layar belum dikalibrasi, jadi ukuran huruf belum akurat.",
   "js.chart_lebih_lebar_dari": "Chart lebih lebar dari layar pada jarak",
   "js.m_geser_ke_samping": "m, geser ke samping untuk melihat seluruhnya.",
@@ -2769,12 +2818,12 @@ var TEKS = {
 
   // ----- Dari skrip: Beranda dan perpindahan halaman -----
   "js.isi_kartu_kerja_surfacing": "Isi Kartu Kerja Surfacing",
-  "js.hitung_kartu_kerja_surfacing": "Hitung kartu kerja surfacing dari awal sampai akhir.",
+  "js.hitung_kartu_kerja_surfacing": "Hitung dari resep sampai tebal yang dibuang.",
   "js.data_precal": "Data Precal",
-  "js.ed_mbs_dan_diameter": "Hitung ED, MBS, dan diameter lensa dari data frame.",
+  "js.ed_mbs_dan_diameter": "ED, MBS, dan diameter lensa dari data frame.",
   "js.base_curve_2": "Base Curve",
-  "js.pengukuran_tingkat_kelengkungan_": "Pengukuran tingkat kelengkungan pada permukaan depan lensa.",
-  "js.permukaan_depan_f1_dan": "Hitung permukaan depan (F1) dan belakang (F2).",
+  "js.pengukuran_tingkat_kelengkungan_": "Kelengkungan permukaan depan lensa.",
+  "js.permukaan_depan_f1_dan": "Kurva depan (F1) dan belakang (F2).",
   "js.sagita_dari_power_diameter": "Sagita dari power, diameter, dan indeks bias.",
   "js.ketebalan_lensa": "Ketebalan Lensa",
   "js.tebal_tepi_tengah_dan": "Tebal tepi (ET), tengah (CT), dan tebal yang dibuang (t).",
@@ -2783,11 +2832,11 @@ var TEKS = {
   "js.parameter_lk": "Parameter LK",
   "js.diameter_total_dari_hvid": "Diameter total dari HVID dan base curve dari bacaan H dan V.",
   "js.bagan_refraksi": "Bagan Refraksi",
-  "js.gambar_jatuhnya_cahaya_ke": "Gambar jatuhnya cahaya ke retina sesuai power mata, dengan atau tanpa lensa koreksi.",
+  "js.gambar_jatuhnya_cahaya_ke": "Jatuhnya cahaya ke retina, dengan atau tanpa lensa koreksi.",
   "js.tentative_visus": "Tentative Visus",
-  "js.perkiraan_awal_lensa_spheris": "Perkiraan awal lensa spheris dari visus tanpa koreksi, sebagai titik mulai trial.",
+  "js.perkiraan_awal_lensa_spheris": "Perkiraan awal lensa spheris dari visus tanpa koreksi.",
   "js.snellen_chart": "Snellen Chart",
-  "js.chart_visus_interaktif_ukuran": "Chart visus interaktif. Ukuran huruf sesuai jarak uji, tandai huruf salah, dan catat visus OD dan OS.",
+  "js.chart_visus_interaktif_ukuran": "Chart visus interaktif dengan pencatatan OD dan OS.",
   "js.klinik_optik": "Klinik Optik",
   "js.klinik_refraksi": "Klinik Refraksi",
   "js.lensa_kontak": "Lensa Kontak",
@@ -2810,7 +2859,7 @@ var TEKS = {
   "js.trigonometri_logaritma_pangkat_a": "Trigonometri, logaritma, pangkat, akar, dan pecahan.",
   "js.aplikasi": "Aplikasi",
   "js.tidak_ada_menu_yang": "Tidak ada menu yang cocok dengan “",
-  "js.coba_kata_lain_mis": "”. Coba kata lain, mis. sagita, visus, atau keratometer.",
+  "js.coba_kata_lain_mis": "”.",
   "js.tidak_ada_menu_yang_2": "Tidak ada menu yang cocok",
 
   // ----- Dari skrip: Halaman Kumpulan Rumus -----
@@ -2852,7 +2901,7 @@ var TEKS = {
   "js.pengaturan_dikembalikan_ke_stand": "Pengaturan dikembalikan ke standar.",
   "js.hapus_semua_isian_tersimpan": "Hapus semua isian tersimpan",
   "js.ketuk_lagi_untuk_menghapus": "Ketuk lagi untuk menghapus semua",
-  "js.semua_isian_di_semua": "Semua isian di semua halaman sudah dikosongkan. Pengaturan tidak ikut terhapus.",
+  "js.semua_isian_di_semua": "Semua isian dikosongkan. Pengaturan tidak ikut terhapus.",
 
   // ----- Dari skrip: Kalkulator scientific -----
   "js.kesalahan_matematika": "Kesalahan matematika",
@@ -2921,7 +2970,7 @@ var TEKS = {
 
   // ----- Dari skrip: Tampilan natural: pecahan bertingkat dan akar dengan garis atas -----
   "js.sembunyikan_fungsi_scientific": "Sembunyikan fungsi scientific",
-  "js.riwayat_kosong": "Belum ada riwayat. Setiap hasil yang keluar saat menekan = akan tersimpan di sini.",
+  "js.riwayat_kosong": "Belum ada riwayat.",
   "js.pakai_ekspresi_ini": "Pakai ekspresi ini di layar",
   "js.sisipkan_hasil_ini": "Sisipkan hasil ini di layar",
   "js.riwayat_dibuka": "Riwayat dibuka",
@@ -2945,7 +2994,8 @@ var TEKS = {
   "js.tanpa_internet": "Tanpa internet",
   "js.penyimpanan": "Penyimpanan",
   "js.di_perangkat_ini": "Di perangkat ini",
-  "js.hasil_hitungan_adalah_alat": "Aplikasi ini bertujuan untuk membantu dalam kegiatan refraksi, optisi, dan optometri menjadi lebih mudah dan praktis. ",
+  "js.hasil_hitungan_adalah_alat": "Alat bantu hitung untuk refraksi, optisi, dan optometri.",
+  "js.hak_cipta": "© 2026 Eka Putra Prasetya. Seluruh hak dilindungi.",
 
   "viz.judul": "Gambar lensa",
   "viz.jenis": "Jenis gambar",
@@ -2958,7 +3008,7 @@ var TEKS = {
   "viz.v_bc": "Base Curve",
   "viz.v_ft": "Tools",
   "viz.v_et": "Ketebalan",
-  "viz.bantuan3d": "Seret ke segala arah untuk memutar. Cubit atau Ctrl + scroll untuk zoom. Ketuk dua kali untuk mengembalikan.",
+  "viz.bantuan3d": "Seret untuk memutar, cubit atau Ctrl + scroll untuk zoom, ketuk dua kali untuk mengembalikan.",
   "viz.putar": "Putar otomatis",
   "viz.ar": "Anti-refleksi",
   "viz.depan": "Depan",
@@ -2972,10 +3022,10 @@ var TEKS = {
   "viz.q_low": "Rendah",
   "viz.q_mid": "Sedang",
   "viz.q_high": "Tinggi",
-  "viz.qh_low": "Paling ringan dan hemat baterai: gambar lebih kasar dan sedikit lebih patah-patah. Pantulan tetap penuh.",
-  "viz.qh_mid": "Seimbang: gambar cukup tajam, tepi lensa dihaluskan, tetap lancar di kebanyakan perangkat.",
-  "viz.qh_high": "Paling tajam: resolusi penuh dan tepi paling halus. Butuh perangkat yang lebih kuat, dan bisa terasa berat di HP lama.",
-  "viz.nogl": "Gambar 3D memerlukan WebGL, yang tidak tersedia di perangkat ini. Gambar 2D tetap bisa dipakai.",
+  "viz.qh_low": "Paling ringan dan hemat baterai, gambar lebih kasar.",
+  "viz.qh_mid": "Seimbang: cukup tajam dan tetap lancar di kebanyakan perangkat.",
+  "viz.qh_high": "Paling tajam, tapi bisa berat di HP lama.",
+  "viz.nogl": "Gambar 3D tidak tersedia karena perangkat ini tidak mendukung WebGL.",
   "viz.m_sph": "Sph",
   "viz.m_sc": "Sph + Cyl",
   "viz.skala_asli_s": "Skala asli",
@@ -2990,11 +3040,11 @@ var TEKS = {
   "viz.l_finning": "Finning 20%",
   "viz.l_polishing": "Polishing 10%",
   "viz.l_blank": "Blank (tebal dibuang)",
-  "viz.n_sag": "Potongan lensa dengan lengkung depan dari base curve. Area berwarna adalah tebal tambahan akibat power: sagita (s) di tepi untuk lensa minus, di tengah untuk lensa plus.",
-  "viz.n_bc": "Base curve adalah lengkung permukaan depan. Radius = 1000 × (n − 1) ÷ BC, dengan n dari indeks bias yang diisi. s1 adalah sagita lengkung depan.",
-  "viz.n_ft": "F1 adalah lengkung depan (sama dengan BC), F2 adalah lengkung belakang. Radius = 1000 × (n − 1) ÷ D, dengan n dari indeks bias yang diisi. Tool digambar terpisah dari lensa supaya bentuknya terlihat.",
-  "viz.n_et": "CT adalah tebal pusat dan ET tebal tepi pada meridian ini. t adalah tebal blank. Selisih t dengan bagian lensa yang paling tebal dibuang dari sisi belakang.",
-  "viz.n_3d": "Gambar 3D: cahaya dibiaskan lewat kedua permukaan, jadi grid di belakang lensa mengecil (minus) atau membesar (plus) sesuai power. Tepi lensa uncut tampak buram.",
+  "viz.n_sag": "Area berwarna adalah tebal tambahan akibat power: sagita (s) di tepi untuk lensa minus, di tengah untuk lensa plus.",
+  "viz.n_bc": "Radius = 1000 × (n − 1) ÷ BC. s1 adalah sagita lengkung depan.",
+  "viz.n_ft": "F1 = lengkung depan (sama dengan BC), F2 = lengkung belakang. Radius = 1000 × (n − 1) ÷ D. Tool digambar terpisah dari lensa.",
+  "viz.n_et": "CT = tebal pusat, ET = tebal tepi pada meridian ini, t = tebal blank. Selisih t dan bagian lensa tertebal dibuang dari sisi belakang.",
+  "viz.n_3d": "Grid di belakang lensa mengecil (minus) atau membesar (plus) sesuai power. Tepi lensa uncut tampak buram.",
   "viz.n_3d_cyl": "Lensa dengan cylinder digambar dengan satu tebal pusat (CT terbesar). Garis tipis pada lensa menandai axis.",
 };
 function _T(k) { return Object.prototype.hasOwnProperty.call(TEKS, k) ? TEKS[k] : k; }
@@ -3099,6 +3149,11 @@ function calcTools(P, BC) {
   return { F1: BC, F2: P.map(p => p - BC) };
 }
 
+// Radius kelengkungan (mm) permukaan dengan power D (dioptri) pada indeks bias n: R = 1000 × (n − 1) ÷ |D|.
+// Tanda D tidak berpengaruh (cembung dan cekung sama besar). D = 0 berarti permukaan datar: radius tak hingga (Infinity).
+// Dipakai kartu kerja (calcEye) dan halaman Radius Kelengkungan, jadi rumusnya satu sumber.
+function calcRadius(D, n) { return Math.abs(D) < 1e-9 ? Infinity : 1000 * (n - 1) / Math.abs(D); }
+
 // Ketebalan tiap meridian: minus -> CT diketahui, ET = Sagita + CT. Plus -> ET diketahui, CT = Sagita + ET.
 // t = ET atau CT terbesar + 2, dibulatkan ke atas. Dipakai kartu kerja (calcEye) dan halaman Ketebalan Lensa.
 function calcThickness(kinds, sag, thick) {
@@ -3129,15 +3184,19 @@ function calcEye(e, dia, mode) {
   const { SE, BCraw, BC } = calcBaseCurve(sph, cyl);
   const { F1, F2 } = calcTools(P, BC);
 
+  // Radius lengkung depan (F1 = BC) dan lengkung belakang (F2 tiap meridian), dalam mm
+  const radF1 = calcRadius(F1, n);
+  const radF2 = F2.map(f => calcRadius(f, n));
+
   const sag = calcSagita(P, dia, n, mode);
 
   const { ET, CT, biggest, t } = calcThickness(kinds, sag, thick);
 
   const { rem, grinding, finning, polishing } = calcRemoval(kinds, ET, CT, t);
 
-  return { type, kinds, hasCyl, SE, BCraw, BC, F1, F2, sag, ET, CT, t, grinding, finning, polishing, dia, n, mode };
+  return { type, kinds, hasCyl, SE, BCraw, BC, F1, F2, radF1, radF2, sag, ET, CT, t, grinding, finning, polishing, dia, n, mode };
 }
-if (typeof module !== 'undefined') module.exports = { SURF_MATERIALS, fixD, roundQuarter, classifyLens, diaOfMBS, calcPrecal, calcPrecalMono, sagExact, calcSagita, calcBaseCurve, calcTools, calcThickness, calcRemoval, calcEye };
+if (typeof module !== 'undefined') module.exports = { SURF_MATERIALS, fixD, roundQuarter, classifyLens, diaOfMBS, calcPrecal, calcPrecalMono, sagExact, calcSagita, calcBaseCurve, calcTools, calcRadius, calcThickness, calcRemoval, calcEye };
 
 
 var $ = function (s, r) { return (r || document).querySelector(s); };
@@ -3160,6 +3219,9 @@ function L(html) {
   if (SEP !== ',') return html;
   return String(html).split(/(<[^>]*>)/).map(function (p, i) { return i % 2 ? p : p.replace(/(\d)\.(?=\d)/g, '$1,'); }).join('');
 }
+// Mengisi ulang kontainer hasil hanya bila isinya berubah. Tanpa ini, isian yang kehilangan fokus (event change atau perapian angka) menggambar ulang hasil
+// di antara tekan dan lepas jari, tombol Transposisi diganti elemen baru, dan ketukan pertamanya tidak terdaftar sebagai klik.
+function setHTML(el, html) { if (el._h === html) return; el._h = html; el.innerHTML = html; }
 try {
   var so = JSON.parse(localStorage.getItem(SKEY) || 'null');
   if (so && /^(auto|light|dark)$/.test(so.theme)) SET.theme = so.theme;
@@ -3201,6 +3263,7 @@ function blank() {
     sag: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', tr: false, mode: 'approx' },   // halaman Sagita, terpisah dari kartu kerja. mode: approx atau exact
     ft: { sph: '', cyl: '', axis: '', bc: '', tr: false },   // halaman Tools, terpisah dari kartu kerja. bc kosong = otomatis dari resep
     bc: { sph: '', cyl: '', tr: false },
+    rad: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', bc: '', tr: false },   // halaman Radius Kelengkungan, terpisah dari kartu kerja. bc kosong = otomatis dari resep
     et: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', thick: '1.4', tr: false, rem: false },   // halaman Ketebalan Lensa, terpisah dari kartu kerja   // halaman Base Curve, terpisah dari kartu kerja
     calc: { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false, hist: [] },   // kalkulator scientific: ekspresi, mode sudut (true = derajat), memori, jawaban terakhir, dan riwayat (terbaru di depan: { e: ekspresi, v: hasil, d: mode derajat })
     lk: { hvid: '', h: '', v: '', src: 'own', mode: 'auto', lim: '0.20' },   // halaman Parameter LK: HVID, radius H dan V (own = isi sendiri, kr = dari Keratometer), rumus BC (auto, flat, avg, flat10), batas selisih H dan V (mm) untuk rumus otomatis
@@ -3230,6 +3293,7 @@ function load() {
     if (o.sag) Object.assign(b.sag, o.sag);
     if (o.bc) Object.assign(b.bc, o.bc);
     if (o.ft) Object.assign(b.ft, o.ft);
+    if (o.rad) Object.assign(b.rad, o.rad);
     if (o.et) Object.assign(b.et, o.et);
     if (o.calc) Object.assign(b.calc, o.calc);
     if (o.kr) Object.assign(b.kr, o.kr);
@@ -3259,6 +3323,7 @@ function sgn(x, d) {
   return x < 0 ? MIN + s : (x > 0 ? '+' + s : s);
 }
 var fD = function (x) { return x.toFixed(DECP); };   // tampilan hasil hitung sesuai digit desimal di Pengaturan
+var fR = function (x) { return isFinite(x) ? fD(x) : '∞'; };   // radius (mm): power 0 = permukaan datar, radius tak hingga
 var trim = function (x) { return String(Number(x.toFixed(3))); };
 var mm = function (x) { return String(Number(x.toFixed(2))); };
 function getPath(p) { return p.split('.').reduce(function (o, k) { return o[k]; }, S); }
@@ -3413,6 +3478,19 @@ $('#ft-fields').innerHTML = powerField('ft', 'sph', _T('js.spheris'), '') + powe
   ('<div class="f"><label for="ft-bc">' + _T('js.bc') + ' ' + '<small>D, kosong = otomatis</small></label>') +
     ('<input type="text" id="ft-bc" data-k="ft.bc" data-rule="num" inputmode="decimal" autocomplete="off" placeholder="' + _T('js.otomatis') + '" enterkeyhint="done"></div>');
 
+// Isian halaman Radius Kelengkungan: resep (Spheris, Cylinder, Axis), jenis lensa, indeks bias, dan BC. BC kosong = otomatis dari resep.
+$('#rad-fields').innerHTML = '' +
+  powerField('rad', 'sph', _T('js.spheris'), '') +
+  powerField('rad', 'cyl', _T('js.cylinder'), '') +
+  ('<div class="f"><label for="rad-axis">' + _T('js.axis') + ' ' + '<small>°</small></label>') +
+    '<input type="text" id="rad-axis" data-k="rad.axis" data-rule="axis" inputmode="numeric" autocomplete="off" placeholder="180" enterkeyhint="next"></div>' +
+  ('<div class="f"><label for="rad-bc">' + _T('js.bc') + ' ' + '<small>D, kosong = otomatis</small></label>') +
+    ('<input type="text" id="rad-bc" data-k="rad.bc" data-rule="num" inputmode="decimal" autocomplete="off" placeholder="' + _T('js.otomatis') + '" enterkeyhint="next"></div>') +
+  ('<div class="f"><label for="rad-mat">' + _T('js.jenis_lensa') + '</label><select id="rad-mat" data-k="rad.mat">') +
+    SURF_MATERIALS.map(function (m) { return '<option value="' + m.id + '">' + m.name + '</option>'; }).join('') + '</select></div>' +
+  ('<div class="f"><label for="rad-n">' + _T('js.indeks_bias') + ' ' + '<small>' + _T('js.n') + '</small></label>') +
+    '<input type="text" id="rad-n" data-k="rad.n" data-rule="n" inputmode="decimal" autocomplete="off" placeholder="0.00" enterkeyhint="done"></div>';
+
 // Isian halaman Ketebalan Lensa: resep, diameter, jenis lensa, indeks bias, dan ketebalan yang diketahui (CT untuk minus, ET untuk plus)
 $('#et-fields').innerHTML = '' +
   powerField('et', 'sph', _T('js.spheris'), '') +
@@ -3474,9 +3552,6 @@ function applyTr(sph, cyl, ax, on) {
 }
 function trButton(k, on) {
   return '<button type="button" class="tr-btn" data-tr="' + k + '" aria-pressed="' + (on ? 'true' : 'false') + ('" title="' + _T('js.transposisi_sph_cyl_cyl') + '">') + ICO_SWAP + ('<span>' + _T('js.transposisi') + '</span></button>');
-}
-function trNote(ev, noAxis) {
-  return ('<p class="how">' + _T('js.bentuk') + ' ') + (ev.cyl > 0 ? 'plus' : 'minus') + (' ' + _T('js.cylinder_transposisi_dari') + ' ') + sgn(ev.orig.sph) + ' ' + sgn(ev.orig.cyl) + (noAxis ? '' : ' × ' + ev.orig.ax) + '</p>';
 }
 function trRow(kind) {
   var ax = " Axis' = Axis + 90 (axis ≤ 90) atau Axis − 90 (axis > 90).";
@@ -3585,7 +3660,6 @@ function eyeHTML(k, ev) {
     var HIGH_INDEX = 1.60;   // indeks bias custom 1.60 ke atas disebut High Index
     var mname = matOf(k).id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : matOf(k).name;
     var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · ' + (r.dia > DIA_MAX ? '<span class="over">Ø ' + r.dia + ' mm</span>' : 'Ø ' + r.dia + ' mm') + ' · ' + (r.mode === 'exact' ? _T('js.exact') : _T('js.approximate')) + '</span></div>';
-    if (ev.tr) t += trNote(ev);
     t += '<div class="tbl" style="--cols:' + cols + '">';
     if (two) t += '<div class="r hd"><span></span>' + [ev.ax, ax2].map(function (a, i) {
       return '<span class="v">' + a + '°' + (mixed ? '<small>' + r.kinds[i] + '</small>' : '') + '</span>';
@@ -3594,6 +3668,9 @@ function eyeHTML(k, ev) {
     t += row(_T('js.base_curve_bc'), [sgn(r.BC)], cols, { key: true, note: 'SE ' + sgn(r.SE) + ' → ' + r.BCraw.toFixed(DECP) });
     t += row('F1', [sgn(r.F1)], cols, { note: _T('js.sama_dengan_bc') });
     t += row('F2', r.F2.map(function (x) { return sgn(x); }), cols);
+    t += '<div class="g">' + _T('js.radius_kelengkungan') + ' <i>' + _T('js.mm') + '</i></div>';
+    t += row(_T('js.radius_f1'), [fR(r.radF1)], cols, { key: true, note: _T('js.radius_dari_bc') });
+    t += row(_T('js.radius_f2'), r.radF2.map(fR), cols, { key: true, note: _T('js.radius_dari_f2') });
     t += ('<div class="g">' + _T('js.ketebalan') + '</div>');
     t += row(_T('js.sagita'), r.sag.map(fD), cols);
     t += row('ET', r.ET.map(fD), cols, { note: etNote });
@@ -3634,6 +3711,8 @@ var SAG_EXACT_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.s_sama_
   '<span class="rad">' + SVG_RAD + ('<span class="rc"><span><i>' + _T('js.r') + '</i>²</span><span>−</span>') +
   '<span class="pw"><span class="bp">(</span><span class="frac"><span class="num">Ø</span><span class="den">2</span></span><span class="bp">)</span><sup>2</sup></span></span></span></span>';
 var R_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.r_sama_dengan_1000') + '"><i>' + _T('js.r') + '</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den">|<i>' + _T('js.d') + '</i>|</span></span></span>');
+// Rumus radius kelengkungan sebagai pecahan bertingkat: R = 1000 · (n − 1) ÷ |D|. Dipakai kartu kerja, halaman Radius Kelengkungan, dan Kumpulan Rumus.
+var RAD_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.radius_sama_dengan_1000') + '"><i>R</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den">|<i>' + _T('js.d') + '</i>|</span></span></span>');
 // Rumus keratometri sebagai pecahan bertingkat: D = 1000 · (n − 1) ÷ r. Dipakai halaman Keratometer dan Kumpulan Rumus.
 var KR_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.d_sama_dengan_1000') + '"><i>' + _T('js.d') + '</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den"><i>' + _T('js.r') + '</i></span></span></span>');
 // ax = axis meridian pertama dari inputan (setelah transposisi bila aktif). Meridian kedua memakai rumus yang sama dengan nama kolom di kartu hasil.
@@ -3648,6 +3727,7 @@ function eyeFormulas(r, ax) {
     ['SE', two ? _T('js.spheris_cylinder') : _T('js.spheris')],
     ['BC', (r.SE <= 0 ? '½ SE + 6' : 'SE + 6') + _T('js.dibulatkan_ke_kelipatan_0')],
     [_T('js.tools'), tools.map(function (x) { return '<span class="ln">' + x + '</span>'; }).join('')],
+    [_T('js.radius_2'), RAD_EQ + '<span class="eq-note">' + _T('js.radius_note') + '</span>'],
     [_T('js.sagita'), (exact ? SAG_EXACT_EQ : SAG_EQ) + sagNote]
   ].concat(exact ? [['r', R_EQ + '<span class="eq-note">Jari-jari lengkung permukaan dalam mm. Ø ÷ 2 tidak boleh lebih besar dari r. Plano (D = 0) sagitanya 0.</span>']] : []).concat([
     mixed ? ['ET / CT', _T('js.meridian_minus_et_sagita')]
@@ -3707,7 +3787,7 @@ function sagHTML(ev) {
     var HIGH_INDEX = 1.60;   // sama dengan kartu kerja: indeks bias custom 1.60 ke atas disebut High Index
     var mname = ev.m.id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
     var exact = ev.mode === 'exact';
-    body = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · Ø ' + trim(ev.dia) + ' mm · ' + (exact ? _T('js.exact') : _T('js.approximate')) + '</span></div>' + (ev.tr ? trNote(ev) : '') +
+    body = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · Ø ' + trim(ev.dia) + ' mm · ' + (exact ? _T('js.exact') : _T('js.approximate')) + '</span></div>' +
       '<div class="tiles" style="margin-top:12px;grid-template-columns:repeat(' + cols + ',minmax(0,1fr))">' +
       ev.sag.map(function (x, i) {
         return ('<div class="tile main"><small>' + _T('js.sagita')) + (ev.two ? ' ' + axes[i] + '°' : '') + '</small><b>' + fD(x) + '</b></div>';
@@ -3757,7 +3837,7 @@ function bcHTML(ev) {
   else {
     var se3 = sgn(ev.SE, DECP);
     var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) : '');
-    body = '<div class="spec"><b>' + spec + '</b></div>' + (ev.tr ? trNote(ev, true) : '') +
+    body = '<div class="spec"><b>' + spec + '</b></div>' +
       '<div class="tiles" style="margin-top:12px;grid-template-columns:repeat(2,minmax(0,1fr))">' +
         ('<div class="tile"><small>' + _T('js.se') + '</small><b>') + sgn(ev.SE) + '</b></div>' +
         ('<div class="tile main"><small>' + _T('js.base_curve') + '</small><b>') + sgn(ev.BC) + '</b></div></div>' +
@@ -3804,7 +3884,7 @@ function ftHTML(ev) {
   else {
     var cols = ev.two ? 2 : 1, axes = [ev.ax, ev.ax2], mixed = ev.type === 'mixed';
     var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
-    var t = '<div class="spec"><b>' + spec + '</b></div>' + (ev.tr ? trNote(ev) : '') + '<div class="tbl" style="--cols:' + cols + '">';
+    var t = '<div class="spec"><b>' + spec + '</b></div>' + '<div class="tbl" style="--cols:' + cols + '">';
     if (ev.two) t += '<div class="r hd"><span></span>' + axes.map(function (a, i) {
       return '<span class="v">' + a + '°' + (mixed ? '<small>' + ev.kinds[i] + '</small>' : '') + '</span>';
     }).join('') + '</div>';
@@ -3829,6 +3909,74 @@ function ftFormulaRows(ev) {
     { dt: 'F1', dd: 'F1 = BC' },
     { dt: 'F2', dd: f2.map(ln).join('') },
     ...(ok && ev.tr ? [trRow('ft')] : [])
+  ];
+}
+
+/* ---------- Radius Kelengkungan (halaman sendiri, rumus sama dengan kartu kerja) ---------- */
+// Resep + jenis lensa -> BC (otomatis, atau diisi sendiri) -> F1 dan F2 -> radius F1 dan F2 (mm). R = 1000 × (n − 1) ÷ |D|.
+function radMat() { return SURF_MATERIALS.filter(function (x) { return x.id === S.rad.mat; })[0] || SURF_MATERIALS[0]; }
+function evalRad() {
+  var s = S.rad, sph = num(s.sph), cyl = num(s.cyl), ax = num(s.axis), bcIn = num(s.bc), m = radMat();
+  var n = m.id === 'custom' ? num(s.n) : m.n;
+  if (sph === null && cyl === null) return { state: 'empty' };
+  var errs = [];
+  if (sph === null) errs.push(_T('js.isi_spheris_tulis_0'));
+  else if (Number.isNaN(sph)) errs.push(_T('js.spheris_tidak_valid'));
+  if (Number.isNaN(cyl)) errs.push(_T('js.cylinder_tidak_valid'));
+  if (Number.isNaN(bcIn)) errs.push(_T('js.base_curve_tidak_valid'));
+  if (bad(n) || n <= 1) errs.push(_T('js.isi_indeks_bias_n'));
+  if (errs.length) return { state: 'error', errs: errs };
+  var cylv = cyl || 0;
+  var axEmpty = ax === null;   // axis dikosongkan: otomatis 180, hanya untuk nama meridian
+  var axOK = axEmpty || (!Number.isNaN(ax) && ax >= 0 && ax <= 180);
+  var axis = (axOK && !axEmpty) ? (ax === 0 ? 180 : ax) : 180;
+  var T = applyTr(sph, cylv, axis, s.tr), rx = T.rx, c = classifyLens(rx.sph, rx.cyl), b = calcBaseCurve(rx.sph, rx.cyl);
+  var auto = bcIn === null, BC = auto ? b.BC : bcIn, t = calcTools(c.P, BC), F2 = t.F2.map(r6);
+  return { state: 'ok', sph: rx.sph, cyl: rx.cyl, tr: T.tr, canTr: T.canTr, orig: T.orig, two: cylv !== 0, type: c.type, kinds: c.kinds, P: c.P, auto: auto, SE: b.SE, BCraw: b.BCraw,
+    BC: BC, F1: t.F1, F2: F2, radF1: calcRadius(t.F1, n), radF2: F2.map(function (f) { return calcRadius(f, n); }), n: n, m: m,
+    ax: rx.ax, ax2: ((rx.ax + 89) % 180) + 1, axOK: axOK };
+}
+function radHTML(ev) {
+  var head = ('<div class="eye-h"><h2>' + _T('js.hasil') + '</h2>') + (ev.state === 'ok' && ev.canTr ? trButton('rad', ev.tr) : '') + '</div>', body;
+  if (ev.state === 'empty') body = ('<p class="hint">' + _T('js.isi_spheris_dan_cylinder_radius') + '</p>');
+  else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
+  else {
+    var cols = ev.two ? 2 : 1, axes = [ev.ax, ev.ax2], mixed = ev.type === 'mixed', nn = trim(ev.n);
+    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) + ' × ' + ev.ax : '');
+    var HIGH_INDEX = 1.60;   // sama dengan kartu kerja: indeks bias custom 1.60 ke atas disebut High Index
+    var mname = ev.m.id === 'custom' ? (ev.n >= HIGH_INDEX ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
+    var how = function (lbl, D, R) {
+      return lbl + ' = ' + (isFinite(R) ? '1000 × (' + nn + ' ' + MIN + ' 1) ÷ |' + sgn(D) + '| = ' + fR(R) + ' mm' : '∞ (' + _T('js.radius_power_nol') + ')');
+    };
+    var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + nn + '</span></div>' + '<div class="tbl" style="--cols:' + cols + '">';
+    if (ev.two) t += '<div class="r hd"><span></span>' + axes.map(function (a, i) {
+      return '<span class="v">' + a + '°' + (mixed ? '<small>' + ev.kinds[i] + '</small>' : '') + '</span>';
+    }).join('') + '</div>';
+    t += row(_T('js.base_curve_bc'), [sgn(ev.BC)], cols, { note: ev.auto ? 'SE ' + sgn(ev.SE) + ' → ' + ev.BCraw.toFixed(DECP) : _T('js.diisi_sendiri_kecil') });
+    t += row('F1', [sgn(ev.F1)], cols, { note: _T('js.sama_dengan_bc') });
+    t += row('F2', ev.F2.map(function (x) { return sgn(x); }), cols);
+    t += '<div class="g">' + _T('js.radius_kelengkungan') + ' <i>' + _T('js.mm') + '</i></div>';
+    t += row(_T('js.radius_f1'), [fR(ev.radF1)], cols, { key: true, note: _T('js.radius_dari_bc') });
+    t += row(_T('js.radius_f2'), ev.radF2.map(fR), cols, { key: true, note: _T('js.radius_dari_f2') });
+    t += '</div><p class="how">' + how('R F1', ev.F1, ev.radF1) + '<br>' + ev.F2.map(function (f, i) {
+      return how('R F2' + (ev.two ? ' ' + axes[i] + '°' : ''), f, ev.radF2[i]);
+    }).join('<br>') + '</p>';
+    if (ev.two && !ev.axOK) t += ('<div class="msg warn">' + _T('js.axis_tidak_valid_isi') + ' ') + ev.ax + ' dan ' + ev.ax2 + (_T('js.hitungan_tidak_terpengaruh') + '</div>');
+    body = t;
+  }
+  return '<section class="card">' + head + body + '</section>';
+}
+function radFormulaRows(ev) {
+  var ok = ev.state === 'ok', two = !ok || ev.two;
+  var ln = function (x) { return '<span class="ln">' + x + '</span>'; };
+  var f2 = !ok ? [_T('js.f2_spheris_f1'), _T('js.bila_ada_cylinder_f2')]
+    : ev.two ? ['F2 ' + ev.ax + _T('js.spheris_f1'), 'F2 ' + ev.ax2 + _T('js.spheris_cylinder_f1')] : [_T('js.f2_spheris_f1')];
+  return [
+    { dt: 'BC', dd: (ok && !ev.auto) ? _T('js.diisi_sendiri') : (_T('js.kosong_otomatis_dari_resep') + ' ') + (two ? _T('js.spheris_cylinder') : _T('js.spheris')) + (', lalu ½ SE + 6 (SE ≤ 0) atau SE + 6 (SE > ' + _T('js.0_dibulatkan_ke_kelipatan')) },
+    { dt: 'F1', dd: 'F1 = BC' },
+    { dt: 'F2', dd: f2.map(ln).join('') },
+    { dt: _T('js.radius_2'), dd: RAD_EQ + '<span class="eq-note">' + _T('js.radius_note') + '</span>' },
+    ...(ok && ev.tr ? [trRow('rad')] : [])
   ];
 }
 
@@ -3865,7 +4013,7 @@ function etHTML(ev) {
     var mname = ev.m.id === 'custom' ? (ev.n >= 1.60 ? _T('js.high_index') : _T('js.indeks_bias_sendiri')) : ev.m.name;
     var etNote = mixed ? _T('js.plus_diketahui') : (minus ? _T('js.sagita_ct') : 'diketahui');
     var ctNote = mixed ? _T('js.minus_diketahui') : (minus ? 'diketahui' : _T('js.sagita_et'));
-    var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · Ø ' + trim(ev.dia) + ' mm</span></div>' + (ev.tr ? trNote(ev) : '');
+    var t = '<div class="spec"><b>' + spec + '</b><br><span>' + mname + ' · n ' + trim(ev.n) + ' · Ø ' + trim(ev.dia) + ' mm</span></div>';
     t += '<div class="tbl" style="--cols:' + cols + '">';
     if (ev.two) t += '<div class="r hd"><span></span>' + axes.map(function (a, i) {
       return '<span class="v">' + a + '°' + (mixed ? '<small>' + ev.kinds[i] + '</small>' : '') + '</span>';
@@ -4003,7 +4151,7 @@ function krHTML(ev) {
 }
 function krFormulaRows() {
   return [
-    { dt: _T('js.keratometri'), dd: KR_EQ + '<span class="eq-note">D dalam dioptri, r radius dalam mm, n = 1.3375 (indeks keratometri). Jadi D = 337.5 ÷ r.</span>' },
+    { dt: _T('js.keratometri'), dd: KR_EQ + '<span class="eq-note">D dalam dioptri, r dalam mm, n = 1.3375. Jadi D = 337.5 ÷ r.</span>' },
     { dt: _T('js.radius_2'), dd: _T('js.r_337_5_d') },
     { dt: _T('js.astigmat'), dd: _T('js.d_vertikal_d_horizontal') },
     { dt: _T('js.arah'), dd: lnH(_T('js.v_lebih_curam_with'), _T('js.h_lebih_curam_against')) },
@@ -5867,7 +6015,7 @@ function update() {
   syncPD('pre'); syncPD('mbs'); syncED();
   var pre = evalPre();
   var ev = { od: evalEye('od', preOf(pre, 'od')), os: evalEye('os', preOf(pre, 'os')) };
-  $('#out').innerHTML = L(preHTML(pre, { mono: S.pre.mono, ed: S.pre.ed }) + eyeHTML('od', ev.od) + eyeHTML('os', ev.os));
+  setHTML($('#out'), L(preHTML(pre, { mono: S.pre.mono, ed: S.pre.ed }) + eyeHTML('od', ev.od) + eyeHTML('os', ev.os)));
   renderFormula(pre, ev);
 
   var okCount = (ev.od.state === 'ok' ? 1 : 0) + (ev.os.state === 'ok' ? 1 : 0);
@@ -5877,13 +6025,13 @@ function update() {
 
   // Halaman Data Precal
   var mpre = evalPre(S.mbs);
-  $('#mbs-out').innerHTML = L(preHTML(mpre, { title: _T('js.hasil'), hint: S.mbs.ed === 'pyth' ? (S.mbs.mono ? _T('js.isi_a_b_dbl_dan_5') : _T('js.isi_a_b_dbl_dan_6')) : (S.mbs.mono ? _T('js.isi_a_dbl_dan_5') : _T('js.isi_a_dbl_dan_6')), what: 'data frame' }));
-  $('#mbs-rumus').innerHTML = L(preFormulaRows(S.mbs.shape, S.mbs.mono, S.mbs.ed).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  setHTML($('#mbs-out'), L(preHTML(mpre, { title: _T('js.hasil'), hint: S.mbs.ed === 'pyth' ? (S.mbs.mono ? _T('js.isi_a_b_dbl_dan_5') : _T('js.isi_a_b_dbl_dan_6')) : (S.mbs.mono ? _T('js.isi_a_dbl_dan_5') : _T('js.isi_a_dbl_dan_6')), what: 'data frame' })));
+  setHTML($('#mbs-rumus'), L(preFormulaRows(S.mbs.shape, S.mbs.mono, S.mbs.ed).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
 
   // Halaman Sagita
   var sg = evalSag();
-  $('#sag-out').innerHTML = L(sagHTML(sg));
-  $('#sag-rumus').innerHTML = L(sagFormulaRows(!!num(S.sag.cyl), sg).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  setHTML($('#sag-out'), L(sagHTML(sg)));
+  setHTML($('#sag-rumus'), L(sagFormulaRows(!!num(S.sag.cyl), sg).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
   var sm = sagMat(), sn = $('#sag-n');
   if (sm.id === 'custom') { sn.disabled = false; setVal(sn, S.sag.n); }
   else { sn.disabled = true; setVal(sn, Lx(trim(sm.n))); }
@@ -5893,16 +6041,26 @@ function update() {
 
   // Halaman Tools
   var fv = evalFT();
-  $('#ft-out').innerHTML = L(ftHTML(fv));
-  $('#ft-rumus').innerHTML = L(ftFormulaRows(fv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  setHTML($('#ft-out'), L(ftHTML(fv)));
+  setHTML($('#ft-rumus'), L(ftFormulaRows(fv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
   setTypePill('ft', eyeType('ft'));
   var fs = num(S.ft.sph), fc = num(S.ft.cyl);   // isian BC yang kosong menampilkan nilai otomatis sebagai petunjuk
   $('#ft-bc').placeholder = (!bad(fs) && !Number.isNaN(fc)) ? Lx(sgn(calcBaseCurve(fs, fc || 0).BC)) : 'otomatis';
 
+  // Halaman Radius Kelengkungan
+  var rv = evalRad(), rm = radMat(), rn = $('#rad-n');
+  setHTML($('#rad-out'), L(radHTML(rv)));
+  setHTML($('#rad-rumus'), L(radFormulaRows(rv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
+  if (rm.id === 'custom') { rn.disabled = false; setVal(rn, S.rad.n); }
+  else { rn.disabled = true; setVal(rn, Lx(trim(rm.n))); }
+  setTypePill('rad', eyeType('rad'));
+  var rs = num(S.rad.sph), rc = num(S.rad.cyl);   // isian BC yang kosong menampilkan nilai otomatis sebagai petunjuk
+  $('#rad-bc').placeholder = (!bad(rs) && !Number.isNaN(rc)) ? Lx(sgn(calcBaseCurve(rs, rc || 0).BC)) : 'otomatis';
+
   // Halaman Ketebalan Lensa
   var ev3 = evalET(), ety = eyeType('et'), em = etMat(), en = $('#et-n');
-  $('#et-out').innerHTML = L(etHTML(ev3));
-  $('#et-rumus').innerHTML = L(etFormulaRows(ev3).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  setHTML($('#et-out'), L(etHTML(ev3)));
+  setHTML($('#et-rumus'), L(etFormulaRows(ev3).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
   if (em.id === 'custom') { en.disabled = false; setVal(en, S.et.n); }
   else { en.disabled = true; setVal(en, Lx(trim(em.n))); }
   setTypePill('et', ety);
@@ -5910,8 +6068,8 @@ function update() {
 
   // Halaman Base Curve
   var bv = evalBC();
-  $('#bc-out').innerHTML = L(bcHTML(bv));
-  $('#bc-rumus').innerHTML = L(bcFormulaRows(bv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
+  setHTML($('#bc-out'), L(bcHTML(bv)));
+  setHTML($('#bc-rumus'), L(bcFormulaRows(bv).map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join('')));
 
   lvUpdateAll(ev);   // gambar lensa 2D dan 3D di kartu kerja
 
@@ -5954,7 +6112,7 @@ function update() {
 }
 // Catatan contoh hanya milik kartu kerja: mengubah isian halaman lain (kunci mbs.* atau sag.*) tidak menghapusnya.
 // Penentunya kunci isian, bukan halaman yang sedang tampil, karena event change bisa terkirim setelah halaman berpindah.
-function touch(path) { if (!path || !/^(mbs|sag|bc|ft|et|kr|lk|bg|tv|sn)\./.test(path)) S.sample = false; save(); update(); }
+function touch(path) { if (!path || !/^(mbs|sag|bc|ft|rad|et|kr|lk|bg|tv|sn)\./.test(path)) S.sample = false; save(); update(); }
 
 /* ---------- Tab ---------- */
 function setTab(t) {
@@ -6006,7 +6164,7 @@ function normSep() {
     if (el.value !== s) { el.value = s; setPath(el.dataset.k, s); }
   });
   $$('input[placeholder]').forEach(function (el) {
-    if (el.id === 'ft-bc') return;   // placeholder ini dihitung ulang di update()
+    if (el.id === 'ft-bc' || el.id === 'rad-bc') return;   // placeholder ini dihitung ulang di update()
     var p = el.getAttribute('placeholder');
     if (/^\d+[.,]\d+$/.test(p)) el.setAttribute('placeholder', p.replace(/[.,]/, SEP));
   });
@@ -6119,8 +6277,8 @@ $('#reset').addEventListener('click', function () {
   var b = $('#reset');
   if (!armTimer) { b.textContent = _T('js.ketuk_lagi_untuk_mengosongkan'); b.classList.add('armed'); armTimer = setTimeout(disarm, 3500); return; }
   disarm();
-  var keepMbs = S.mbs, keepSag = S.sag, keepBc = S.bc, keepFt = S.ft, keepEt = S.et, keepCalc = S.calc, keepKr = S.kr, keepBg = S.bg, keepTv = S.tv, keepSn = S.sn, keepLk = S.lk;   // Kosongkan di kartu kerja tidak menghapus isian halaman lain
-  S = blank(); S.mbs = keepMbs; S.sag = keepSag; S.bc = keepBc; S.ft = keepFt; S.et = keepEt; S.calc = keepCalc; S.kr = keepKr; S.bg = keepBg; S.tv = keepTv; S.sn = keepSn; S.lk = keepLk; hydrate(); save(); update(); setTab('input');
+  var keepMbs = S.mbs, keepSag = S.sag, keepBc = S.bc, keepFt = S.ft, keepRad = S.rad, keepEt = S.et, keepCalc = S.calc, keepKr = S.kr, keepBg = S.bg, keepTv = S.tv, keepSn = S.sn, keepLk = S.lk;   // Kosongkan di kartu kerja tidak menghapus isian halaman lain
+  S = blank(); S.mbs = keepMbs; S.sag = keepSag; S.bc = keepBc; S.ft = keepFt; S.rad = keepRad; S.et = keepEt; S.calc = keepCalc; S.kr = keepKr; S.bg = keepBg; S.tv = keepTv; S.sn = keepSn; S.lk = keepLk; hydrate(); save(); update(); setTab('input');
 });
 $('#mbs-reset').addEventListener('click', function () {
   S.mbs = blank().mbs; hydrate(); save(); update();
@@ -6133,6 +6291,10 @@ $('#sag-reset').addEventListener('click', function () {
 $('#ft-reset').addEventListener('click', function () {
   S.ft = blank().ft; hydrate(); save(); update();
   $('#ft-sph').focus();
+});
+$('#rad-reset').addEventListener('click', function () {
+  S.rad = blank().rad; hydrate(); save(); update();
+  $('#rad-sph').focus();
 });
 $('#et-reset').addEventListener('click', function () {
   S.et = blank().et; hydrate(); save(); update();
@@ -6159,6 +6321,8 @@ var FEATURES = [
     ico: SVG('<path d="M3.5 17C7 8 17 8 20.5 17"/><path d="M3 20.5h18"/>') },
   { route: 'ft', ready: true, title: _T('js.tools'), desc: _T('js.permukaan_depan_f1_dan'),
     ico: SVG('<path d="M4 9c5-4 11-4 16 0"/><path d="M4 16c5-4 11-4 16 0"/>') },
+  { route: 'radius', ready: true, title: _T('js.radius_kelengkungan'), desc: _T('js.radius_kelengkungan_desc'),
+    ico: SVG('<path d="M5 4A15 15 0 0 1 20 19"/><path d="M5 19L15.6 8.4"/><circle cx="5" cy="19" r="1.3" fill="currentColor"/>') },
   { route: 'sagita', ready: true, title: _T('js.sagita'), desc: _T('js.sagita_dari_power_diameter'),
     ico: SVG('<path d="M4 17h16"/><path d="M4 17c3-9 13-9 16 0"/><path d="M12 17V9.8"/>') },
   { route: 'et', ready: true, title: _T('js.ketebalan_lensa'), desc: _T('js.tebal_tepi_tengah_dan'),
@@ -6223,6 +6387,7 @@ var VIEWS = {
   sagita: { el: '#v-sagita', h: '#sag-h', title: _T('js.sagita') },
   bc: { el: '#v-bc', h: '#bc-h', title: _T('js.base_curve_2') },
   ft: { el: '#v-ft', h: '#ft-h', title: _T('js.tools') },
+  radius: { el: '#v-radius', h: '#rad-h', title: _T('js.radius_kelengkungan') },
   et: { el: '#v-et', h: '#et-h', title: _T('js.ketebalan_lensa') },
   kerato: { el: '#v-kerato', h: '#kr-h', title: _T('js.keratometer') },
   parlk: { el: '#v-parlk', h: '#lk-h', title: _T('js.parameter_lk') },
@@ -6742,7 +6907,7 @@ function stRF() {
     var o = '<div class="tiles" style="grid-template-columns:minmax(0,1fr)"><div class="tile main st-rx' + (allN ? '' : ' wrn') + '"><small>Rx pasien · net = gross ' + MIN + ' WD</small>' +
       '<b class="nc">' + rx(S.lsph - wd, S.lcyl, S.laxis) + '</b>' +
       '<small class="st-rxs">' + (allN ? 'NETRAL ✓ · semua meridian' : warnIco + 'BELUM NETRAL') + '</small>' +
-      (allN ? '' : '<span class="st-wt">Rx ini masih sementara. Lanjutkan netralisasi sampai semua meridian netral.</span>') + '</div></div>';
+      (allN ? '' : '<span class="st-wt">Rx masih sementara.</span>') + '</div></div>';
     o += rowsOf(m.ex).map(function (r) {
       var ok = Math.abs(r.v) <= TOL, lbl = r.a === null ? 'Semua meridian' : 'Meridian ' + r.a + '°';
       return '<div class="bgr"><div class="l">' + lbl + (r.a !== null && near(r.a, mer) ? '<small>diuji streak</small>' : '') + '</div><div class="v">' + s2(r.v) + ' D · ' + (ok ? '<span class="st-ok">netral ✓</span>' : r.v > 0 ? 'tambah plus' : 'tambah minus') + '</div></div>';
@@ -6755,7 +6920,6 @@ function stRF() {
     var tse = S.sph + S.cyl / 2, dse = se - tse, tc = Math.abs(S.cyl) > .01;
     o += '<p class="spec"><span>Kunci Rx pasien:</span> <b>' + q2(S.sph) + (tc ? ' ' + q2(S.cyl) + ' × ' + f3(S.axis) : '') + '</b></p>' +
       '<p class="spec"><span>Selisih spheris ekuivalen:</span> <span class="nc">' + s2(dse) + ' D</span> ' + (Math.abs(dse) <= .25 ? '<span class="st-ok">sesuai (±0.25 D)</span>' : '<span class="st-no">belum sesuai</span>') + '</p>';
-    if (m.sc) o += '<p class="hint" style="margin-top:10px;font-size:.82rem">Scissors: rata-rata kedua bagian.</p>';
     return o;
   }
   function fpHTML() {
@@ -7141,10 +7305,11 @@ document.addEventListener('keydown', function (e) {
 // SEARCH_KW menambah istilah yang tidak ada di judul, misalnya "pinhole", "grinding", atau "astigmat", supaya menu tetap ketemu.
 // Menu baru di FEATURES otomatis ikut dicari. Tambahkan kata kuncinya di SEARCH_KW (kuncinya = route menu) bila perlu.
 var SEARCH_KW = {
-  kartu: 'surfacing precal data frame ed dec mbs diameter base curve bc tools f1 f2 sagita ketebalan et ct blank grinding finning polishing resep spheris cylinder axis transposisi',
+  kartu: 'surfacing precal data frame ed dec mbs diameter base curve bc tools f1 f2 radius jari-jari kelengkungan sagita ketebalan et ct blank grinding finning polishing resep spheris cylinder axis transposisi',
   mbs: 'precal frame kacamata ed dec mbs diameter lensa pd binocular monocular decentration dbl',
   bc: 'bc se spherical equivalent lengkung dasar kelengkungan permukaan depan',
   ft: 'f1 f2 permukaan depan belakang tool',
+  radius: 'radius jari-jari jari kelengkungan lengkung curvature mm r bc f1 f2 permukaan depan belakang tool indeks bias resep',
   sagita: 'sag tinggi lengkung approximate exact indeks bias diameter power',
   et: 'et ct edge thickness center thickness tebal tepi tengah blank grinding finning polishing dibuang',
   kerato: 'keratometri kornea radius astigmat horizontal vertikal k dioptri with the rule against the rule',
@@ -7265,9 +7430,12 @@ var RF = [
     ['F1', 'F1 = BC'],
     ['F2', lnH(_T('js.meridian_pertama_spheris_f1'), _T('js.meridian_kedua_spheris_cylinder'))]
   ] },
+  { g: _T('js.radius_kelengkungan'), rows: [
+    [_T('js.radius_2'), RAD_EQ + '<span class="eq-note">' + _T('js.radius_note_rf') + '</span>']
+  ] },
   { g: _T('js.sagita'), rows: [
-    [_T('js.approx'), SAG_EQ + '<span class="eq-note">D = power tiap meridian (Spheris, dan Spheris + Cylinder bila ada cylinder). Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3). Dipakai di Kartu Kerja (pilihan Approximate), halaman Sagita, dan Ketebalan Lensa.</span>'],
-    [_T('js.exact'), SAG_EXACT_EQ + ('<span class="eq-note">' + _T('js.hasil_dalam_mm_dibulatkan') + ' Dipakai di Kartu Kerja (pilihan Exact) dan halaman Sagita.</span>')],
+    [_T('js.approx'), SAG_EQ + '<span class="eq-note">D = power tiap meridian (Spheris, dan Spheris + Cylinder bila ada cylinder). Hasil dalam mm, dibulatkan sesuai digit desimal di Pengaturan (standar 3).</span>'],
+    [_T('js.exact'), SAG_EXACT_EQ + ('<span class="eq-note">' + _T('js.hasil_dalam_mm_dibulatkan') + '</span>')],
     ['r', R_EQ + '<span class="eq-note">Jari-jari lengkung permukaan dalam mm. Ø ÷ 2 tidak boleh lebih besar dari r. Plano (D = 0) sagitanya 0.</span>']
   ] },
   { g: _T('js.ketebalan'), rows: [
@@ -7276,7 +7444,7 @@ var RF = [
     [_T('js.dibuang'), lnH(_T('js.meridian_minus_t_et_2'), _T('js.meridian_plus_t_ct'), _T('js.grinding_70_finning_20_2'))]
   ] },
   { g: _T('js.keratometer_lensa_kontak'), rows: [
-    [_T('js.keratometri'), KR_EQ + '<span class="eq-note">D dalam dioptri, r radius dalam mm, n = 1.3375 (indeks keratometri). Jadi D = 337.5 ÷ r.</span>'],
+    [_T('js.keratometri'), KR_EQ + '<span class="eq-note">D dalam dioptri, r dalam mm, n = 1.3375. Jadi D = 337.5 ÷ r.</span>'],
     [_T('js.radius_2'), 'r = 337.5 ÷ D'],
     [_T('js.astigmat'), _T('js.astigmat_kornea_d_vertikal')],
     [_T('js.arah'), lnH(_T('js.v_lebih_curam_with'), _T('js.h_lebih_curam_against'))],
@@ -8257,7 +8425,8 @@ function aboutHTML() {
   h += ('<section class="card"><div class="eye-h"><h2>' + _T('js.aplikasi') + '</h2></div><div class="tbl" style="--cols:1;margin-top:0">') +
     row(_T('js.nama'), [esc(ABOUT.app)], 1) + row(_T('js.versi'), [esc(ABOUT.version)], 1) +
     row(_T('js.koneksi'), [_T('js.tanpa_internet')], 1) + row(_T('js.penyimpanan'), [_T('js.di_perangkat_ini')], 1) + '</div>' +
-    ('<p class="hint" style="margin-top:12px">' + _T('js.hasil_hitungan_adalah_alat') + '</p></section>');
+    ('<p class="hint" style="margin-top:12px">' + _T('js.hasil_hitungan_adalah_alat') + '</p>') +
+    ('<p class="hint" style="margin-top:8px">' + esc(_T('js.hak_cipta')) + '</p></section>');
   return h;
 }
 $('#about-out').innerHTML = aboutHTML();
