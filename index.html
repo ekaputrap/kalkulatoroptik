@@ -363,8 +363,8 @@ input:disabled, select:disabled { opacity: .62; }
 .x-idx { position: absolute; left: .04em; top: .22em; font-size: .55em; line-height: 1; }
 .x-sup { font-size: .66em; vertical-align: .85em; line-height: 1; margin-left: .05em; }
 .x-ix { font-size: .58em; vertical-align: 1.2em; margin-right: -.5em; line-height: 1; }
-.x-nr > .x-ix { position: relative; z-index: 2; cursor: text; }   /* indeks akar pangkat n berada di atas lapisan akar (yang menimpanya karena margin negatif), supaya bisa diketuk untuk memindahkan kursor */
-.x-nr > .x-ix::after { content: ""; position: absolute; inset: -.7em -.15em -.45em -.55em; }   /* area ketuk indeks diperluas, tanpa menutupi tanda akar */
+.x-nr > .x-ix { position: relative; z-index: 2; cursor: text; font-size: .76em; vertical-align: .95em; margin-right: -.72em; }   /* indeks akar n: lebih besar, dan duduk tepat di atas ujung kiri tanda akar (tidak menempel di tepi kiri) */   /* indeks akar pangkat n berada di atas lapisan akar (yang menimpanya karena margin negatif), supaya bisa diketuk untuk memindahkan kursor */
+.x-nr > .x-ix::after { content: ""; position: absolute; inset: -.7em -.15em -.3em -.45em; }   /* area ketuk indeks diperluas, tanpa menutupi tanda akar */
 .x-rc { display: inline-block; min-width: .6em; padding: .12em .24em 0 .14em; border-top: 1.5px solid currentColor; text-align: left; }
 .calc-res .x-fr { font-size: .85em; }
 .calc-res .x-num, .calc-res .x-den { line-height: 1.15; }
@@ -376,9 +376,12 @@ input:disabled, select:disabled { opacity: .62; }
 .kf b { display: block; width: .95em; height: 1.5px; background: currentColor; }
 .kmx { display: inline-flex; align-items: center; gap: 4px; }
 .kbx { display: inline-block; box-sizing: border-box; width: .6em; height: .6em; margin-left: 1px; vertical-align: -.05em; border: 1.5px dashed currentColor; border-top: 1.5px solid currentColor; }
+.kabs { display: inline-flex; align-items: center; justify-content: center; gap: 3px; }
+.kabs .kbar { display: block; width: 2px; height: 1.2em; border-radius: 1px; background: currentColor; }
+.kabs .kbx { margin: 0; vertical-align: baseline; }
 .kbx.kbp { width: .76em; height: .76em; margin-left: 0; vertical-align: -.1em; border-top-style: dashed; }   /* kotak pada tombol pangkat (□²): putus-putus di keempat sisi, tidak menyambung ke garis akar */
 /* rumus ke layar kalkulator */
-.x-v { position: relative; display: inline-block; padding: 0 .3em; margin: 0 .06em; border: 1.5px dashed var(--accent); border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-style: italic; font-size: .8em; line-height: 1.25; vertical-align: .02em; }
+.x-v { position: relative; display: inline-block; padding: 0 .3em; margin: 0 .06em; border: 1.5px dashed var(--accent); border-radius: 5px; background: var(--accent-soft); color: var(--accent); font-size: .8em; line-height: 1.25; vertical-align: .02em; }
 .x-v.x-vs { border-style: solid; box-shadow: 0 0 0 2px var(--accent-soft); }   /* kotak yang sedang berisi kursor: garis penuh, ketikan berikutnya menggantikan kotak ini */
 .x-v.x-vs .x-vl { opacity: .3; }   /* label dibuat samar selama kotak aktif (lebar kotak tetap): kursor di tengah, label hanya jadi petunjuk */
 .x-v.x-vs .cur { position: absolute; left: 50%; top: 50%; margin: 0; height: 1.05em; transform: translate(-50%, -50%); }   /* kursor tepat di tengah kotak */
@@ -396,9 +399,6 @@ input:disabled, select:disabled { opacity: .62; }
 .fx-h { color: var(--ink-2); font: 500 .72rem/1.3 var(--f-ui); }
 .fx-p { overflow-x: auto; white-space: nowrap; scrollbar-width: none; color: var(--ink); font: 1.15rem/1.6 "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", Times, serif; }
 .fx-p::-webkit-scrollbar { display: none; }
-/* tata letak blok, bukan grid: baris grid ikut menyusut bila daftar lebih tinggi dari batas .ch-list, sehingga isi kartu tertekan jadi garis */
-#fx-list { display: block; }
-#fx-list > li + li { margin-top: 8px; }
 .fx-g { padding: 10px 4px 0; color: var(--ink-2); font: 700 .7rem/1.2 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; }
 .fx-g:first-child { padding-top: 0; }
 @keyframes calc-blink { 50% { opacity: 0; } }
@@ -416,7 +416,9 @@ input:disabled, select:disabled { opacity: .62; }
 .ch-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .ch-head h2 { font-size: 1rem; line-height: 1.2; }
 .ch-head .ghost:disabled { opacity: .45; cursor: default; }
-.ch-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; max-height: min(52vh, 24rem); overflow-y: auto; overscroll-behavior: contain; }
+/* tata letak blok, bukan grid: baris grid ikut menyusut bila daftar lebih tinggi dari batas max-height (.ch-i ber-overflow: hidden, tinggi minimumnya jadi 0), sehingga isi kartu tertekan jadi garis. Berlaku untuk Riwayat, Rumus, dan Satuan. */
+.ch-list { list-style: none; margin: 0; padding: 0; display: block; max-height: min(52vh, 24rem); overflow-y: auto; overscroll-behavior: contain; }
+.ch-list > li + li { margin-top: 8px; }
 .ch-i { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); overflow: hidden; }
 .ch-sc { overflow-x: auto; scrollbar-width: none; }
 .ch-sc::-webkit-scrollbar { display: none; }
@@ -449,11 +451,11 @@ input:disabled, select:disabled { opacity: .62; }
 .ck:active { filter: brightness(.9); }
 @media (hover: hover) { .ck:hover { border-color: var(--accent); } }
 /* tata letak kalkulator: muat satu layar, layar menempel di atas, dua kolom di layar lebar */
-#v-kalkulator { --kh: clamp(42px, calc((100vh - 330px) / 5.8), 58px); }
-#v-kalkulator.sci-on { --kh: clamp(40px, calc((100vh - 356px) / 9.8), 52px); }
+#v-kalkulator { --kh: clamp(42px, calc((100vh - 330px) / 5.8), 64px); }
+#v-kalkulator.sci-on { --kh: clamp(40px, calc((100vh - 356px) / 9), 56px); }
 @supports (height: 1dvh) {
-  #v-kalkulator { --kh: clamp(42px, calc((100dvh - 330px) / 5.8), 58px); }
-  #v-kalkulator.sci-on { --kh: clamp(40px, calc((100dvh - 356px) / 9.8), 52px); }
+  #v-kalkulator { --kh: clamp(42px, calc((100dvh - 330px) / 5.8), 64px); }
+  #v-kalkulator.sci-on { --kh: clamp(40px, calc((100dvh - 356px) / 9), 56px); }
 }
 #v-kalkulator .top { padding-block: 8px 6px; }
 #v-kalkulator .back { width: 40px; height: 40px; }
@@ -466,8 +468,14 @@ input:disabled, select:disabled { opacity: .62; }
 #v-kalkulator .ck.num, #v-kalkulator .ck.op, #v-kalkulator .ck.clr, #v-kalkulator .ck.equals { height: var(--kh); }
 #v-kalkulator .ck.fn { height: max(36px, calc(var(--kh) * .8)); }
 #v-kalkulator .ck-tog { height: 30px; font-size: .78rem; }
-.ck-grid.nav6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-.ck-grid.sd { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ck-grid.q4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }   /* tiga baris tombol di bawah panel scientific: empat kolom, sejajar dengan papan angka */
+.ck.fn.sm { font-size: .74rem; letter-spacing: -.01em; white-space: nowrap; }
+.ck-grid.hasil { position: relative; }   /* baris Ubah hasil: pilihan kelipatan →0.25 muncul di atasnya */
+.ck.rq { position: relative; }
+.ck.rq::after { content: ""; position: absolute; right: 5px; bottom: 5px; border: 3px solid transparent; border-right-color: currentColor; border-bottom-color: currentColor; opacity: .45; pointer-events: none; }
+.rq-pick { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 8; display: flex; gap: 6px; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.22); }
+.rq-o { min-width: 64px; height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--ink); font: 650 .9rem/1 var(--f-num); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.rq-o.on { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
 @media (min-width: 720px) {
   #v-kalkulator .calc { max-width: 54rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); column-gap: 16px; align-items: start; }
   #v-kalkulator .calc-disp { grid-column: 1; grid-row: 1; }
@@ -924,13 +932,13 @@ html[data-sgc="on"] .sgm { color: var(--neg); fill: var(--neg); }
 /* Di dalam kotak, tombol, dan label berlatar warna (mis. kotak Base Curve), angka mengikuti warna teks kotaknya supaya tetap terbaca. */
 html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .seg, .primary, .ch-tog, .mark, .mi-ico, .hbtn, button) :is(.sgp, .sgm) { color: inherit; fill: inherit; }
 /* Tombol tambah (+) hijau, tombol kurang (−) merah. Berlaku di semua halaman: data-dir (kalkulator, keratometer), data-d (Lensometer dan Streak).
-   Tombol axis (.ax) tanpa warna: axis bukan plus atau minus. Tombol geser skala keratometer (.neu) dan tombol skala kalibrasi layar Snellen (data-snpx) juga tanpa warna: itu menggeser radius (mm), bukan menambah atau mengurangi dioptri. */
-.step[data-dir="up"], .step[data-d="1"], #dec-up { --pm: var(--pos); }
-.step[data-dir="down"], .step[data-d="-1"], #dec-dn { --pm: var(--neg); }
-.step[data-dir]:not(.ax):not(.neu), .step[data-d]:not(.ax):not(.neu), #dec-up, #dec-dn {
+   Tombol axis (.ax) tanpa warna: axis bukan plus atau minus. Tombol geser skala keratometer (.neu) dan tombol skala kalibrasi layar Snellen (data-snpx) juga tanpa warna: itu menggeser radius (mm), bukan menambah atau mengurangi dioptri. Tombol − dan + digit desimal di Pengaturan (#dec-dn, #dec-up) juga tanpa warna: itu jumlah digit, bukan dioptri. */
+.step[data-dir="up"], .step[data-d="1"] { --pm: var(--pos); }
+.step[data-dir="down"], .step[data-d="-1"] { --pm: var(--neg); }
+.step[data-dir]:not(.ax):not(.neu), .step[data-d]:not(.ax):not(.neu) {
   color: var(--pm); border-color: color-mix(in srgb, var(--pm) 45%, var(--line)); background: color-mix(in srgb, var(--pm) 9%, var(--surface));
 }
-.step[data-dir]:not(.ax):not(.neu):active, .step[data-d]:not(.ax):not(.neu):active, #dec-up:active, #dec-dn:active {
+.step[data-dir]:not(.ax):not(.neu):active, .step[data-d]:not(.ax):not(.neu):active {
   background: color-mix(in srgb, var(--pm) 22%, var(--surface));
 }
 </style>
@@ -1954,7 +1962,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
     </header>
     <main class="calc">
       <section class="card calc-disp" data-t-aria-label="kalkulator.layar_kalkulator">
-        <div class="calc-st"><span class="cs on" id="cs-2nd" hidden data-t="kalkulator.2nd"></span><span class="cs on" id="cs-ang" data-t="kalkulator.deg"></span><span class="cs" id="cs-m" hidden data-t="kalkulator.m"></span><span class="cs on" id="cs-fr" hidden data-t="kalkulator.ab"></span><button type="button" class="ch-tog" id="fx-tog" aria-expanded="false" aria-controls="calc-fxl"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 15.5V6.5a2 2 0 0 1 2-2h.8M5.8 9.2h4.4M11.6 9.6l4.6 5.6M16.2 9.6l-4.6 5.6"/></svg><span data-t="kalkulator.rumus"></span></button><button type="button" class="ch-tog" id="ch-tog" aria-expanded="false" aria-controls="calc-hist"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 10a6.6 6.6 0 1 0 2-4.7M3.4 3.6v3.2h3.2M10 6.6V10l2.5 1.7"/></svg><span data-t="kalkulator.riwayat"></span></button></div>
+        <div class="calc-st"><span class="cs on" id="cs-2nd" hidden data-t="kalkulator.2nd"></span><span class="cs on" id="cs-ang" data-t="kalkulator.deg"></span><span class="cs on" id="cs-fr" hidden data-t="kalkulator.ab"></span><button type="button" class="ch-tog" id="fx-tog" aria-expanded="false" aria-controls="calc-fxl"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 15.5V6.5a2 2 0 0 1 2-2h.8M5.8 9.2h4.4M11.6 9.6l4.6 5.6M16.2 9.6l-4.6 5.6"/></svg><span data-t="kalkulator.rumus"></span></button><button type="button" class="ch-tog" id="ch-tog" aria-expanded="false" aria-controls="calc-hist"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.4 10a6.6 6.6 0 1 0 2-4.7M3.4 3.6v3.2h3.2M10 6.6V10l2.5 1.7"/></svg><span data-t="kalkulator.riwayat"></span></button></div>
         <div class="calc-fx" id="calc-fx"><b class="fx-nm" id="fx-nm"></b><span class="fx-leg" id="fx-leg"></span></div>
         <div class="calc-expr" id="calc-expr"></div>
         <div class="calc-res" id="calc-res"></div>
@@ -1976,10 +1984,10 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
         <ul class="ch-list" id="fx-list"></ul>
       </section>
       <div class="calc-keys" id="calc-keys">
-        <button type="button" class="ck-tog" id="ck-tog" aria-expanded="false" aria-controls="ck-sci"><span id="ck-tog-t" data-t="kalkulator.tampilkan_fungsi_scientific"></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l6-6 6 6"/></svg></button>
+        <button type="button" class="ck-tog" id="ck-tog" aria-expanded="false" aria-controls="ck-sci ck-hasil"><span id="ck-tog-t" data-t="kalkulator.tampilkan_fungsi_scientific"></span><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12.5l6-6 6 6"/></svg></button>
         <div class="ck-grid sci" id="ck-sci" hidden></div>
-        <div class="ck-grid sd" id="ck-frac" hidden></div>
-        <div class="ck-grid nav6" id="ck-nav"></div>
+        <div class="ck-grid sci hasil" id="ck-hasil" hidden></div>
+        <div class="ck-grid q4" id="ck-nav"></div>
         <div class="ck-grid pad" id="ck-pad"></div>
       </div>
     </main>
@@ -2365,7 +2373,6 @@ var TEKS = {
   "kalkulator.layar_kalkulator": "Layar kalkulator",
   "kalkulator.2nd": "2nd",
   "kalkulator.deg": "DEG",
-  "kalkulator.m": "M",
   "kalkulator.ab": "a⁄b",
   "kalkulator.tampilkan_fungsi_scientific": "Tampilkan fungsi scientific",
   "kalkulator.riwayat": "Riwayat",
@@ -3017,14 +3024,12 @@ var TEKS = {
   "js.akar_kuadrat": "Akar kuadrat",
   "js.akar_pangkat_n": "Akar pangkat n",
   "js.post_3": "post:⁻¹",
-  "js.kebalikan": "Kebalikan",
+  "js.nilai_mutlak": "Nilai mutlak",
+  "js.bulatkan_025": "Bulatkan ke kelipatan 0.25",
+  "js.mode_derajat_otomatis": "Mode sudut diubah ke derajat (DEG) untuk rumus ini",
   "js.faktorial": "Faktorial",
   "js.kurung_buka": "Kurung buka",
   "js.kurung_tutup": "Kurung tutup",
-  "js.tambah_ke_memori": "Tambah ke memori",
-  "js.kurangi_dari_memori": "Kurangi dari memori",
-  "js.panggil_memori": "Panggil memori",
-  "js.hapus_memori": "Hapus memori",
   "js.hapus_semua": "Hapus semua",
   "js.del": "DEL",
   "js.hapus_satu_karakter": "Hapus satu karakter",
@@ -3124,6 +3129,9 @@ var TEKS = {
   "viz.l_finning": "Finning 20%",
   "viz.l_polishing": "Polishing 10%",
   "viz.l_blank": "Blank (tebal dibuang)",
+  "kalkulator.pilih_kelipatan": "Kelipatan pembulatan",
+  "js.bulatkan_ke_kelipatan": "Bulatkan ke kelipatan",
+  "js.tekan_lama_ganti": "tekan lama untuk mengganti kelipatan",
 };
 function _T(k) { return Object.prototype.hasOwnProperty.call(TEKS, k) ? TEKS[k] : k; }
 (function () {
@@ -3393,7 +3401,7 @@ function blank() {
     bc: { sph: '', cyl: '', tr: false },
     rad: { sph: '', cyl: '', axis: '', mat: 'cr39', n: '', bc: '', tr: false },   // halaman Radius Kelengkungan, terpisah dari kartu kerja. bc kosong = otomatis dari resep
     et: { sph: '', cyl: '', axis: '', dia: '', mat: 'cr39', n: '', thick: '1.4', tr: false, rem: false },   // halaman Ketebalan Lensa, terpisah dari kartu kerja   // halaman Base Curve, terpisah dari kartu kerja
-    calc: { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false, hist: [] },   // kalkulator scientific: ekspresi, mode sudut (true = derajat), memori, jawaban terakhir, dan riwayat (terbaru di depan: { e: ekspresi, v: hasil, d: mode derajat })
+    calc: { expr: '', deg: true, ans: 0, sci: false, fr: false, mx: false, hist: [] },   // kalkulator scientific: ekspresi, mode sudut (true = derajat), jawaban terakhir, dan riwayat (terbaru di depan: { e: ekspresi, v: hasil, d: mode derajat })
     lk: { hvid: '', h: '', v: '', src: 'own', mode: 'auto', lim: '0.20' },   // halaman Parameter LK: HVID, radius H dan V (own = isi sendiri, kr = dari Keratometer), rumus BC (auto, flat, avg, flat10), batas selisih H dan V (mm) untuk rumus otomatis
     kr: { v: '7.67', h: '7.67' },   // halaman Keratometer: radius V dan H (mm), nilai awal 44 D (337.5 ÷ 7.67 = 44.00 D)
     bg: { sph: '0.00', cyl: '', axis: '', cor: 'off', view: 'sep', lsph: '', lcyl: '', laxis: '', zoom: 1 },   // halaman Bagan Refraksi: Sph, Cyl, Axis mata; lensa koreksi (off/on) dan ukuran lensanya (kosong = koreksi penuh)
@@ -7677,7 +7685,7 @@ $('#set-wipe').addEventListener('click', function () {
 // Urutan: tanda kurung, pangkat (^, kanan ke kiri), minus unary, × ÷ (termasuk perkalian tersirat seperti 2π atau 3(4)), lalu + −.
 // Kurung yang belum ditutup di ujung ekspresi otomatis ditutup. Error dilempar sebagai Error dengan properti calc: 'syntax' atau 'math'.
 /* CALC-CORE-START */
-var CALC_FN = ['abs(', 'asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', '√(', '∛('];
+var CALC_FN = ['abs(', 'rnd(', 'rndf(', 'rndh(', 'asin(', 'acos(', 'atan(', 'sin(', 'cos(', 'tan(', 'log(', 'ln(', '√(', '∛('];
 var CALC_OPS = { '+': '+', '-': '−', '−': '−', '*': '×', '×': '×', '/': '÷', '÷': '÷', '^': '^', '(': '(', ')': ')', '!': '!', '%': '%', '²': '²', '³': '³' };
 // Penanda struktur tampilan natural di dalam teks ekspresi:
 //   pecahan ⟦pembilang¦penyebut⟧, bilangan campuran ⟪utuh¦pembilang¦penyebut⟫. Akar memakai √( ... ) atau ∛( ... ) dan tampil dengan garis atas.
@@ -7828,6 +7836,9 @@ function calcFn(name, a, deg) {
     case 'ln': if (a <= 0) throw cerr('math'); return Math.log(a);
     case 'log': if (a <= 0) throw cerr('math'); return Math.log10(a);
     case 'abs': return Math.abs(a);
+    case 'rnd': return Math.floor(a * 4 + 0.5 + 1e-9) / 4;   // kelipatan 0.25, setengah ke atas
+    case 'rndf': return Math.floor(a * 8 + 0.5 + 1e-9) / 8;   // kelipatan 0.125
+    case 'rndh': return Math.floor(a * 2 + 0.5 + 1e-9) / 2;   // kelipatan 0.5
     case '√': if (a < 0) throw cerr('math'); return Math.sqrt(a);
     case '∛': return Math.cbrt(a);
   }
@@ -7973,7 +7984,8 @@ var PHV = [
   ['Dv', 'Dv', 'D vertikal (dioptri)'], ['Dh', 'Dh', 'D horizontal (dioptri)'], ['Axis', 'Axis', 'axis (°)'], ['phi', 'φ', 'meridian φ (°)'],
   ['L', 'L', 'power lensa (D)'], ['P', 'P', 'power mata (D)'], ['R', 'R', 'sisa refraksi (D)'],
   ['Dd', 'D', 'penyebut baris 6/D'], ['dj', 'd', 'jarak uji (m)'], ['vis', 'visus', 'visus desimal'],
-  ['jk', 'jarak', 'jarak kerja (m)'], ['WD', 'WD', 'working distance (D)'], ['Rx', 'Rx', 'Rx meridian (D)'], ['gross', 'gross', 'lensa netral (D)'], ['lensa', 'lensa', 'lensa coba (D)']
+  ['jk', 'jarak', 'jarak kerja (m)'], ['WD', 'WD', 'working distance (D)'], ['Rx', 'Rx', 'Rx meridian (D)'], ['gross', 'gross', 'lensa netral (D)'], ['lensa', 'lensa', 'lensa coba (D)'],
+  ['rem', 'dibuang', 'tebal dibuang (mm)']
 ];
 var PHL = {}, PHK = {};
 PHV.forEach(function (v, i) { var ch = String.fromCharCode(0xE000 + i); PHL[ch] = [v[1], v[2]]; PHK[v[0]] = ch; });
@@ -7988,6 +8000,9 @@ var CALC_TPLS = [
   { g: 'Ketebalan', n: 'CT dari ET (meridian plus)', h: 'CT = Sagita + ET.', e: '{s}+{ET}' },
   { g: 'Ketebalan', n: 'Tebal dibuang (meridian minus)', h: 't − ET. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '{t}−{ET}' },
   { g: 'Ketebalan', n: 'Tebal dibuang (meridian plus)', h: 't − CT. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '{t}−{CT}' },
+  { g: 'Ketebalan', n: 'Grinding (70%)', h: 'Tebal dibuang × 70%. Tebal dibuang = t − ET (minus) atau t − CT (plus).', e: '{rem}×70%' },
+  { g: 'Ketebalan', n: 'Finning (20%)', h: 'Tebal dibuang × 20%.', e: '{rem}×20%' },
+  { g: 'Ketebalan', n: 'Polishing (10%)', h: 'Tebal dibuang × 10%.', e: '{rem}×10%' },
   { g: 'Data precal frame', n: 'ED biasa (frame kotak)', h: 'ED = A + 2. Frame bulat: ED = A.', e: '{A}+2' },
   { g: 'Data precal frame', n: 'ED Pythagoras', h: 'Diagonal kotak A × B.', e: '√({A}²+{B}²)' },
   { g: 'Data precal frame', n: 'DEC, PD binocular', h: '|A + DBL − PD| ÷ 2', e: '⟦abs({A}+{DBL}−{PD})¦2⟧' },
@@ -8004,19 +8019,19 @@ var CALC_TPLS = [
   { g: 'Keratometer dan lensa kontak', n: 'Astigmat kornea', h: '|D vertikal − D horizontal|', e: 'abs({Dv}−{Dh})' },
   { g: 'Keratometer dan lensa kontak', n: 'Diameter total lensa kontak', h: 'HVID + 2 mm.', e: '{HVID}+2' },
   { g: 'Keratometer dan lensa kontak', n: 'BC 1 lensa kontak', h: 'flat + 0.7. Flat = radius terbesar antara H dan V.', e: '{flat}+0.7' },
-  { g: 'Keratometer dan lensa kontak', n: 'BC 2 lensa kontak', h: '(H + V) ÷ 2 + 10%. Dipakai bila selisih H dan V jauh.', e: '⟦{H}+{V}¦2⟧×1.1' },
-  { g: 'Keratometer dan lensa kontak', n: 'BC 3 lensa kontak', h: 'flat + 10%.', e: '{flat}×1.1' },
+  { g: 'Keratometer dan lensa kontak', n: 'BC 2 lensa kontak', h: '(H + V) ÷ 2 + 10%. Dipakai bila selisih H dan V jauh.', e: '⟦{H}+{V}¦2⟧+10%' },
+  { g: 'Keratometer dan lensa kontak', n: 'BC 3 lensa kontak', h: 'flat + 10%.', e: '{flat}+10%' },
   { g: 'Resep', n: 'Transposisi: Sph′', h: 'Sph′ = Sph + Cyl. Cyl′ = −Cyl.', e: '{Sph}+{Cyl}' },
   { g: 'Resep', n: 'Transposisi: Axis′ (axis ≤ 90)', h: 'Axis′ = Axis + 90.', e: '{Axis}+90' },
   { g: 'Resep', n: 'Transposisi: Axis′ (axis > 90)', h: 'Axis′ = Axis − 90.', e: '{Axis}−90' },
-  { g: 'Bagan refraksi', n: 'Power mata di meridian φ', h: 'P = Sph + Cyl × sin²(φ − axis). Mode sudut harus DEG.', e: '{Sph}+{Cyl}×sin({phi}−{Axis})²' },
+  { g: 'Bagan refraksi', n: 'Power mata di meridian φ', h: 'P = Sph + Cyl × sin²(φ − axis). Mode sudut otomatis DEG.', e: '{Sph}+{Cyl}×sin({phi}−{Axis})²' },
   { g: 'Bagan refraksi', n: 'Titik jauh (m)', h: '1 ÷ Sph. Minus di depan mata, plus di belakang mata (maya).', e: '⟦1¦{Sph}⟧' },
   { g: 'Bagan refraksi', n: 'Sisa refraksi R', h: 'R = L − P. Tanpa lensa, L = 0.', e: '{L}−{P}' },
   { g: 'Bagan refraksi', n: 'Fokus meridian (mm)', h: '1333.3 ÷ (60 + R). R plus: fokus di depan retina.', e: '⟦1333.3¦60+{R}⟧' },
   { g: 'Visus dan Snellen', n: 'Visus desimal', h: '6 ÷ D untuk baris 6/D. Contoh 6/20 = 0.30.', e: '⟦6¦{Dd}⟧' },
   { g: 'Visus dan Snellen', n: 'MAR (menit busur)', h: '1 ÷ visus desimal.', e: '⟦1¦{vis}⟧' },
   { g: 'Visus dan Snellen', n: 'logMAR', h: '−log10(visus desimal).', e: '−log({vis})' },
-  { g: 'Visus dan Snellen', n: 'Tinggi huruf Snellen (mm)', h: 'd × 1000 × tan 5′ × D ÷ 6. Mode sudut harus DEG.', e: '⟦{dj}×1000×tan(⟦5¦60⟧)×{Dd}¦6⟧' },
+  { g: 'Visus dan Snellen', n: 'Tinggi huruf Snellen (mm)', h: 'd × 1000 × tan 5′ × D ÷ 6. Mode sudut otomatis DEG.', e: '⟦{dj}×1000×tan(⟦5¦60⟧)×{Dd}¦6⟧' },
   { g: 'Streak retinoskop', n: 'WD (working distance)', h: 'WD (D) = 1 ÷ jarak kerja (m). 67 cm = +1.50 D.', e: '⟦1¦{jk}⟧' },
   { g: 'Streak retinoskop', n: 'Lensa netral (gross)', h: 'Gross = Rx meridian + WD.', e: '{Rx}+{WD}' },
   { g: 'Streak retinoskop', n: 'Net', h: 'Net = gross − WD (spheris saja).', e: '{gross}−{WD}' },
@@ -8025,7 +8040,7 @@ var CALC_TPLS = [
 var calcFxOpen = false;
 var calcFxSpans = [];   // letak tiap rumus dari daftar di dalam teks ekspresi: { s, e, n } (e = sesudah karakter terakhir, n = nama). Hilang saat halaman dimuat ulang.
 var CALC_VALUE_END = /(\d|\.|π|e|Ans|\)|!|%|²|³|¹|⟧|⟫|⟯|⟆)$/;
-var CALC_DEL = /(abs\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|Ans|⁻¹|[\s\S])$/;
+var CALC_DEL = /(abs\(|rnd[fh]?\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|Ans|⁻¹|[\s\S])$/;
 // Ekspresi tersimpan dari versi lama memakai a⁄b dan a⌟b⁄c. Diubah ke bentuk kotak bersusun yang baru.
 function calcMigrate(x) {
   return x.replace(/(\d+)⌟(\d*)⁄(\d*)/g, '⟪$1¦$2¦$3⟫').replace(/(\d+)⌟(\d*)/g, '⟪$1¦$2¦⟫').replace(/(\d+)⁄(\d*)/g, '⟦$1¦$2⟧');
@@ -8037,12 +8052,14 @@ function calcHistValid(h) { return !!h && typeof h.e === 'string' && h.e !== '' 
 // Dibungkus kurung bila menempel pada angka atau fungsi lain, supaya 2Ans (Ans = 5) tidak terbaca 25.
 function calcInlineAns(s, ans) {
   if (s.indexOf('Ans') < 0) return s;
+  return s.replace(/Ans/g, function (m, off) { return calcAnsLit(ans, s.charAt(off - 1), s.charAt(off + 3)); });
+}
+// Angka jawaban sebelumnya sebagai teks yang disisipkan di layar. pv dan nx = karakter di kiri dan kanan tempat sisip ('' = tepi).
+// Dibungkus kurung bila menempel pada angka atau fungsi lain, supaya 2 lalu jawaban 5 tidak terbaca 25.
+function calcAnsLit(ans, pv, nx) {
   var lit = calcLit(ans);
-  return s.replace(/Ans/g, function (m, off) {
-    var pv = s.charAt(off - 1), nx = s.charAt(off + 3);
-    var wrap = ans >= 0 && ((pv !== '' && !/[+−×÷^(¦⟦⟪⟮⟅]/.test(pv)) || (nx !== '' && !/[+−×÷^)!%²³¦⟧⟫⟯⟆]/.test(nx)));
-    return wrap ? '(' + lit + ')' : lit;
-  });
+  var wrap = ans >= 0 && ((pv !== '' && !/[+−×÷^(¦⟦⟪⟮⟅]/.test(pv)) || (nx !== '' && !/[+−×÷^)!%²³¦⟧⟫⟯⟆]/.test(nx)));
+  return wrap ? '(' + lit + ')' : lit;
 }
 function calcHistAdd(expr, v, deg, prevAns) {
   var c = CS(), e = calcInlineAns(expr, prevAns), open;
@@ -8055,11 +8072,11 @@ function calcHistAdd(expr, v, deg, prevAns) {
 }
 function CS() {
   var c = S.calc;
-  if (!c || typeof c !== 'object') c = S.calc = { expr: '', deg: true, mem: 0, ans: 0, sci: false, fr: false, mx: false, hist: [] };
+  if (!c || typeof c !== 'object') c = S.calc = { expr: '', deg: true, ans: 0, sci: false, fr: false, mx: false, hist: [] };
   if (typeof c.expr !== 'string') c.expr = '';
   else if (c.expr.indexOf('⁄') >= 0 || c.expr.indexOf('⌟') >= 0) c.expr = calcMigrate(c.expr);
   if (typeof c.deg !== 'boolean') c.deg = true;
-  if (typeof c.mem !== 'number' || !isFinite(c.mem)) c.mem = 0;
+  if (c.rqs !== 0.125 && c.rqs !== 0.25 && c.rqs !== 0.5) c.rqs = 0.25;
   if (typeof c.ans !== 'number' || !isFinite(c.ans)) c.ans = 0;
   if (typeof c.sci !== 'boolean') c.sci = false; if (typeof c.fr !== 'boolean') c.fr = false; if (typeof c.mx !== 'boolean') c.mx = false;   // tombol scientific: standar tersembunyi
   if (!Array.isArray(c.hist)) c.hist = [];
@@ -8085,54 +8102,59 @@ function calcResHTML(x) {
 function calcMsg(e) { return e && e.calc === 'math' ? _T('js.kesalahan_matematika') : e && e.calc === 'mixed' ? (_T('js.pembilang_harus') + ' ' + '< penyebut') : _T('js.kesalahan_sintaks'); }
 
 // Papan tombol. l = label, a = aksi. l2 dan a2 = fungsi kedua (tombol 2nd). al = label untuk pembaca layar.
-// Aksi: dig:7  dot  ins:sin(  op:+  post:²  pow  pwc:e  exp  frac  mix  nrt  del  ac  eq  ang  sec  mplus  mminus  mr  mc  nav:left
+// Aksi: dig:7  dot  ins:sin(  op:+  post:²  pow  pwc:e  exp  frac  mix  nrt  del  ac  eq  ang  sec  rq  nav:left
 function K(l, a, o) { o = o || {}; return { l: l, a: a, l2: o.l2, a2: o.a2, cls: o.cls || 'fn', al: o.al, al2: o.al2 }; }
 // Ikon tombol: kotak putus-putus = tempat isian
 var KBOXP = '<i class="kbx kbp"></i>';   // kotak untuk tombol pangkat
 var SVG_RAD_X = '<svg class="x-rs" viewBox="0 0 12 24" preserveAspectRatio="none" aria-hidden="true"><path d="M0.5 14L3 12L6 22L12 0"/></svg>';   // tanda akar: dipakai di layar dan di label tombol akar, supaya gayanya sama
 var KRT = '<span class="x-rt">' + SVG_RAD_X + '<span class="x-rc">' + KBOXP + '</span></span>';   // akar dengan garis atas di atas kotak isian, seperti di layar
+var KABS = '<span class="kabs"><i class="kbar"></i>' + KBOXP + '<i class="kbar"></i></span>';   // ikon tombol nilai mutlak: |kotak|
 var KF = '<span class="kf"><i></i><b></b><i></i></span>';
 var KMX = '<span class="kmx"><i></i>' + KF + '</span>';
 var KAR = function (d) { return '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; };
 var KDEL = '<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9L3 12l6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><path d="M17 9.5l-5 5M12 9.5l5 5"/></svg>';   // ikon tombol hapus (backspace)
 var CK_SCI = [
-  K('2nd', 'sec', { al: _T('js.fungsi_kedua') }), K(_T('js.deg'), 'ang', { al: _T('js.mode_sudut') }), K('π', _T('js.ins'), { al: 'Pi' }), K('e', 'ins:e', { al: _T('js.bilangan_e') }), K(_T('js.ans'), 'ins:Ans', { al: _T('js.jawaban_terakhir') }),
+  K('2nd', 'sec', { al: _T('js.fungsi_kedua') }), K(_T('js.deg'), 'ang', { al: _T('js.mode_sudut') }), K('π', _T('js.ins'), { al: 'Pi' }), K('e', 'ins:e', { al: _T('js.bilangan_e') }), K(_T('js.exp'), 'exp', { al: _T('js.kali_sepuluh_pangkat') }),
   K('sin', 'ins:sin(', { l2: 'sin<sup>−1</sup>', a2: 'ins:asin(', al: _T('js.sinus'), al2: _T('js.arc_sinus') }),
   K('cos', 'ins:cos(', { l2: 'cos<sup>−1</sup>', a2: 'ins:acos(', al: _T('js.cosinus'), al2: _T('js.arc_cosinus') }),
   K('tan', 'ins:tan(', { l2: 'tan<sup>−1</sup>', a2: 'ins:atan(', al: _T('js.tangen'), al2: _T('js.arc_tangen') }),
   K('ln', 'ins:ln(', { l2: ('e<sup>' + _T('js.x') + '</sup>'), a2: 'pwc:e', al: _T('js.logaritma_natural'), al2: 'e pangkat x' }),
   K('log', 'ins:log(', { l2: ('10<sup>' + _T('js.x') + '</sup>'), a2: 'pwc:10', al: _T('js.logaritma_basis_10'), al2: '10 pangkat x' }),
-  K(KBOXP + '<sup>2</sup>', _T('js.post'), { l2: KBOXP + '<sup>3</sup>', a2: _T('js.post_2'), al: _T('js.kuadrat'), al2: _T('js.pangkat_tiga') }),
+  K(KBOXP + '<sup>2</sup>', 'pwd:2', { l2: KBOXP + '<sup>3</sup>', a2: 'pwd:3', al: _T('js.kuadrat'), al2: _T('js.pangkat_tiga') }),
   K((KBOXP + '<sup>' + _T('js.y') + '</sup>'), 'pow', { al: _T('js.pangkat') }),
   K(KRT, _T('js.ins_2'), { l2: '<span class="x-ix">' + _T('js.n') + '</span>' + KRT, a2: 'nrt', al: _T('js.akar_kuadrat'), al2: _T('js.akar_pangkat_n') }),
-  K(KBOXP + '<sup>−1</sup>', _T('js.post_3'), { al: _T('js.kebalikan') }),
-  K('!', 'post:!', { al: _T('js.faktorial') }),
-  K('(', 'ins:(', { al: _T('js.kurung_buka') }), K(')', 'ins:)', { al: _T('js.kurung_tutup') }),
-  K('M+', 'mplus', { l2: 'M−', a2: 'mminus', al: _T('js.tambah_ke_memori'), al2: _T('js.kurangi_dari_memori') }),
-  K('MR', 'mr', { al: _T('js.panggil_memori') }), K('MC', 'mc', { al: _T('js.hapus_memori') })
+  K(KABS, 'ins:abs(', { al: _T('js.nilai_mutlak') }),
+  K('!', 'post:!', { al: _T('js.faktorial') })
 ];
 var CK_PAD = [
   K('AC', 'ac', { cls: 'clr', al: _T('js.hapus_semua') }), K(KDEL, 'del', { cls: 'clr', al: _T('js.hapus_satu_karakter') }), K('%', 'post:%', { cls: 'op', al: _T('js.persen') }), K('÷', 'op:÷', { cls: 'op', al: _T('js.bagi') }),
   K('7', 'dig:7', { cls: 'num' }), K('8', 'dig:8', { cls: 'num' }), K('9', 'dig:9', { cls: 'num' }), K('×', 'op:×', { cls: 'op', al: _T('js.kali') }),
   K('4', 'dig:4', { cls: 'num' }), K('5', 'dig:5', { cls: 'num' }), K('6', 'dig:6', { cls: 'num' }), K('−', 'op:−', { cls: 'op', al: _T('js.kurang') }),
   K('1', 'dig:1', { cls: 'num' }), K('2', 'dig:2', { cls: 'num' }), K('3', 'dig:3', { cls: 'num' }), K('+', 'op:+', { cls: 'op', al: _T('js.tambah') }),
-  K('0', 'dig:0', { cls: 'num' }), K('.', 'dot', { cls: 'num', al: _T('js.titik_desimal') }), K(_T('js.exp'), 'exp', { cls: 'num small', al: _T('js.kali_sepuluh_pangkat') }), K('=', 'eq', { cls: 'equals', al: _T('js.sama_dengan') })
+  K('0', 'dig:0', { cls: 'num' }), K('.', 'dot', { cls: 'num', al: _T('js.titik_desimal') }), K(_T('js.ans'), 'ins:Ans', { cls: 'num small', al: _T('js.jawaban_terakhir') }), K('=', 'eq', { cls: 'equals', al: _T('js.sama_dengan') })
 ];
-var CK_FRAC = [
-  K(KF, 'frac', { al: _T('js.pecahan') }), K(KMX, 'mix', { al: _T('js.bilangan_campuran') }),
-  K('S⇔D', 'sd', { al: _T('js.hasil_pecahan_atau_desimal') }), K('ab⁄c⇔d⁄c', 'mf', { al: _T('js.hasil_campuran_atau_biasa') })
-];
-// Tombol kursor: kiri dan kanan berjalan satu langkah, atas dan bawah pindah antara pembilang dan penyebut.
+// Tampilan utama (fungsi scientific disembunyikan) hanya punya satu baris di atas papan angka: kurung buka, kurung tutup, kursor kiri, kursor kanan (CK_NAV).
+// Kursor kiri dan kanan berjalan satu langkah dan melewati pembilang, penyebut, pangkat, lalu keluar dari rumus, jadi tidak ada tombol atas dan bawah.
 var CK_NAV = [
-  K(KAR('M12.5 4l-6 6 6 6'), 'nav:left', { al: _T('js.kursor_ke_kiri') }), K(KAR('M4 12.5l6-6 6 6'), 'nav:up', { al: _T('js.kursor_ke_atas_ke') }),
-  K(KAR('M4 7.5l6 6 6-6'), 'nav:down', { al: _T('js.kursor_ke_bawah_ke') }), K(KAR('M7.5 4l6 6-6 6'), 'nav:right', { al: _T('js.kursor_ke_kanan') })
+  K('(', 'ins:(', { al: _T('js.kurung_buka') }), K(')', 'ins:)', { al: _T('js.kurung_tutup') }),
+  K(KAR('M12.5 4l-6 6 6 6'), 'nav:left', { al: _T('js.kursor_ke_kiri') }), K(KAR('M7.5 4l6 6-6 6'), 'nav:right', { al: _T('js.kursor_ke_kanan') })
 ];
-var CK_ALL = CK_SCI.concat(CK_PAD, CK_FRAC, CK_NAV);
+// Kelipatan pembulatan untuk tombol →0.25: ketuk = pakai yang terpilih, tekan lama = pilih lain. fn = nama fungsi di dalam ekspresi.
+var RQ_STEPS = [{ s: 0.125, l: '0.125', fn: 'rndf' }, { s: 0.25, l: '0.25', fn: 'rnd' }, { s: 0.5, l: '0.5', fn: 'rndh' }];
+function rqCur() { var s = CS().rqs, i; for (i = 0; i < RQ_STEPS.length; i++) if (RQ_STEPS[i].s === s) return RQ_STEPS[i]; return RQ_STEPS[1]; }
+// Satu baris lima kolom di bawah tombol scientific: tulis pecahan (pecahan, bilangan campuran) dan ubah hasil (S⇔D, ab⁄c⇔d⁄c, →0.25).
+var CK_HASIL = [
+  K(KF, 'frac', { al: _T('js.pecahan') }), K(KMX, 'mix', { al: _T('js.bilangan_campuran') }),
+  K('S⇔D', 'sd', { al: _T('js.hasil_pecahan_atau_desimal') }), K('ab⁄c⇔d⁄c', 'mf', { cls: 'fn sm', al: _T('js.hasil_campuran_atau_biasa') }),
+  K('→0.25', 'rq', { cls: 'fn rq', al: _T('js.bulatkan_025') })
+];
+var CK_ALL = CK_SCI.concat(CK_PAD, CK_NAV, CK_HASIL);
 function ckBtn(k, i) { return '<button type="button" class="ck ' + k.cls + '" data-ck="' + i + '"></button>'; }
 $('#ck-sci').innerHTML = CK_SCI.map(function (k, i) { return ckBtn(k, i); }).join('');
-var ckOff = CK_SCI.length + CK_PAD.length;   // awal CK_FRAC di CK_ALL
-$('#ck-nav').innerHTML = CK_NAV.map(function (k, i) { return ckBtn(k, i + ckOff + CK_FRAC.length); }).join('') + CK_FRAC.slice(0, 2).map(function (k, i) { return ckBtn(k, i + ckOff); }).join('');   // 4 panah + pecahan + bilangan campuran
-$('#ck-frac').innerHTML = CK_FRAC.slice(2).map(function (k, i) { return ckBtn(k, i + ckOff + 2); }).join('');   // S⇔D dan ab⁄c⇔d⁄c: ikut panel scientific
+var navOff = CK_SCI.length + CK_PAD.length;  // awal CK_NAV di CK_ALL
+var hasilOff = navOff + CK_NAV.length;       // awal CK_HASIL
+$('#ck-nav').innerHTML = CK_NAV.map(function (k, i) { return ckBtn(k, i + navOff); }).join('');
+$('#ck-hasil').innerHTML = CK_HASIL.map(function (k, i) { return ckBtn(k, i + hasilOff); }).join('');
 $('#ck-pad').innerHTML = CK_PAD.map(function (k, i) { return ckBtn(k, i + CK_SCI.length); }).join('');
 
 function calcCur() {
@@ -8147,7 +8169,8 @@ var calcPos = null;
 // jadi kursor tidak bisa keluar dari rumus yang berakhir dengan variabel. calcOutAt = posisi tempat kursor sengaja ada di luar kotak itu (-1 = tidak ada); berlaku hanya selama calcPos masih sama.
 var calcOutAt = -1;
 var calcIdxAt = -1;   // posisi kursor tepat sesudah indeks "2" yang baru dibuat dari akar kuadrat: angka yang diketik berikutnya menggantikan "2" itu
-var CALC_FDEL = /^(abs\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|Ans|⁻¹|[\s\S])/;
+var calcPwAt = -1;    // posisi kursor tepat sesudah pangkat bawaan (2 atau 3) yang baru dibuat oleh x² / x³, di dalam kotak pangkatnya: angka yang diketik berikutnya menggantikannya
+var CALC_FDEL = /^(abs\(|rnd[fh]?\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|Ans|⁻¹|[\s\S])/;
 function calcBounds(expr) {
   var b = [0], i = 0;
   while (i < expr.length) { i += calcUnitLen(expr, i); b.push(i); }
@@ -8194,7 +8217,7 @@ function calcFindStart(nodes, q, type) {
 }
 function calcSetPos(pos, out) {   // out: kursor di luar kotak variabel yang tepat di kirinya (hanya bermakna bila karakter sebelum kursor memang kotak variabel)
   var c = CS();
-  calcDone = false; calcErr = ''; calcIdxAt = -1;   // menyentuh kursor = kembali menyunting ekspresi
+  calcDone = false; calcErr = ''; calcIdxAt = -1; calcPwAt = -1;   // menyentuh kursor = kembali menyunting ekspresi
   calcPos = Math.max(0, Math.min(c.expr.length, pos));
   calcOutAt = (out && calcPos > 0 && PH_ANY.test(c.expr.charAt(calcPos - 1))) ? calcPos : -1;
   calcRender();
@@ -8237,8 +8260,16 @@ function calcPress(act) {
   calcIdxAt = -1;
   var outBox = !calcDone && calcOutAt === pos;   // kursor sengaja di luar kotak variabel di kirinya: ketikan menambah di sesudahnya, tidak menggantikan kotak
   var startNew = function () { if (calcDone) { pre = ''; suf = ''; calcDone = false; calcFxSpans = []; } };
+  // Pangkat bawaan dari x² atau x³ (kursor tepat sesudahnya, di dalam kotak pangkat): angka yang diketik menggantikannya.
+  // Tombol lain yang menyisipkan sesuatu keluar dulu dari kotak pangkat, jadi x² lalu + tetap melanjutkan di garis dasar (3²+4), bukan masuk ke pangkat.
+  var pwFresh = !calcDone && calcPwAt === pos && /[1-9]/.test(c.expr.charAt(pos - 1)) && (c.expr.charAt(pos - 2) === PO || (c.expr.charAt(pos - 2) === '−' && c.expr.charAt(pos - 3) === PO)) && c.expr.charAt(pos) === PC, pwMade = false;   // x⁻¹: yang diganti angkanya saja (1), tanda − tetap
+  calcPwAt = -1;
+  if (pwFresh) {
+    if (kind === 'dig') pre = pre.slice(0, -1);
+    else if (/^(op|post|pow|pwd|pwc|ins|frac|mix|nrt|dot|hres|exp|tpl)$/.test(kind)) { pre += PC; suf = suf.slice(1); oldPos = pre.length; }
+  }
   // Mengetik tepat sesudah kotak variabel menggantikan kotak itu (tanda minus dan plus juga, supaya D = −5 bisa diketik langsung).
-  if (!calcDone && !outBox && pre !== '' && PH_ANY.test(pre.slice(-1)) && (kind === 'dig' || kind === 'dot' || kind === 'mr' || kind === 'hres' || (kind === 'ins' && arg !== ')') || (kind === 'op' && (arg === '−' || arg === '+')))) pre = pre.slice(0, -1);
+  if (!calcDone && !outBox && pre !== '' && PH_ANY.test(pre.slice(-1)) && (kind === 'dig' || kind === 'dot' || kind === 'hres' || (kind === 'ins' && arg !== ')') || (kind === 'op' && (arg === '−' || arg === '+')))) pre = pre.slice(0, -1);
   switch (kind) {
     case 'dig':
       startNew();
@@ -8261,12 +8292,13 @@ function calcPress(act) {
         var p = calcPath(calcTree(pre + suf), pre.length), l = p.length ? p[p.length - 1] : null;
         return !!l && l.n.t === 'r' && l.n.closed && l.n.slots[0].z === pre.length;
       })()) { pre += ')'; suf = suf.slice(1); }
+      else if (arg === 'Ans') pre += calcAnsLit(c.ans, pre.slice(-1), suf.charAt(0));   // tombol Ans menyisipkan angka jawaban sebelumnya, bukan tulisan Ans
       else pre += arg;
       break;
     case 'op': {
-      if (calcDone) { pre = _T('js.ans'); suf = ''; calcDone = false; }
+      if (calcDone) { pre = calcAnsLit(c.ans, '', ''); suf = ''; calcDone = false; }   // operator sesudah hasil: lanjut dari angka hasilnya
       var e = pre;
-      if (e === '' && (arg === '×' || arg === '÷' || arg === '^')) e = _T('js.ans');
+      if (e === '' && (arg === '×' || arg === '÷' || arg === '^')) e = calcAnsLit(c.ans, '', '');
       var last = e.slice(-1);
       if (last === 'E') { if (arg === '+' || arg === '−') e += arg; }   // tanda eksponen: 5E−3
       else if (/[+−×÷^]/.test(last)) {
@@ -8280,8 +8312,12 @@ function calcPress(act) {
       pre = e;
       break;
     }
+    case 'pwd':   // x², x³, dan x⁻¹: seperti x^y, tetapi kotak pangkatnya sudah berisi 2, 3, atau −1 dan angkanya bisa langsung diganti dengan mengetik angka lain
+      if (calcDone || pre === '') { pre = calcAnsLit(c.ans, '', ''); suf = calcDone ? '' : suf; calcDone = false; }
+      if (CALC_VALUE_END.test(pre)) { pre += PO + arg; suf = PC + suf; pwMade = true; }
+      break;
     case 'post':
-      if (calcDone || (pre === '' && suf === '')) { pre = _T('js.ans'); suf = ''; calcDone = false; }
+      if (calcDone || (pre === '' && suf === '')) { pre = calcAnsLit(c.ans, '', ''); suf = ''; calcDone = false; }
       if (CALC_VALUE_END.test(pre)) pre += arg;
       break;
     case 'exp':
@@ -8316,8 +8352,8 @@ function calcPress(act) {
       calcIdxAt = pre.length;
       break;
     }
-    case 'pow':   // x^y: kotak pangkat di atas kanan angka di kiri kursor (setelah hasil atau di awal: Ans)
-      if (calcDone || pre === '') { pre = _T('js.ans'); suf = calcDone ? '' : suf; calcDone = false; }
+    case 'pow':   // x^y: kotak pangkat di atas kanan angka di kiri kursor (setelah hasil atau di awal: angka jawaban sebelumnya)
+      if (calcDone || pre === '') { pre = calcAnsLit(c.ans, '', ''); suf = calcDone ? '' : suf; calcDone = false; }
       if (CALC_VALUE_END.test(pre)) { pre += PO; suf = PC + suf; }
       break;
     case 'pwc':   // e^x dan 10^x: konstanta dengan kotak pangkat
@@ -8368,6 +8404,7 @@ function calcPress(act) {
     case 'tpl': {   // rumus dari daftar Rumus. Kursor di dalam rumus yang ada: rumus itu diganti. Kursor di luar rumus: rumus lama dibiarkan, rumus baru disisipkan di kursor.
       var tp = CALC_TPLS[+arg], body, base, inSp = null, gone;
       if (!tp) break;
+      if (!c.deg && /(sin|cos|tan)\(/.test(tp.e)) { c.deg = true; $('#calc-sr').textContent = _T('js.mode_derajat_otomatis'); }   // rumus bersudut dalam derajat: mode pindah ke DEG sendiri
       startNew();
       inSp = calcFxAt(c.expr, pos);   // termasuk kursor di dalam kotak variabel terakhir rumus yang berakhir dengan variabel
       if (inSp) {
@@ -8399,6 +8436,26 @@ function calcPress(act) {
         $('#calc-sr').textContent = (_T('js.hasil') + ' ') + calcShowR(v).replace('⁄', ' per ');
       } catch (er) { calcErr = calcMsg(er); }
       break;
+    case 'rq': {   // →0.25: bulatkan ke kelipatan terpilih (bawaan 0.25; tekan lama tombolnya untuk 0.125 atau 0.5), setengah ke atas, sama dengan pembulatan BC di kartu kerja
+      var rqx = null, rqm = [], rqv, rqp, rqf = rqCur().fn;
+      if (calcDone) rqx = rqf + '(' + calcLit(c.ans) + ')';   // sesudah hasil: hasil itu dibulatkan
+      else if (suf === '' && pre !== '') rqx = rqf + '(' + pre + ')';   // kursor di ujung: seluruh isi layar dibulatkan, lalu dihitung
+      if (rqx === null) { startNew(); pre += rqf + '('; break; }   // layar kosong atau kursor di tengah: seperti tombol fungsi lain
+      if (PH_ANY.test(rqx)) {
+        rqx.replace(PH_ALL, function (p) { if (PHL[p] && rqm.indexOf(PHL[p][0]) < 0) rqm.push(PHL[p][0]); return p; });
+        calcErr = _T('kalkulator.isi_dulu') + ' ' + rqm.join(', ');
+        break;
+      }
+      try {
+        rqp = c.ans;
+        rqv = calcEvalStr(rqx, c.deg, c.ans);
+        calcHistAdd(rqx, rqv, c.deg, rqp);
+        c.ans = rqv; calcLast = rqv; calcDone = true; calcFxSpans = [];
+        pre = rqx; suf = '';
+        $('#calc-sr').textContent = (_T('js.hasil') + ' ') + calcShowR(rqv).replace('⁄', ' per ');
+      } catch (er) { calcErr = calcMsg(er); }
+      break;
+    }
     case 'ang':
       c.deg = !c.deg; calcDone = false;
       $('#calc-sr').textContent = c.deg ? _T('js.mode_derajat') : _T('js.mode_radian');
@@ -8406,31 +8463,21 @@ function calcPress(act) {
     case 'sec':
       calcSec = !calcSec;
       break;
-    case 'mplus': case 'mminus':
-      v = calcCur();
-      if (v !== null) c.mem = Number(((kind === 'mplus') ? c.mem + v : c.mem - v).toPrecision(15));
-      break;
-    case 'mr':
-      startNew();
-      pre += calcLit(c.mem);
-      break;
-    case 'mc':
-      c.mem = 0;
-      break;
   }
   if (mv !== null) { var all = pre + suf; pre = all.slice(0, mv); suf = all.slice(mv); }
   c.expr = pre + suf;
   calcPos = calcDone ? c.expr.length : pre.length;
   if (calcDone || c.expr !== oldExpr || calcPos !== oldPos) calcOutAt = -1;   // status "di luar kotak" hanya bertahan bila tidak ada yang berubah
+  if (pwMade) calcPwAt = calcPos;   // kursor di dalam kotak pangkat bawaan, tepat sesudah angkanya
   if (kind === 'hexp') calcFxSpans = []; else if (kind !== 'tpl') calcFxTrack(oldExpr, oldPos, c.expr, pre.length);   // tpl mengatur rentangnya sendiri
   if (calcErr) $('#calc-sr').textContent = calcErr;
   save(); calcRender();
 }
 // Hasil sementara saat mengetik. Operator, tanda eksponen, titik, atau kurung buka yang menggantung di ujung, atau sebelum penutup kotak (akar, pecahan),
 // dilepas dulu, jadi hasil tetap terlihat saat karakter terakhir bukan angka (5×3+ tetap menampilkan 15). Kesalahan matematika tidak ditampilkan.
-var CALC_TAIL = /([+−×÷^]|E[+−]?|\.|(abs|asin|acos|atan|sin|cos|tan|log|ln|√|∛)\(|\()$/;
+var CALC_TAIL = /([+−×÷^]|E[+−]?|\.|(abs|rnd[fh]?|asin|acos|atan|sin|cos|tan|log|ln|√|∛)\(|\()$/;
 function calcRepair(s) {
-  var t = s.replace(/([+−×÷^]|E[+−]?|\.)(?=[)⟧⟫⟯⟆¦]|$)/g, '').replace(/(abs\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|\()\)/g, '');
+  var t = s.replace(/([+−×÷^]|E[+−]?|\.)(?=[)⟧⟫⟯⟆¦]|$)/g, '').replace(/(abs\(|rnd[fh]?\(|asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|log\(|ln\(|√\(|∛\(|\()\)/g, '');
   return t !== s ? t : s.replace(CALC_TAIL, '');
 }
 function calcPreview(s, deg, ans) {
@@ -8462,6 +8509,9 @@ function calcSeq(nodes, a, st, boxed) {
       prevVal = true;
     } else if (nd.t === 'c') {
       sh = nd.s;
+      if (sh === 'rnd(') sh = '→0.25(';   // tampil sama dengan tombolnya
+      else if (sh === 'rndf(') sh = '→0.125(';
+      else if (sh === 'rndh(') sh = '→0.5(';
       if (sh === 'abs(') { ab.push(1); sh = '|'; }
       else if (sh.charAt(sh.length - 1) === '(') ab.push(0);
       else if (sh === ')' && ab.length && ab.pop()) sh = '|';
@@ -8513,12 +8563,11 @@ function calcRender() {
   res.innerHTML = out;
   var sci = c.sci;
   if (!sci) calcSec = false;   // 2nd ikut mati saat tombol scientific disembunyikan
-  $('#ck-sci').hidden = !sci; $('#ck-frac').hidden = !sci; $('#v-kalkulator').classList.toggle('sci-on', !!sci);
+  $('#ck-sci').hidden = !sci; $('#ck-hasil').hidden = !sci; $('#v-kalkulator').classList.toggle('sci-on', !!sci);
   var tg = $('#ck-tog'); tg.setAttribute('aria-expanded', sci ? 'true' : 'false');
   $('#ck-tog-t').textContent = sci ? _T('js.sembunyikan_fungsi_scientific') : _T('js.tampilkan_fungsi_scientific');
   $('#cs-2nd').hidden = !calcSec;
   $('#cs-ang').textContent = c.deg ? _T('js.deg') : _T('js.rad');
-  $('#cs-m').hidden = c.mem === 0;
   var fb = $('#cs-fr'); fb.hidden = !c.fr;
   fb.textContent = (rv !== null && calcToFrac(rv) === null) ? 'bukan pecahan' : (c.mx ? 'a b⁄c' : 'a⁄b');
   $$('#calc-keys .ck').forEach(function (b) {
@@ -8526,6 +8575,7 @@ function calcRender() {
     var label = alt ? k.l2 : k.l, aria = alt ? k.al2 : k.al;
     if (k.a === 'ang') { label = c.deg ? _T('js.deg') : _T('js.rad'); aria = (_T('js.mode_sudut') + ' ') + (c.deg ? 'derajat' : 'radian') + _T('js.ketuk_untuk_ganti'); }
     if (k.a === 'dot') label = SEP;
+    if (k.a === 'rq') { var rl = rqCur().l.replace('.', SEP); label = '→' + rl; aria = (_T('js.bulatkan_ke_kelipatan') + ' ' + rl + ', ') + _T('js.tekan_lama_ganti'); }
     if (b.dataset.s !== label) { b.dataset.s = label; b.innerHTML = label; }
     if (aria) b.setAttribute('aria-label', aria); else b.removeAttribute('aria-label');
     b.classList.toggle('alt', alt);
@@ -8671,8 +8721,9 @@ $('#ck-tog').addEventListener('click', function () {
 });
 $('#ch-tog').addEventListener('click', function () {
   calcHistOpen = !calcHistOpen; disarmHist();
+  if (calcHistOpen) { calcFxOpen = false; }   // satu panel saja yang terbuka
   $('#calc-sr').textContent = calcHistOpen ? _T('js.riwayat_dibuka') : _T('js.riwayat_ditutup');
-  calcHistView();
+  calcRender();
 });
 $('#ch-list').addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('button') : null;
@@ -8697,9 +8748,52 @@ $('#calc-keys').addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('.ck') : null;
   if (!b) return;
   var k = CK_ALL[+b.dataset.ck], act = (calcSec && k.a2) ? k.a2 : k.a;
+  if (k.a === 'rq' && rqLong) { rqLong = false; return; }   // lepas setelah tekan lama: pilihan kelipatan sudah terbuka, jangan ikut membulatkan
+  if (!rqPickEl.hidden) rqPick(false);
   if (act !== 'sec') calcSec = false;   // 2nd hanya berlaku untuk satu ketukan
   if (act.indexOf('nav:') === 0) { calcMove(act.slice(4)); return; }
   calcPress(act);
+});
+// Tekan lama tombol →0.25 (atau klik kanan) membuka pilihan kelipatan: 0.125, 0.25, 0.5. Pilihan tersimpan.
+var rqPickEl = document.createElement('div'), rqTimer = null, rqLong = false;
+rqPickEl.className = 'rq-pick'; rqPickEl.id = 'rq-pick'; rqPickEl.hidden = true;
+rqPickEl.setAttribute('role', 'group'); rqPickEl.setAttribute('aria-label', _T('kalkulator.pilih_kelipatan'));
+rqPickEl.innerHTML = RQ_STEPS.map(function (st) { return '<button type="button" class="rq-o" data-rqs="' + st.s + '"></button>'; }).join('');
+$('#ck-hasil').appendChild(rqPickEl);
+function rqPick(open) {
+  var cur = rqCur().s;
+  Array.prototype.forEach.call(rqPickEl.children, function (b) {
+    var st = +b.dataset.rqs;
+    b.classList.toggle('on', st === cur); b.setAttribute('aria-pressed', st === cur ? 'true' : 'false');
+    b.textContent = String(st).replace('.', SEP);
+  });
+  rqPickEl.hidden = !open;
+}
+function rqKey(e) { var b = e.target.closest ? e.target.closest('.ck') : null; return b && CK_ALL[+b.dataset.ck].a === 'rq'; }
+$('#calc-keys').addEventListener('pointerdown', function (e) {
+  clearTimeout(rqTimer);
+  if (!rqKey(e)) return;
+  rqLong = false;
+  rqTimer = setTimeout(function () { rqLong = true; rqPick(true); }, 450);
+});
+function rqRelease() { clearTimeout(rqTimer); setTimeout(function () { rqLong = false; }, 100); }   // klik susulan sesudah tekan lama sudah lewat, tanda dilepas supaya ketukan berikutnya normal
+document.addEventListener('pointerup', rqRelease);
+document.addEventListener('pointercancel', rqRelease);
+document.addEventListener('pointerdown', function (e) {   // ketuk di luar menutup pilihan
+  if (!rqPickEl.hidden && !(e.target.closest && (e.target.closest('#rq-pick') || e.target.closest('.ck.rq')))) rqPick(false);
+});
+$('#calc-keys').addEventListener('contextmenu', function (e) {
+  if (!rqKey(e)) return;
+  e.preventDefault(); clearTimeout(rqTimer); rqLong = true; rqPick(true);
+});
+rqPickEl.addEventListener('mousedown', function (e) { e.preventDefault(); });
+rqPickEl.addEventListener('click', function (e) {
+  var b = e.target.closest ? e.target.closest('.rq-o') : null;
+  if (!b) return;
+  var c = CS(); c.rqs = +b.dataset.rqs; save();
+  rqPick(false);
+  $('#calc-sr').textContent = (_T('js.bulatkan_ke_kelipatan') + ' ') + String(c.rqs);
+  calcRender();
 });
 document.addEventListener('keydown', function (e) {
   if (shown !== 'kalkulator' || e.ctrlKey || e.metaKey || e.altKey) return;
@@ -8715,12 +8809,13 @@ document.addEventListener('keydown', function (e) {
   else if (k === '^') a = 'pow';
   else if (k === '(') a = 'ins:(';
   else if (k === ')') a = 'ins:)';
+  else if (k === '|') a = 'ins:abs(';
   else if (k === '!') a = 'post:!';
   else if (k === '%') a = 'post:%';
   else if (k === '=') a = 'eq';
   else if (k === 'Enter') { if (tag === 'BUTTON') return; a = 'eq'; }   // Enter pada tombol yang sedang fokus tetap menekan tombol itu
   else if (k === 'Backspace') a = 'del';
-  else if (k === 'Escape') { if (calcHistOpen) { e.preventDefault(); calcHistOpen = false; calcHistView(); return; } a = 'ac'; }   // saat riwayat terbuka, Esc menutupnya dulu
+  else if (k === 'Escape') { if (!rqPickEl.hidden) { e.preventDefault(); rqPick(false); return; } if (calcHistOpen) { e.preventDefault(); calcHistOpen = false; calcHistView(); return; } a = 'ac'; }   // saat riwayat terbuka, Esc menutupnya dulu
   else if (k === 'Delete') a = 'fdel';
   else if (k === 'ArrowLeft' || k === 'ArrowRight' || k === 'ArrowUp' || k === 'ArrowDown' || k === 'Home' || k === 'End') {
     e.preventDefault();
