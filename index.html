@@ -8765,8 +8765,8 @@ function aboutHTML() {
   h += ('<section class="card"><div class="eye-h"><h2>' + _T('js.aplikasi') + '</h2></div><div class="tbl" style="--cols:1;margin-top:0">') +
     row(_T('js.nama'), [esc(ABOUT.app)], 1) + row(_T('js.versi'), [esc(ABOUT.version)], 1) +
     row(_T('js.koneksi'), [_T('js.tanpa_internet')], 1) + row(_T('js.penyimpanan'), [_T('js.di_perangkat_ini')], 1) + '</div>' +
-    ('<p class="hint" style="margin-top:12px">' + _T('js.hasil_hitungan_adalah_alat') + '</p>') +
-  /*  ('<p class="hint" style="margin-top:8px">' + esc(_T('js.hak_cipta')) + '</p></section>'); */
+    ('<p class="hint" style="margin-top:12px">' + _T('js.hasil_hitungan_adalah_alat') + '</p>');
+   /* ('<p class="hint" style="margin-top:8px">' + esc(_T('js.hak_cipta')) + '</p></section>'); */
   return h; 
 }
 $('#about-out').innerHTML = aboutHTML();
