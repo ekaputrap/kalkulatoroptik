@@ -2571,8 +2571,8 @@ var TEKS = {
   "js.grinding_70_finning_20": "Grinding 70%, Finning 20%, Polishing 10%.",
   "js.a_dbl_2_pd": "|(A + DBL) ÷ 2 − PD|, decentration tiap lensa, dengan PD OD untuk OD dan PD OS untuk OS",
   "js.a_dbl_pd_2": "|A + DBL − PD| ÷ 2, decentration tiap lensa",
-  "js.ed_2_2_dec": "ED + 2 + 2 × DEC, dihitung tiap mata",
-  "js.ed_2_a_dbl": "ED + 2 + |A + DBL − PD|",
+  "js.ed_2_2_dec": "ED + 2 × DEC + 2, dihitung tiap mata",
+  "js.ed_2_a_dbl": "ED + |A + DBL − PD| + 2",
   "js.dibulatkan_dengan_kelipatan_5": "Dibulatkan dengan kelipatan 5 ke atas sesuai pasaran, paling kecil 60.",
 
   // ----- Dari skrip: Sagita (halaman sendiri, rumus sama dengan kartu kerja) -----
@@ -2957,8 +2957,8 @@ var TEKS = {
   "js.data_precal_frame": "Data precal (frame)",
   "js.pd_binocular_a_dbl": "PD binocular: |A + DBL − PD| ÷ 2",
   "js.pd_monocular_a_dbl": "PD monocular: |(A + DBL) ÷ 2 − PD mata itu|",
-  "js.pd_binocular_ed_2": "PD binocular: ED + 2 + |A + DBL − PD|",
-  "js.pd_monocular_ed_2": "PD monocular: ED + 2 + 2 × DEC, tiap mata sendiri",
+  "js.pd_binocular_ed_2": "PD binocular: ED + |A + DBL − PD| + 2",
+  "js.pd_monocular_ed_2": "PD monocular: ED + 2 × DEC + 2, tiap mata sendiri",
   "js.spheris_cylinder_tanpa_cylinder": "Spheris + ½ Cylinder. Tanpa cylinder, SE = Spheris.",
   "js.se_0_minus_se": "SE ≤ 0 (minus): ½ SE + 6",
   "js.0_plus_se_6_2": "0 (plus): SE + 6",
@@ -3185,12 +3185,12 @@ function calcPrecal(p) {
   const ED = edOf(p);
   const diff = Math.abs(p.A + p.DBL - p.PD);   // selisih total frame dan PD
   const DEC = diff / 2;                         // decentration tiap lensa
-  const MBS = ED + 2 + diff;
+  const MBS = ED + diff + 2;
   return { ED, DEC, MBS, dia: diaOfMBS(MBS) };
 }
 
 // PD monocular (PD OD dan PD OS sendiri-sendiri). DEC tiap mata = |(A + DBL) ÷ 2 − PD mata itu|,
-// MBS tiap mata = ED + 2 + 2 × DEC. Bila PD OD = PD OS = PD ÷ 2, hasilnya sama dengan calcPrecal.
+// MBS tiap mata = ED + 2 × DEC + 2. Bila PD OD = PD OS = PD ÷ 2, hasilnya sama dengan calcPrecal.
 // Mata yang PD-nya belum diisi (null) hasilnya null.
 function calcPrecalMono(p) {
   const ED = edOf(p);
@@ -3198,7 +3198,7 @@ function calcPrecalMono(p) {
   const one = pd => {
     if (pd === null || pd === undefined) return null;
     const DEC = Math.abs(half - pd);
-    const MBS = ED + 2 + 2 * DEC;
+    const MBS = ED + 2 * DEC + 2;
     return { PD: pd, DEC, MBS, dia: diaOfMBS(MBS) };
   };
   return { ED, od: one(p.PDod), os: one(p.PDos) };
@@ -3752,7 +3752,7 @@ function preHTML(pre, o) {
       '</div><p class="how">' + (edLine ? edLine + '<br>' : '') + eyes.filter(function (k) { return pre[k]; }).map(function (k) {
         var e = pre[k];
         return k.toUpperCase() + _T('js.dec_2') + mm(pre.A) + ' + ' + mm(pre.DBL) + ') ÷ 2 ' + MIN + ' ' + mm(e.PD) + '| = ' + mm(e.DEC) +
-          '<br>MBS = ' + mm(pre.ED) + ' + 2 + 2 × ' + mm(e.DEC) + ' = ' + mm(e.MBS) + '<br>' + rangeOf(e);
+          '<br>MBS = ' + mm(pre.ED) + ' + 2 × ' + mm(e.DEC) + ' + 2 = ' + mm(e.MBS) + '<br>' + rangeOf(e);
       }).join('<br><br>') + '</p>';
     var missing = eyes.filter(function (k) { return !pre[k]; });
     if (missing.length) t += ('<div class="msg info">' + _T('js.isi_pd') + ' ') + missing[0].toUpperCase() + ' untuk menghitung mata ' + (missing[0] === 'od' ? 'kanan' : 'kiri') + '.</div>';
@@ -3766,7 +3766,7 @@ function preHTML(pre, o) {
     ('<div class="tile"><small>' + _T('js.dec') + '</small><b>') + mm(pre.DEC) + '</b></div>' +
     ('<div class="tile"><small>' + _T('js.mbs') + '</small><b>') + mm(pre.MBS) + '</b></div>' +
     '<div class="tile main' + (over ? ' over' : '') + ('"><small>' + _T('js.diameter_2') + '</small><b>') + pre.dia + '</b></div></div>' +
-    '<p class="how">' + edLine + 'DEC = |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '| ÷ 2 = ' + mm(pre.DEC) + '<br>MBS = ' + mm(pre.ED) + ' + 2 + |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '|<br>' + range + '</p>' +
+    '<p class="how">' + edLine + 'DEC = |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '| ÷ 2 = ' + mm(pre.DEC) + '<br>MBS = ' + mm(pre.ED) + ' + |' + mm(pre.A) + ' + ' + mm(pre.DBL) + ' ' + MIN + ' ' + mm(pre.PD) + '| + 2<br>' + range + '</p>' +
     (over ? ('<div class="msg bad">' + _T('js.diameter_2') + ' ') + pre.dia + ' mm melebihi ' + DIA_MAX + (' ' + _T('js.mm_di_luar_ukuran') + ' ') + (o.what || 'data precal') + '.</div>' : '') + '</section>';
 }
 function row(label, vals, cols, o) {
@@ -7984,8 +7984,7 @@ var PHV = [
   ['Dv', 'Dv', 'D vertikal (dioptri)'], ['Dh', 'Dh', 'D horizontal (dioptri)'], ['Axis', 'Axis', 'axis (°)'], ['phi', 'φ', 'meridian φ (°)'],
   ['L', 'L', 'power lensa (D)'], ['P', 'P', 'power mata (D)'], ['R', 'R', 'sisa refraksi (D)'],
   ['Dd', 'D', 'penyebut baris 6/D'], ['dj', 'd', 'jarak uji (m)'], ['vis', 'visus', 'visus desimal'],
-  ['jk', 'jarak', 'jarak kerja (m)'], ['WD', 'WD', 'working distance (D)'], ['Rx', 'Rx', 'Rx meridian (D)'], ['gross', 'gross', 'lensa netral (D)'], ['lensa', 'lensa', 'lensa coba (D)'],
-  ['rem', 'dibuang', 'tebal dibuang (mm)']
+  ['jk', 'jarak', 'jarak kerja (m)'], ['WD', 'WD', 'working distance (D)'], ['Rx', 'Rx', 'Rx meridian (D)'], ['gross', 'gross', 'lensa netral (D)'], ['lensa', 'lensa', 'lensa coba (D)']
 ];
 var PHL = {}, PHK = {};
 PHV.forEach(function (v, i) { var ch = String.fromCharCode(0xE000 + i); PHL[ch] = [v[1], v[2]]; PHK[v[0]] = ch; });
@@ -7998,17 +7997,18 @@ var CALC_TPLS = [
   { g: 'Radius dan sagita', n: 'Radius lengkung (r)', h: 'Hasil dalam mm.', e: '⟦1000×({n}−1)¦abs({D})⟧' },
   { g: 'Ketebalan', n: 'ET dari CT (meridian minus)', h: 'ET = Sagita + CT.', e: '{s}+{CT}' },
   { g: 'Ketebalan', n: 'CT dari ET (meridian plus)', h: 'CT = Sagita + ET.', e: '{s}+{ET}' },
-  { g: 'Ketebalan', n: 'Tebal dibuang (meridian minus)', h: 't − ET. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '{t}−{ET}' },
-  { g: 'Ketebalan', n: 'Tebal dibuang (meridian plus)', h: 't − CT. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '{t}−{CT}' },
-  { g: 'Ketebalan', n: 'Grinding (70%)', h: 'Tebal dibuang × 70%. Tebal dibuang = t − ET (minus) atau t − CT (plus).', e: '{rem}×70%' },
-  { g: 'Ketebalan', n: 'Finning (20%)', h: 'Tebal dibuang × 20%.', e: '{rem}×20%' },
-  { g: 'Ketebalan', n: 'Polishing (10%)', h: 'Tebal dibuang × 10%.', e: '{rem}×10%' },
+  { g: 'Ketebalan', n: 'Grinding 70% (meridian minus)', h: '(t − ET) × 70%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{ET})×70%' },
+  { g: 'Ketebalan', n: 'Grinding 70% (meridian plus)', h: '(t − CT) × 70%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{CT})×70%' },
+  { g: 'Ketebalan', n: 'Finning 20% (meridian minus)', h: '(t − ET) × 20%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{ET})×20%' },
+  { g: 'Ketebalan', n: 'Finning 20% (meridian plus)', h: '(t − CT) × 20%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{CT})×20%' },
+  { g: 'Ketebalan', n: 'Polishing 10% (meridian minus)', h: '(t − ET) × 10%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{ET})×10%' },
+  { g: 'Ketebalan', n: 'Polishing 10% (meridian plus)', h: '(t − CT) × 10%. t = ET atau CT terbesar + 2, dibulatkan ke atas.', e: '({t}−{CT})×10%' },
   { g: 'Data precal frame', n: 'ED biasa (frame kotak)', h: 'ED = A + 2. Frame bulat: ED = A.', e: '{A}+2' },
   { g: 'Data precal frame', n: 'ED Pythagoras', h: 'Diagonal kotak A × B.', e: '√({A}²+{B}²)' },
   { g: 'Data precal frame', n: 'DEC, PD binocular', h: '|A + DBL − PD| ÷ 2', e: '⟦abs({A}+{DBL}−{PD})¦2⟧' },
   { g: 'Data precal frame', n: 'DEC, PD monocular', h: '|(A + DBL) ÷ 2 − PD mata itu|', e: 'abs(⟦{A}+{DBL}¦2⟧−{PDm})' },
-  { g: 'Data precal frame', n: 'MBS, PD binocular', h: 'ED + 2 + |A + DBL − PD|', e: '{ED}+2+abs({A}+{DBL}−{PD})' },
-  { g: 'Data precal frame', n: 'MBS, PD monocular', h: 'ED + 2 + 2 × DEC, tiap mata sendiri.', e: '{ED}+2+2×{DEC}' },
+  { g: 'Data precal frame', n: 'MBS, PD binocular', h: 'ED + |A + DBL − PD| + 2', e: '{ED}+abs({A}+{DBL}−{PD})+2' },
+  { g: 'Data precal frame', n: 'MBS, PD monocular', h: 'ED + 2 × DEC + 2, tiap mata sendiri.', e: '{ED}+2×{DEC}+2' },
   { g: 'Base curve dan tools', n: 'SE (spherical equivalent)', h: 'Spheris + ½ Cylinder.', e: '{Sph}+⟦{Cyl}¦2⟧' },
   { g: 'Base curve dan tools', n: 'BC, SE ≤ 0 (minus)', h: '½ SE + 6. Di aplikasi dibulatkan ke kelipatan 0.25, setengah ke atas.', e: '⟦{SE}¦2⟧+6' },
   { g: 'Base curve dan tools', n: 'BC, SE > 0 (plus)', h: 'SE + 6. Di aplikasi dibulatkan ke kelipatan 0.25, setengah ke atas.', e: '{SE}+6' },
@@ -8075,6 +8075,7 @@ function CS() {
   if (!c || typeof c !== 'object') c = S.calc = { expr: '', deg: true, ans: 0, sci: false, fr: false, mx: false, hist: [] };
   if (typeof c.expr !== 'string') c.expr = '';
   else if (c.expr.indexOf('⁄') >= 0 || c.expr.indexOf('⌟') >= 0) c.expr = calcMigrate(c.expr);
+  if (PH_ANY.test(c.expr)) c.expr = c.expr.replace(PH_ALL, function (p) { return PHL.hasOwnProperty(p) ? p : ''; });   // buang kotak variabel yang sudah dihapus dari daftar
   if (typeof c.deg !== 'boolean') c.deg = true;
   if (c.rqs !== 0.125 && c.rqs !== 0.25 && c.rqs !== 0.5) c.rqs = 0.25;
   if (typeof c.ans !== 'number' || !isFinite(c.ans)) c.ans = 0;
