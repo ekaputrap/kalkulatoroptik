@@ -520,13 +520,30 @@ input:disabled, select:disabled { opacity: .62; }
 .chip.hv { background: var(--accent-soft); color: var(--accent); }
 
 /* Bagan refraksi */
-.bgf { --ray: #d98200; --ray2: #1565c0; display: block; width: 100%; max-width: 30rem; height: auto; margin: 2px auto 0; }
+.bgf { --ray: #d98200; --ray2: #1565c0; display: block; width: 100%; max-width: 44rem; height: auto; margin: 2px auto 0; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bgf { --ray: #ffc247; --ray2: #6cb6ff; } }
 :root[data-theme="dark"] .bgf { --ray: #ffc247; --ray2: #6cb6ff; }
 .bgf .ln { fill: none; stroke: var(--ink-2); stroke-width: 2; }
-.bgf .ry { fill: none; stroke: var(--ray); stroke-width: 1.8; stroke-linecap: round; }
+.bgf .ry { pointer-events: none; fill: none; stroke: var(--ray); stroke-width: 1.8; stroke-linecap: round; }
 .bgf .ry.d { stroke-dasharray: 4 4; opacity: .7; }
-.bgf .tx { fill: var(--ink-2); font: 600 12px var(--f-ui); }
+.bgf .tx { fill: var(--ink-2); font: 600 15px var(--f-ui); }
+.bgf { user-select: none; -webkit-user-select: none; }
+.bgf .bgm { cursor: pointer; outline: none; touch-action: none; }
+html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
+.bgf .tx.sub { font-size: 13.5px; font-weight: 500; }
+.bgf .fl { paint-order: stroke; stroke: var(--surface); stroke-width: 3.5px; stroke-linejoin: round; }
+.bgf .bgm:hover .bgd { stroke-width: 2.6; }
+.bgf .bgl { touch-action: pan-y; cursor: grab; }   /* lensa bisa diketuk dan digeser ke samping, geseran vertikal tetap menggulir halaman */
+.bgf .bgl:hover .ln, .bgf .bgl:focus-visible .ln, .bgf .ln.sel { stroke: var(--accent); }
+.bgf .ln.sel { stroke-width: 2.6; }
+.bgf .bgl .dm { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-linecap: round; }
+.bgf .bgm:focus-visible .bgd { stroke: var(--accent); stroke-width: 3; }
+.bgf .mj0, .bgf .mj1 { transition: opacity .15s; }
+.bgf[data-sel="0"] .mj1, .bgf[data-sel="1"] .mj0 { opacity: .15; }
+.bgrs { display: flex; justify-content: center; align-items: center; height: 24px; margin: 2px 0 -6px; cursor: ns-resize; touch-action: none; border-radius: 6px; }
+.bgrs::before { content: ""; width: 46px; height: 5px; border-radius: 3px; background: var(--ink-2); opacity: .45; }
+.bgrs:hover::before, .bgrs:focus-visible::before { opacity: .85; }
+.bgrs:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .bgr { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 2px 14px; padding: 9px 0; border-top: 1px solid var(--line); }
 .bgr .l { flex: 1 1 8rem; min-width: 0; }
 .bgr .l small { display: block; color: var(--ink-2); font-size: .76rem; line-height: 1.3; font-family: var(--f-num); }
@@ -542,8 +559,9 @@ input:disabled, select:disabled { opacity: .62; }
 .bgfig-h .tr-btn.zv { min-width: 4.4rem; padding: 0 12px; font-family: var(--f-num); font-variant-numeric: tabular-nums; }
 .bgfig-h .tr-btn:disabled { opacity: .4; cursor: not-allowed; }
 .bgz { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; }
+.bgz.hc { overflow-y: auto; max-height: var(--ch); }   /* tinggi kartu dibatasi: isi yang tidak muat digulir, zoom tidak berubah */
 .bgz:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-.bgz .bgf { width: calc(100% * var(--z, 1)); max-width: calc(30rem * var(--z, 1)); }
+.bgz .bgf { width: calc(100% * var(--z, 1)); max-width: calc(44rem * var(--z, 1)); }
 .bgz-hint { margin-top: 6px; font-size: .8rem; }
 /* layar kecil: gambar nempel di atas selama halaman di-scroll, jadi perubahan power langsung kelihatan */
 .bg-cols { display: flex; flex-direction: column; }
@@ -551,12 +569,12 @@ input:disabled, select:disabled { opacity: .62; }
   .bg-fig { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; margin: 0 -4px; padding: 6px 4px; background: var(--bg); }
   .bg-fig .card { padding: 10px; box-shadow: 0 4px 14px rgba(0,0,0,.14); }
   .bg-fig h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* judul tetap ada buat pembaca layar */
-  .bg-fig .bgfig-h { margin-bottom: 6px; }
+  .bg-fig .bgfig-h { margin-bottom: 6px; flex-wrap: nowrap; gap: 6px; }
   .bg-fig .bgfig-h .tr-btn { height: 36px; font-size: .8rem; }
-  .bg-fig .bgfig-h .tr-btn:not(.zb):not(.zv) { padding: 0 10px 0 8px; }
+  .bg-fig .bgfig-h .tr-btn:not(.zb):not(.zv) { position: relative; flex: none; width: 36px; padding: 0; }
+  .bg-fig .bgfig-h .tr-btn:not(.zb):not(.zv) > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* teks tetap ada untuk pembaca layar */
   .bg-fig .bgfig-h .tr-btn.zb { width: 36px; }
   .bg-fig .bgfig-h .tr-btn.zv { min-width: 3.6rem; padding: 0 8px; }
-  .bg-fig .bgz { max-height: 36vh; overflow-y: auto; }
   .bg-fig .bgz-hint { display: none; }
 }
 @media (min-width: 900px) {
@@ -1148,7 +1166,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
         <h1 id="kartu-h" tabindex="-1" data-t="kartu.kartu_kerja_surfacing"></h1>
       </div>
     </div>
-    <button type="button" class="ghost" id="reset" data-t="kartu.kosongkan"></button>
+    <button type="button" class="ghost" id="reset" data-t="js.atur_ulang"></button>
   </header>
 
   <div class="note" id="sample" hidden data-t="kartu.isian_di_bawah_adalah"></div>
@@ -1233,7 +1251,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="mbs.data_frame_kacamata"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="mbs-reset" data-t="mbs.kosongkan"></button>
+      <button type="button" class="ghost" id="mbs-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1293,7 +1311,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="sagita.tinggi_lengkung_lensa"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="sag-reset" data-t="sagita.kosongkan"></button>
+      <button type="button" class="ghost" id="sag-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1335,7 +1353,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="bc.lengkung_dasar_lensa"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="bc-reset" data-t="bc.kosongkan"></button>
+      <button type="button" class="ghost" id="bc-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1368,7 +1386,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="et.et_ct_dan_t"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="et-reset" data-t="et.kosongkan"></button>
+      <button type="button" class="ghost" id="et-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1401,7 +1419,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="ft.f1_dan_f2"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="ft-reset" data-t="ft.kosongkan"></button>
+      <button type="button" class="ghost" id="ft-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1434,7 +1452,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="radius.jari_jari_f1_dan_f2"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="rad-reset" data-t="radius.kosongkan"></button>
+      <button type="button" class="ghost" id="rad-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1467,7 +1485,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="kerato.bacaan_horizontal_dan_vertikal"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="kr-reset" data-t="kerato.atur_ulang"></button>
+      <button type="button" class="ghost" id="kr-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1520,7 +1538,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="parlk.diameter_total_dan_base"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="lk-reset" data-t="parlk.kosongkan"></button>
+      <button type="button" class="ghost" id="lk-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols">
@@ -1586,7 +1604,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="bagan.cahaya_jatuh_ke_retina"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="bg-reset" data-t="bagan.atur_ulang"></button>
+      <button type="button" class="ghost" id="bg-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="cols bg-cols">
@@ -1631,7 +1649,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="snellen.chart_visus_interaktif"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="sn-reset" data-t="snellen.atur_ulang"></button>
+      <button type="button" class="ghost" id="sn-reset" data-t="js.atur_ulang"></button>
     </header>
 
     <main class="sn">
@@ -1732,7 +1750,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="lenso.spheris_silinder_dan_add"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="lm-reset" data-t="lenso.atur_ulang"></button>
+      <button type="button" class="ghost" id="lm-reset" data-t="js.atur_ulang"></button>
     </header>
     <main class="cols">
       <section class="panel" data-t-aria-label="lenso.lensometer">
@@ -1878,7 +1896,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
           <p data-t="streak.refleks_pupil_netralisasi_dan_axis"></p>
         </div>
       </div>
-      <button type="button" class="ghost" id="st-reset" data-t="streak.atur_ulang"></button>
+      <button type="button" class="ghost" id="st-reset" data-t="js.atur_ulang"></button>
     </header>
     <main class="cols">
       <section class="panel" data-t-aria-label="streak.retinoskop_dan_lensa_coba">
@@ -2267,8 +2285,7 @@ var TEKS = {
   // ----- Kartu Kerja -----
   "kartu.kembali_ke_beranda": "Kembali ke beranda",
   "kartu.kartu_kerja_surfacing": "Kartu Kerja Surfacing",
-  "kartu.kosongkan": "Kosongkan",
-  "kartu.isian_di_bawah_adalah": "Ini contoh isian. Ubah angkanya atau ketuk Kosongkan untuk mulai dari awal.",
+  "kartu.isian_di_bawah_adalah": "Ini contoh isian. Ubah angkanya atau ketuk Atur ulang untuk mulai dari awal.",
   "kartu.input": "Input",
   "kartu.data_precal": "Data precal",
   "kartu.a": "A",
@@ -2301,7 +2318,6 @@ var TEKS = {
   "mbs.kembali_ke_beranda": "Kembali ke beranda",
   "mbs.data_precal": "Data Precal",
   "mbs.data_frame_kacamata": "Data frame kacamata",
-  "mbs.kosongkan": "Kosongkan",
   "mbs.input": "Input",
   "mbs.data_frame": "Data frame",
   "mbs.a": "A",
@@ -2326,7 +2342,6 @@ var TEKS = {
   "sagita.kembali_ke_beranda": "Kembali ke beranda",
   "sagita.sagita": "Sagita",
   "sagita.tinggi_lengkung_lensa": "Tinggi lengkung lensa",
-  "sagita.kosongkan": "Kosongkan",
   "sagita.input": "Input",
   "sagita.data_lensa": "Data lensa",
   "sagita.rumus_sagita": "Rumus sagita",
@@ -2339,7 +2354,6 @@ var TEKS = {
   "bc.kembali_ke_beranda": "Kembali ke beranda",
   "bc.base_curve": "Base Curve",
   "bc.lengkung_dasar_lensa": "Lengkung dasar lensa",
-  "bc.kosongkan": "Kosongkan",
   "bc.input": "Input",
   "bc.resep": "Resep",
   "bc.hasil": "Hasil",
@@ -2349,7 +2363,6 @@ var TEKS = {
   "et.kembali_ke_beranda": "Kembali ke beranda",
   "et.ketebalan_lensa": "Ketebalan Lensa",
   "et.et_ct_dan_t": "ET, CT, dan t",
-  "et.kosongkan": "Kosongkan",
   "et.input": "Input",
   "et.data_lensa": "Data lensa",
   "et.hasil": "Hasil",
@@ -2359,7 +2372,6 @@ var TEKS = {
   "ft.kembali_ke_beranda": "Kembali ke beranda",
   "ft.tools": "Tools",
   "ft.f1_dan_f2": "F1 dan F2",
-  "ft.kosongkan": "Kosongkan",
   "ft.input": "Input",
   "ft.resep": "Resep",
   "ft.hasil": "Hasil",
@@ -2369,7 +2381,6 @@ var TEKS = {
   "radius.kembali_ke_beranda": "Kembali ke beranda",
   "radius.radius_kelengkungan": "Radius Kelengkungan",
   "radius.jari_jari_f1_dan_f2": "Jari-jari lengkung F1 dan F2",
-  "radius.kosongkan": "Kosongkan",
   "radius.input": "Input",
   "radius.data_lensa": "Data lensa",
   "radius.hasil": "Hasil",
@@ -2379,7 +2390,6 @@ var TEKS = {
   "kerato.kembali_ke_beranda": "Kembali ke beranda",
   "kerato.keratometer": "Keratometer",
   "kerato.bacaan_horizontal_dan_vertikal": "Bacaan horizontal dan vertikal",
-  "kerato.atur_ulang": "Atur ulang",
   "kerato.input": "Input",
   "kerato.bacaan_keratometer": "Skala keratometer",
   "kerato.geser_skala_ke_kiri": "Geser skala sampai garis tengah menunjuk angka di alat, atau ketik radiusnya.",
@@ -2399,7 +2409,6 @@ var TEKS = {
   "parlk.kembali_ke_beranda": "Kembali ke beranda",
   "parlk.parameter_lk": "Parameter LK",
   "parlk.diameter_total_dan_base": "Diameter total dan base curve lk",
-  "parlk.kosongkan": "Kosongkan",
   "parlk.input": "Input",
   "parlk.diameter_total": "Diameter total",
   "parlk.hvid": "HVID",
@@ -2426,7 +2435,6 @@ var TEKS = {
   "bagan.kembali_ke_beranda": "Kembali ke beranda",
   "bagan.bagan_refraksi": "Bagan Refraksi",
   "bagan.cahaya_jatuh_ke_retina": "Cahaya jatuh ke retina",
-  "bagan.atur_ulang": "Atur ulang",
   "bagan.input": "Input",
   "bagan.power_mata": "Power mata",
   "bagan.lensa_koreksi": "Lensa koreksi",
@@ -2439,7 +2447,6 @@ var TEKS = {
   "snellen.kembali_ke_beranda": "Kembali ke beranda",
   "snellen.snellen_chart": "Snellen Chart",
   "snellen.chart_visus_interaktif": "Visus, pinhole, fan dial, tentative, dan duochrome",
-  "snellen.atur_ulang": "Atur ulang",
   "snellen.pengaturan_chart": "Pengaturan chart",
   "snellen.jenis_optotipe": "Jenis optotipe",
   "snellen.huruf": "Huruf",
@@ -2829,8 +2836,8 @@ var TEKS = {
   "js.power": "Power",
   "js.gambar": "Gambar",
   "js.isi_power_mata_untuk": "Isi power mata untuk melihat gambarnya.",
-  "js.gabungkan_kedua_meridian_dalam": "Gabungkan kedua meridian dalam satu gambar",
-  "js.gabung_meridian": "Gabung meridian",
+  "js.gabungkan_kedua_meridian_dalam": "Pisahkan kedua meridian menjadi dua gambar",
+  "js.gabung_meridian": "Pisah meridian",
   "js.zoom_gambar": "Zoom gambar",
   "js.perbesar_gambar": "Perbesar gambar",
   "js.perkecil_gambar": "Perkecil gambar",
@@ -2862,7 +2869,7 @@ var TEKS = {
   "js.astigmatisme": "Astigmatisme",
   "js.dua_meridian_utama_punya": "Dua meridian utama punya R terbesar dan terkecil. Interval Sturm = selisih dua fokus (mm). Lingkaran kabur terkecil di rata-rata R. Keduanya di depan retina: Astigmatisme Miopia Kompositus. Keduanya di belakang: Astigmatisme Hiperopia Kompositus. Salah satu tepat di retina: Simpleks. Beda sisi: Astigmatisme Mixtus.",
   "js.titik_jauh_1_sph": "Titik jauh = 1 ÷ Sph (meter). Minus: di depan mata. Plus: di belakang mata (maya).",
-  "js.lensa_menempel_di_mata": "Lensa dianggap menempel di mata (jarak vertex diabaikan). Kolom lensa dikosongkan = koreksi penuh, jadi R = 0 dan fokus tepat di retina.",
+  "js.lensa_menempel_di_mata": "Jarak vertex kosong atau 0 berarti lensa dianggap menempel di mata. Kolom lensa dikosongkan = koreksi penuh, jadi R = 0 dan fokus tepat di retina.",
   "js.periksa_isian_power": "Periksa isian power.",
   "js.isi_power_mata_sph": "Isi power mata (Sph) dalam dioptri.",
   "js.spheris_sph": "Spheris (Sph)",
@@ -2963,8 +2970,7 @@ var TEKS = {
   "js.ct_et_diketahui": "CT / ET diketahui",
 
   // ----- Pembulatan 0.25 D -----
-  "js.kosongkan": "Kosongkan",
-  "js.ketuk_lagi_untuk_mengosongkan": "Ketuk lagi untuk mengosongkan",
+  "js.atur_ulang": "Atur ulang",
   "js.ketuk_lagi_untuk_mengatur_ulang": "Ketuk lagi untuk mengatur ulang",
   "js.ketuk_lagi_untuk_menghapus_catatan": "Ketuk lagi untuk menghapus catatan",
 
@@ -3194,7 +3200,6 @@ var TEKS = {
   "streak.kembali_ke_beranda": "Kembali ke beranda",
   "streak.streak_retinoskop": "Streak Retinoskop",
   "streak.refleks_pupil_netralisasi_dan_axis": "Refleks pupil, netralisasi, dan axis",
-  "streak.atur_ulang": "Atur ulang",
   "streak.retinoskop_dan_lensa_coba": "Retinoskop dan lensa coba",
   "streak.refleks_pupil": "Refleks pupil",
   "streak.jarak_kerja": "Jarak kerja",
@@ -3249,7 +3254,6 @@ var TEKS = {
   "lenso.kembali_ke_beranda": "Kembali ke beranda",
   "lenso.lensometer": "Lensometer",
   "lenso.spheris_silinder_dan_add": "Spheris, silinder, dan ADD",
-  "lenso.atur_ulang": "Atur ulang",
   "lenso.lensometer_badal": "Lensometer Badal",
   "lenso.tampilan_lensometer_badal_busur_sumbu": "Tampilan Lensometer Badal: busur sumbu dan garis mires hijau",
   "lenso.ketuk_untuk_menyembunyikan_petunjuk": "Ketuk untuk menyembunyikan petunjuk",
@@ -3564,7 +3568,7 @@ function blank() {
     calc: { expr: '', deg: true, ans: 0, sci: false, fr: false, mx: false, hist: [] },   // kalkulator scientific
     lk: { hvid: '', h: '', v: '', src: 'own', mode: 'auto', lim: '0.20' },   // halaman Parameter LK
     kr: { v: '7.67', h: '7.67' },   // halaman Keratometer
-    bg: { sph: '0.00', cyl: '', axis: '', cor: 'off', view: 'sep', lsph: '', lcyl: '', laxis: '', zoom: 1 },   // halaman Bagan Refraksi
+    bg: { sph: '0.00', cyl: '', axis: '', cor: 'off', view: 'one', vm: 2, lsph: '', lcyl: '', laxis: '', vd: '14', rays: 'on', zoom: 1, ch: 0 },   // halaman Bagan Refraksi
     sn: { type: 'letter', dist: '', view: 'full', seed: 0, line: '', miss: [], rec: { od: null, os: null }, rph: { od: null, os: null }, dl: { od: null, os: null }, eye: 'od', mode: 'sc', fan: 'on', cht: 'snellen', duo: { od: null, os: null }, dst: { od: [], os: [] } },   // halaman Snellen Chart
     sample: false
   };
@@ -3593,7 +3597,7 @@ function load() {
     if (o.calc) Object.assign(b.calc, o.calc);
     if (o.kr) Object.assign(b.kr, o.kr);
     if (o.lk) Object.assign(b.lk, o.lk);
-    if (o.bg) Object.assign(b.bg, o.bg);
+    if (o.bg) { Object.assign(b.bg, o.bg); if (o.bg.vm !== 2) { b.bg.view = 'one'; b.bg.vm = 2; } }   // vm 2: default gambar sudah gabung meridian. Data lama (default lama: terpisah) dipindah sekali, pilihan sesudahnya tetap diingat
     if (o.sn) Object.assign(b.sn, o.sn);
     b.osSame = o.osSame !== false; b.sample = !!o.sample;
     return b;
@@ -3675,6 +3679,18 @@ function nextQuarter(v, dir) {
 }
 var HAS_PE = !!window.PointerEvent;
 function dirOf(b) { return b.dataset.dir === 'up' ? 1 : -1; }
+/* Tombol dua ketukan (Atur ulang dan tombol hapus): ketukan pertama mengaktifkan (merah, teks armKey), ketukan kedua menjalankan fn. Padam sendiri setelah 3,5 detik. Mengembalikan fungsi pemadam untuk dipanggil manual (mis. saat panel ditutup). */
+function bindArm(sel, fn, idleKey, armKey) {
+  var b = $(sel), t = null;
+  function off() { clearTimeout(t); t = null; b.textContent = _T(idleKey); b.classList.remove('armed'); }
+  b.addEventListener('click', function () {
+    if (!t) { b.textContent = _T(armKey); b.classList.add('armed'); t = setTimeout(off, 3500); return; }
+    off(); fn();
+  });
+  return off;
+}
+/* Tombol Atur ulang di semua halaman: satu pola, fokus tidak dipindah. */
+function bindReset(sel, fn) { return bindArm(sel, fn, 'js.atur_ulang', 'js.ketuk_lagi_untuk_mengatur_ulang'); }
 /* Tombol langkah dengan tahan-ulang: ketuk = satu langkah, tahan = mengulang. */
 /* o.delay = jeda sebelum mengulang (ms), o.every = selang ulang, o.fast = selang setelah 12 langkah, o.before = dipanggil sebelum langkah pertama */
 function holdRepeat(root, sel, onStep, o) {
@@ -4541,7 +4557,7 @@ document.addEventListener('click', function (e) {
 });
 // Atur ulang = reset ke 44 D
 var KR_RESET = { v: '7.67', h: '7.67' };
-$('#kr-reset').addEventListener('click', function () {
+bindReset('#kr-reset', function () {
   S.kr = { v: KR_RESET.v, h: KR_RESET.h }; hydrate(); save(); update();
 });
 
@@ -4659,20 +4675,25 @@ function lkRender() {
   $('#lk-rumus').innerHTML = L(lkRows().map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
 }
 $('#lk-krgo').addEventListener('click', function () { openFeature('kerato'); });
-$('#lk-reset').addEventListener('click', function () {
+bindReset('#lk-reset', function () {
   S.lk = blank().lk; hydrate(); save(); update();
-  $('#lk-hvid').focus();
 });
 
 /* ---------- Bagan Refraksi ---------- */
 // Model mata tereduksi: retina diam di 1333.3 ÷ 60 = 22.22 mm dari bidang refraksi. P(φ) = Sph + Cyl·sin²(φ − axis)
 // Lensa pakai rumus sama, L(φ). Sisa R = L − P. Daya total = 60 + R, fokus = 1333.3 ÷ (60 + R) mm
 // Meridian utama sisa dari R(φ) = m + M·cos(2φ − δ). Panjang mata digambar pendek (BG.Lp px), jarak fokus diperbesar (BG.KD px per mm)
-var BG = { N: 1333.33, F: 60, MAX: 50, X0: 1333.33 / 60, Lp: 215, KD: 34, x0: 56, cy: 82 };
+var BG = { N: 1333.33, F: 60, MAX: 50, X0: 1333.33 / 60, Lp: 215, KD: 34, x0: 160, cy: 82, VMAX: 20 };
+// Jarak vertex digambar dengan skala diagram sendiri: BG.VS px per mm (lebih rapat dari skala panjang mata supaya mata tetap besar). Lebar gambar BG.W: ruang kiri untuk lensa sampai BG.VMAX mm, ruang kanan 113 px untuk titik fokus di belakang retina
+BG.VS = 6; BG.W = BG.x0 + BG.Lp + 113;
+// Titik tengah lensa. Muka depan mata di BG.x0 − 12, belakang lensa menempel di sana saat 0 mm. Di atas BG.VMAX mm lensa digambar di batas kiri
+function bgLx(vd) { return BG.x0 - 12 - 5 - Math.min(BG.VMAX, Math.max(0, vd || 0)) * BG.VS; }
 var bgR2 = function (x) { return Math.round(x * 100) / 100; };
 var bgZ = function (x) { return Math.abs(x) < 0.005; };
 var bgRad = Math.PI / 180;
 var bgAng = function (a) { return (((a % 180) + 180) % 180) || 180; };
+var bgDeg = function (a) { return String(Math.round(a * 10) / 10); };   // axis ditampilkan maksimal 1 digit di belakang koma (45.5, bukan 45.4999999)
+var bgVx = function (P, d) { var q = 1 - d * P; return q > 0.05 ? P / q : NaN; };   // power efektif di kornea untuk lensa yang berjarak d (m) di depannya
 function bgEval() {
   var sv = num(S.bg.sph), cv = num(S.bg.cyl), av = num(S.bg.axis), errs = [], axOK = function (v) { return v !== null && (Number.isNaN(v) || v < 0 || v > 180); };
   if (sv === null && cv === null) return { state: 'empty' };
@@ -4680,22 +4701,25 @@ function bgEval() {
   if (Number.isNaN(cv)) errs.push(_T('js.cylinder_tidak_valid'));
   var cyl = bad(cv) ? 0 : cv;
   if (cyl !== 0 && axOK(av)) errs.push(_T('js.axis_harus_antara_0'));
-  var ax = (cyl !== 0 && av !== null) ? (av === 0 ? 180 : av) : 180, cor = S.bg.cor === 'on', ls = 0, lc = 0, la = 180, auto = false;
+  var ax = (cyl !== 0 && av !== null) ? (av === 0 ? 180 : av) : 180, cor = S.bg.cor === 'on', ls = 0, lc = 0, la = 180, auto = false, es = 0, ec = 0, vmm = 0, vd = 0, vm = cor ? num(S.bg.vd) : null;
+  if (vm !== null) { if (Number.isNaN(vm) || vm < 0 || vm > 40) errs.push('Jarak vertex harus antara 0 dan 40 mm.'); else { vmm = vm; vd = vm / 1000; } }
   if (cor) {
     var l1 = num(S.bg.lsph), l2 = num(S.bg.lcyl), l3 = num(S.bg.laxis);
-    if (l1 === null && l2 === null) { auto = true; ls = sv; lc = cyl; la = ax; }
+    if (l1 === null && l2 === null) { auto = true; ls = bgVx(sv, -vd); lc = bgVx(sv + cyl, -vd) - ls; la = ax; es = sv; ec = cyl; }
     else {
       if (Number.isNaN(l1)) errs.push(_T('js.spheris_lensa_tidak_valid'));
       if (Number.isNaN(l2)) errs.push(_T('js.cylinder_lensa_tidak_valid'));
       ls = bad(l1) ? 0 : l1; lc = bad(l2) ? 0 : l2;
       if (lc !== 0 && axOK(l3)) errs.push(_T('js.axis_lensa_harus_antara'));
       la = (lc !== 0 && l3 !== null) ? (l3 === 0 ? 180 : l3) : 180;
+      es = bgVx(ls, vd); ec = bgVx(ls + lc, vd) - es;
     }
   }
+  if (!errs.length && !(isFinite(ls) && isFinite(lc) && isFinite(es) && isFinite(ec))) errs.push('Jarak vertex terlalu besar untuk power lensa ini.');
   if (errs.length) return { state: 'error', errs: errs };
-  var Pe = function (f) { return cyl * Math.pow(Math.sin((f - ax) * bgRad), 2) + sv; }, Lf = function (f) { return lc * Math.pow(Math.sin((f - la) * bgRad), 2) + ls; };
-  var m = (ls + lc / 2) - (sv + cyl / 2);
-  var A = -(lc / 2) * Math.cos(2 * la * bgRad) + (cyl / 2) * Math.cos(2 * ax * bgRad), B = -(lc / 2) * Math.sin(2 * la * bgRad) + (cyl / 2) * Math.sin(2 * ax * bgRad);
+  var Pe = function (f) { return cyl * Math.pow(Math.sin((f - ax) * bgRad), 2) + sv; }, Lf = function (f) { return lc * Math.pow(Math.sin((f - la) * bgRad), 2) + ls; }, Ef = function (f) { return ec * Math.pow(Math.sin((f - la) * bgRad), 2) + es; };
+  var m = (es + ec / 2) - (sv + cyl / 2);
+  var A = -(ec / 2) * Math.cos(2 * la * bgRad) + (cyl / 2) * Math.cos(2 * ax * bgRad), B = -(ec / 2) * Math.sin(2 * la * bgRad) + (cyl / 2) * Math.sin(2 * ax * bgRad);
   var two = Math.hypot(A, B) > 0.005, ref = cyl !== 0 ? ax : la, ph;
   if (two) {
     var pa = bgAng(Math.atan2(B, A) * 90 / Math.PI), pb = bgAng(pa + 90), dist = function (x) { var d = Math.abs(x - ref); return Math.min(d, 180 - d); };
@@ -4703,9 +4727,9 @@ function bgEval() {
   } else ph = [ref];
   var cl = function (x) { return Math.max(-BG.MAX, Math.min(BG.MAX, x)); }, clamp = false;
   var ms = ph.map(function (f) {
-    var p = bgR2(Pe(f)), l = bgR2(Lf(f)), r = bgR2(l - p), rc = cl(r);
+    var p = bgR2(Pe(f)), l = bgR2(Lf(f)), e = bgR2(Ef(f)), r = bgR2(e - p), rc = cl(r);
     if (rc !== r) clamp = true;
-    return { phi: f, P: p, L: l, R: rc, d: BG.N / (BG.F + rc) - BG.X0 };
+    return { phi: Math.round(f * 10) / 10, P: p, L: l, R: rc, d: BG.N / (BG.F + rc) - BG.X0 };   // sudut dibulatkan 0,1° agar label tidak panjang
   });
   var dn = ms.map(function (q) { return bgZ(q.R) ? 0 : q.d < 0 ? -1 : 1; }), kind;
   if (!two) kind = dn[0] < 0 ? 'myo' : dn[0] > 0 ? 'hyp' : 'emm';
@@ -4713,7 +4737,7 @@ function bgEval() {
   else if (dn[0] > 0 && dn[1] > 0) kind = 'chyp';
   else if (dn[0] * dn[1] < 0) kind = 'mix';
   else kind = (dn[0] < 0 || dn[1] < 0) ? 'smyo' : (dn[0] > 0 || dn[1] > 0) ? 'shyp' : 'emm';
-  return { state: 'ok', sph: sv, cyl: cyl, ax: ax, two: two, cor: cor, auto: auto, ls: ls, lc: lc, la: la, m: ms, kind: kind, clamp: clamp, mean: cl(m),
+  return { state: 'ok', sph: sv, cyl: cyl, ax: ax, two: two, cor: cor, auto: auto, ls: ls, lc: lc, la: la, es: es, ec: ec, vd: vmm, m: ms, kind: kind, clamp: clamp, mean: cl(m),
     shift: Math.round(Math.max(0, Math.max.apply(null, ms.map(function (q) { return bgOff(q.d); })) - 100)), sat: ms.some(function (q) { var u = BG.KD * q.d; return u < -110 || u > 190; }) };   // pandangan bergeser jika fokus hyperopia lewat tepi gambar, sama untuk kedua panel
 }
 // Posisi fokus di gambar (px dari retina, minus = di depan). Linear sampai ±12 D, sesudah itu dimampatkan biar fokus tetap di dalam gambar
@@ -4721,111 +4745,155 @@ function bgOff(d) {
   var u = BG.KD * d, T = u < 0 ? 110 : 190, E = u < 0 ? 175 : 260, a = Math.abs(u), o = a <= T ? a : T + (E - T) * (1 - Math.exp(-(a - T) / (E - T)));
   return u < 0 ? -o : o;
 }
+function bgSide(d) { return bgZ(d) ? 'tepat di retina' : d < 0 ? 'di depan retina' : 'di belakang retina'; }   // tanpa jarak mm: angkanya baru tampil saat titik fokus diketuk
+function bgAny(ev) { return ev.m.some(function (q, j) { return bgShow(ev, j); }); }
+function bgV(ev, j, d) { return (j < 0 ? bgAny(ev) : bgShow(ev, j)) ? bgPos(d) : bgSide(d); }
 function bgPos(d) { return Math.abs(d) < 0.005 ? 'tepat di retina' : Math.abs(d).toFixed(2) + ' mm ' + (d < 0 ? 'di depan retina' : 'di belakang retina'); }
 var BG_NAME = { emm: _T('js.emetropia'), myo: _T('js.miopia'), hyp: _T('js.hiperopia'), smyo: _T('js.astigmatisme_miopia_simpleks'), cmyo: _T('js.astigmatisme_miopia_kompositus'), shyp: _T('js.astigmatisme_hiperopia_simpleks'), chyp: _T('js.astigmatisme_hiperopia_kompositu'), mix: _T('js.astigmatisme_mixtus') };
-function bgLensStr(sph, cyl, ax) { return cyl !== 0 ? 'S ' + sgn(sph) + ' C ' + sgn(cyl) + ' X ' + ax : 'S ' + sgn(sph) + ' D'; }
-function bgText(ev) {
-  var q = ev.m, lens = ev.cor ? (_T('js.dengan_lensa') + ' ') + bgLensStr(ev.ls, ev.lc, ev.la) + ': ' : '';
+function bgLensStr(sph, cyl, ax) { return cyl !== 0 ? 'S ' + sgn(sph) + ' C ' + sgn(cyl) + ' X ' + bgDeg(ax) : 'S ' + sgn(sph) + ' D'; }
+function bgText(ev, gate) {   // gate: jarak mm hanya untuk meridian yang titiknya sedang diketuk
+  var q = ev.m, P = function (j) { return gate && !bgShow(ev, j) ? bgSide(q[j].d) : bgPos(q[j].d); }, lens = ev.cor ? (_T('js.dengan_lensa') + ' ') + bgLensStr(ev.ls, ev.lc, ev.la) + ': ' : '';
   if (ev.cor && ev.kind === 'emm') return lens + _T('js.semua_cahaya_jatuh_tepat');
-  if (!ev.two) return lens + (ev.kind === 'emm' ? _T('js.emetropia_cahaya_jatuh_tepat') : (ev.kind === 'myo' ? _T('js.miopia') : _T('js.hiperopia')) + (ev.cor ? ' sisa' : '') + (_T('js.cahaya_fokus') + ' ') + bgPos(q[0].d) + '.');
-  return lens + BG_NAME[ev.kind] + (_T('js.garis_fokus_1') + ' ') + bgPos(q[0].d) + (_T('js.garis_fokus_2') + ' ') + bgPos(q[1].d) + '.';
+  if (!ev.two) return lens + (ev.kind === 'emm' ? _T('js.emetropia_cahaya_jatuh_tepat') : (ev.kind === 'myo' ? _T('js.miopia') : _T('js.hiperopia')) + (ev.cor ? ' sisa' : '') + (_T('js.cahaya_fokus') + ' ') + P(0) + '.');
+  return lens + BG_NAME[ev.kind] + (_T('js.garis_fokus_1') + ' ') + P(0) + (_T('js.garis_fokus_2') + ' ') + P(1) + '.';
 }
 // Mata (kornea + lensa mata) dan lensa kacamata di depannya: cembung = plus, cekung = minus, datar = plano
+// Keterangan lensa saat diketuk: jarak vertex dan axis lensa (axis hanya bila lensa punya cylinder)
+function bgLensCap(ev) { return 'Vertex ' + ev.vd + ' mm' + (bgZ(ev.lc) ? '' : ' · Axis ' + bgDeg(ev.la) + '°'); }
 function bgEye(ev, Lw) {
   var x0 = BG.x0, cy = BG.cy, xr = x0 + BG.Lp, f = function (x) { return x.toFixed(1); };
   var g = '<rect class="ln" x="' + (x0 - 12) + '" y="' + (cy - 58) + '" width="' + f(xr - x0 + 12) + '" height="116" rx="30"/><ellipse class="ln" cx="' + x0 + '" cy="' + cy + '" rx="5" ry="24"/>';
   if (ev.cor) {
-    var xs = x0 - 28, T = cy - 46, B = cy + 46, a = Math.min(Math.abs(Lw), 12), w = 6 + a * 0.8, e = 3 + a * 0.6;
-    g += '<path class="ln" style="fill:var(--accent-soft)" d="' + (bgZ(Lw) ? 'M' + (xs - 3) + ' ' + T + 'H' + (xs + 3) + 'V' + B + 'H' + (xs - 3) + 'Z'
+    var xs = bgLx(ev.vd), ln = bgLn || !!(bgLD && bgLD.moved), T = cy - 46, B = cy + 46, a = Math.min(Math.abs(Lw), 12), w = 6 + a * 0.8, e = 3 + a * 0.6;
+    var lp = '<path class="ln' + (ln ? ' sel' : '') + '" style="fill:var(--accent-soft)" d="' + (bgZ(Lw) ? 'M' + (xs - 3) + ' ' + T + 'H' + (xs + 3) + 'V' + B + 'H' + (xs - 3) + 'Z'
       : Lw > 0 ? 'M' + xs + ' ' + T + 'Q' + f(xs + w) + ' ' + cy + ' ' + xs + ' ' + B + 'Q' + f(xs - w) + ' ' + cy + ' ' + xs + ' ' + T + 'Z'
       : 'M' + f(xs - e) + ' ' + T + 'Q' + (xs + 2) + ' ' + cy + ' ' + f(xs - e) + ' ' + B + 'L' + f(xs + e) + ' ' + B + 'Q' + (xs - 2) + ' ' + cy + ' ' + f(xs + e) + ' ' + T + 'Z') + '"/>';
+    g += '<g class="bgm bgl" data-bgl="1" tabindex="0" role="button" aria-pressed="' + (ln ? 'true' : 'false') + '" aria-label="Lensa koreksi. ' + bgLensCap(ev) + '. Geser ke samping untuk mengubah jarak vertex.">' +
+      '<rect class="bgh2" data-cx="' + f(xs) + '" x="' + (xs - 22) + '" y="' + (T - 4) + '" width="44" height="' + (B - T + 8) + '" fill="transparent"/>' + lp +
+      (ln ? '<path class="dm" d="M' + (xs + 5) + ' ' + (B + 6) + 'H' + (x0 - 12) + 'M' + (xs + 5) + ' ' + (B + 2) + 'V' + (B + 10) + 'M' + (x0 - 12) + ' ' + (cy + 30) + 'V' + (B + 10) + '"/>' +
+        '<text class="tx sub fl" style="fill:var(--accent)" x="' + (8 + ev.shift) + '" y="' + (cy + 72) + '">' + bgLensCap(ev) + '</text>' : '') + '</g>';
   }
   return g;
 }
 // Kedua meridian astigmat dalam satu gambar: meridian 1 (kuning) dan 2 (biru), sinarnya selang-seling biar tidak saling menutupi
+var bgSel = -1, bgNoClick = 0, bgCap = [false, false], bgLn = false;
+function bgShow(ev, j) { return !!(bgDrag && bgDrag.moved && bgDrag.j === j) || (ev.two && S.bg.view === 'one' ? bgSel === j : bgCap[j]); }   // keterangan fokus tampil saat titik diklik atau diseret
+function bgShort(d) { return bgZ(d) ? 'tepat di retina' : Math.abs(d).toFixed(2) + ' mm ' + (d < 0 ? 'depan' : 'belakang') + ' retina'; }   // meridian yang disorot di gambar gabungan, -1 = tidak ada
+function bgTip(ev, i) {
+  var q = ev.m[i];
+  return (ev.two ? 'Fokus meridian ' + (i + 1) + ' (' + bgDeg(q.phi) + '°)' : _T('js.fokus')) + ': ' + bgPos(q.d) + ', sisa refraksi ' + sgn(q.R) + ' D.';
+}
 function bgBoth(ev) {
-  var x0 = BG.x0, cy = BG.cy, xr = x0 + BG.Lp, f = function (x) { return x.toFixed(1); }, col = ['var(--ray)', 'var(--ray2)'], hs = [[-24, -8, 8, 24], [-16, 0, 16]];
+  var x0 = BG.x0, cy = BG.cy, xr = x0 + BG.Lp, f = function (x) { return x.toFixed(1); }, col = ['var(--ray)', 'var(--ray2)'], hs = [[-24, -8, 8, 24], [-16, 0, 16]], RY = S.bg.rays !== 'off';
   var Lm = (ev.m[0].L + ev.m[1].L) / 2, g = bgEye(ev, Lm), ra = '', rd = '', ret = '', lab = '';
   ev.m.forEach(function (q, j) {
-    var xf = Math.max(x0 + 40, xr + bgOff(q.d)), sharp = bgZ(q.R), yb = 0, c = col[j], up = j === 0, bx = xr + (j ? 3 : -3);
+    var xf = Math.max(x0 + 40, xr + bgOff(q.d)), sharp = bgZ(q.R), yb = 0, c = col[j], up = j === 0, bx = xr + (j ? 3 : -3), mj = 'mj' + j;
     hs[j].forEach(function (h) {
       var ye = cy + h * (1 - (xr - x0) / (xf - x0));
-      ra += '<path class="ry" style="stroke:' + c + '" d="M8 ' + (cy + h) + 'H' + x0 + 'L' + f(xr) + ' ' + f(ye) + '"/>';
-      if (xf > xr + 1) rd += '<path class="ry d" style="stroke:' + c + '" d="M' + f(xr) + ' ' + f(ye) + 'L' + f(xf) + ' ' + cy + '"/>';
+      ra += '<path class="ry ' + mj + '" style="stroke:' + c + '" d="M8 ' + (cy + h) + 'H' + x0 + 'L' + f(xr) + ' ' + f(ye) + '"/>';
+      if (xf > xr + 1) rd += '<path class="ry d ' + mj + '" style="stroke:' + c + '" d="M' + f(xr) + ' ' + f(ye) + 'L' + f(xf) + ' ' + cy + '"/>';
       yb = Math.max(yb, Math.abs(ye - cy));
     });
     yb = Math.min(26, Math.max(5, yb));
-    ret += (sharp ? '<circle cx="' + f(bx) + '" cy="' + cy + '" r="4" fill="' + c + '"/>' : '<path d="M' + f(bx) + ' ' + f(cy - yb) + 'V' + f(cy + yb) + '" stroke="' + c + '" stroke-width="3" stroke-linecap="round"/>') +
-      '<circle cx="' + f(xf) + '" cy="' + cy + '" r="4" fill="' + c + '"/>';
+    ret += '<g class="' + mj + '">' + (sharp ? '<circle cx="' + f(bx) + '" cy="' + cy + '" r="4" fill="' + c + '"/>' : '<path d="M' + f(bx) + ' ' + f(cy - yb) + 'V' + f(cy + yb) + '" stroke="' + c + '" stroke-width="3" stroke-linecap="round"/>') + '</g>' +
+      '<g class="bgm ' + mj + '" data-bgm="' + j + '" data-bgd="' + j + '" tabindex="0" role="button" aria-label="' + bgTip(ev, j) + '"><circle class="bgh" cx="' + f(xf) + '" cy="' + cy + '" r="22" fill="transparent"/><circle class="bgd" cx="' + f(xf) + '" cy="' + cy + '" r="5" fill="' + c + '" stroke="var(--ink)" stroke-width="1.6"/></g>';
     // label Fokus 1 di atas sumbu, Fokus 2 di bawah
-    var fl = xf < xr - 50 ? [xf, up ? cy - 26 : cy + 36, 'middle'] : xf < xr + 30 ? [xr - 12, up ? cy - 30 : cy + 38, 'end'] : [Math.min(xf, ev.shift + 354), up ? cy - 24 : cy + 34, 'middle'];
-    lab += '<text class="tx" style="fill:' + c + '" x="' + f(fl[0]) + '" y="' + fl[1] + '" text-anchor="' + fl[2] + ('">' + _T('js.fokus') + ' ') + (j + 1) + '</text>';
+    var fl = xf < xr - 50 ? [xf, up ? cy - 26 : cy + 36, 'middle'] : xf < xr + 30 ? [xr - 12, up ? cy - 30 : cy + 38, 'end'] : [Math.min(xf, ev.shift + BG.W - 40), up ? cy - 24 : cy + 34, 'middle'];
+    lab += '<text class="tx fl ' + mj + '" style="fill:' + c + '" x="' + f(fl[0]) + '" y="' + fl[1] + '" text-anchor="' + fl[2] + '">' + _T('js.fokus') + ' ' + (j + 1) + '</text>' +
+      '<text class="tx sub fl ' + mj + '" style="fill:' + c + '" x="' + f(fl[0]) + '" y="' + (fl[1] + 12) + '" text-anchor="' + fl[2] + '">' + (bgShow(ev, j) ? bgShort(q.d) : '') + '</text>';
   });
-  g += '<clipPath id="bgcb"><rect x="-2000" y="' + (cy - 70) + '" width="' + (2000 + x0 - 12) + '" height="140"/><rect x="' + (x0 - 12) + '" y="' + (cy - 58) + '" width="' + f(xr - x0 + 12) + '" height="116" rx="30"/></clipPath><g clip-path="url(#bgcb)">' + ra + '</g>' + rd +
+  g += '<clipPath id="bgcb"><rect x="-2000" y="' + (cy - 70) + '" width="' + (2000 + x0 - 12) + '" height="140"/><rect x="' + (x0 - 12) + '" y="' + (cy - 58) + '" width="' + f(xr - x0 + 12) + '" height="116" rx="30"/></clipPath><g clip-path="url(#bgcb)">' + (RY ? ra : '') + '</g>' + (RY ? rd : '') +
     '<path class="ret" d="M' + f(xr) + ' ' + (cy - 28) + 'V' + (cy + 28) + '"/>' + ret;
-  var lg = ev.m.map(function (q, j) { var x = 8 + ev.shift + j * 150; return '<circle cx="' + (x + 4) + '" cy="8" r="4" fill="' + col[j] + '"/><text class="tx" x="' + (x + 13) + ('" y="12">' + _T('js.meridian') + ' ') + (j + 1) + ' (' + q.phi + '°)</text>'; }).join('');
-  g += lg + '<text class="tx" x="' + f(xr) + '" y="' + (cy + 71) + ('" text-anchor="middle">' + _T('js.retina') + '</text>') + lab;
-  return '<svg class="bgf" viewBox="' + ev.shift + ' 0 384 160" role="img" aria-label="Dua meridian dalam satu gambar. ' + bgText(ev) + '">' + g + '</svg>';
+  // legenda juga tombol: ketuk untuk menyorot satu meridian
+  var lg = ev.m.map(function (q, j) {
+    var x = 8 + ev.shift + j * 180;
+    return '<g class="bgm" data-bgm="' + j + '" tabindex="0" role="button" aria-label="Sorot meridian ' + (j + 1) + '"><rect x="' + (x - 4) + '" y="1.5" width="172" height="18" rx="5" style="fill:transparent;stroke:' + (bgSel === j ? 'var(--accent)' : 'none') + ';stroke-width:1.5"/><circle cx="' + (x + 4) + '" cy="10.5" r="4" fill="' + col[j] + '"/><text class="tx" x="' + (x + 13) + '" y="14.5">' + _T('js.meridian') + ' ' + (j + 1) + ' (' + bgDeg(q.phi) + '°)</text></g>';
+  }).join('');
+  g += lg + '<text class="tx" x="' + f(xr) + '" y="' + (cy + 71) + '" text-anchor="middle">' + _T('js.retina') + '</text>' + lab;
+  return '<svg class="bgf" data-sel="' + bgSel + '" viewBox="' + ev.shift + ' 0 ' + BG.W + ' 160" role="img" aria-label="Dua meridian dalam satu gambar. ' + bgText(ev) + '">' + g + '</svg>';
 }
 // Satu meridian: retina (garis merah) diam, titik fokus dan arah sinar berubah ikut power mata dan lensa
 function bgPanel(ev, i) {
   var x0 = BG.x0, cy = BG.cy, q = ev.m[i], xr = x0 + BG.Lp;
   var xf = Math.max(x0 + 40, xr + bgOff(q.d)), f = function (x) { return x.toFixed(1); }, sharp = bgZ(q.R);
-  var title = (ev.two ? (_T('js.meridian') + ' ') + (i + 1) + ' (' + q.phi + '°): ' : '') + (ev.cor ? 'mata ' + sgn(q.P) + (_T('js.lensa') + ' ') + sgn(q.L) + ' D' : (ev.two ? '' : (_T('js.power') + ' ')) + sgn(q.P) + ' D');
-  var g = bgEye(ev, q.L);
+  var title = (ev.two ? (_T('js.meridian') + ' ') + (i + 1) + ' (' + bgDeg(q.phi) + '°): ' : '') + (ev.cor ? 'mata ' + sgn(q.P) + (_T('js.lensa') + ' ') + sgn(q.L) + ' D' : (ev.two ? '' : (_T('js.power') + ' ')) + sgn(q.P) + ' D');
+  var pc = ev.two && i === 1 ? 'var(--ray2)' : 'var(--ray)', g = bgEye(ev, q.L);
   var yb = 0, ra = '', rd = '';
   [-24, -12, 0, 12, 24].forEach(function (h) {
     var ye = cy + h * (1 - (xr - x0) / (xf - x0));
-    ra += '<path class="ry" d="M8 ' + (cy + h) + 'H' + x0 + 'L' + f(xr) + ' ' + f(ye) + '"/>';
-    if (xf > xr + 1) rd += '<path class="ry d" d="M' + f(xr) + ' ' + f(ye) + 'L' + f(xf) + ' ' + cy + '"/>';   // sinar lanjut di belakang retina
+    ra += '<path class="ry" style="stroke:' + pc + '" d="M8 ' + (cy + h) + 'H' + x0 + 'L' + f(xr) + ' ' + f(ye) + '"/>';
+    if (xf > xr + 1) rd += '<path class="ry d" style="stroke:' + pc + '" d="M' + f(xr) + ' ' + f(ye) + 'L' + f(xf) + ' ' + cy + '"/>';   // sinar lanjut di belakang retina
     yb = Math.max(yb, Math.abs(ye - cy));
   });
   // sinar yang melebar setelah fokus dipotong di dinding mata
-  g += '<clipPath id="bgc' + i + '"><rect x="-2000" y="' + (cy - 70) + '" width="' + (2000 + x0 - 12) + '" height="140"/><rect x="' + (x0 - 12) + '" y="' + (cy - 58) + '" width="' + f(xr - x0 + 12) + '" height="116" rx="30"/></clipPath><g clip-path="url(#bgc' + i + ')">' + ra + '</g>' + rd;
+  g += '<clipPath id="bgc' + i + '"><rect x="-2000" y="' + (cy - 70) + '" width="' + (2000 + x0 - 12) + '" height="140"/><rect x="' + (x0 - 12) + '" y="' + (cy - 58) + '" width="' + f(xr - x0 + 12) + '" height="116" rx="30"/></clipPath><g clip-path="url(#bgc' + i + ')">' + (S.bg.rays !== 'off' ? ra : '') + '</g>' + (S.bg.rays !== 'off' ? rd : '');
   yb = Math.min(26, Math.max(5, yb));
   // Label Fokus: di atas titik jika jauh di depan retina, di dalam mata jika dekat retina, di bawah titik jika di belakang retina
-  var fl = xf < xr - 50 ? [xf, cy - 26, 'middle'] : xf < xr + 30 ? [xr - 12, cy + 38, 'end'] : [Math.min(xf, ev.shift + 360), cy + 34, 'middle'];
+  var fl = xf < xr - 50 ? [xf, cy - 26, 'middle'] : xf < xr + 30 ? [xr - 12, cy + 38, 'end'] : [Math.min(xf, ev.shift + BG.W - 34), cy + 34, 'middle'];
   g += '<path class="ret" d="M' + f(xr) + ' ' + (cy - 28) + 'V' + (cy + 28) + '"/>';
   g += sharp ? '<circle cx="' + f(xr) + '" cy="' + cy + '" r="6" fill="var(--pos)"/>' : '<path d="M' + f(xr) + ' ' + f(cy - yb) + 'V' + f(cy + yb) + '" stroke="var(--bad)" stroke-width="7" stroke-linecap="round"/>';
-  g += '<circle cx="' + f(xf) + '" cy="' + cy + '" r="4" fill="var(--ray)"/>' +
+  g += '<g class="bgm" data-bgd="' + i + '" tabindex="0" role="button" aria-label="' + bgTip(ev, i) + '"><circle class="bgh" cx="' + f(xf) + '" cy="' + cy + '" r="22" fill="transparent"/><circle class="bgd" cx="' + f(xf) + '" cy="' + cy + '" r="5" fill="' + pc + '" stroke="var(--ink)" stroke-width="1.6"/></g>' +
     '<text class="tx" x="' + (8 + ev.shift) + '" y="12">' + title + '</text><text class="tx" x="' + f(xr) + '" y="' + (cy + 71) + ('" text-anchor="middle">' + _T('js.retina') + '</text>') +
-    '<text class="tx" x="' + f(fl[0]) + '" y="' + fl[1] + '" text-anchor="' + fl[2] + ('">' + _T('js.fokus') + '</text>');
-  return '<svg class="bgf" viewBox="' + ev.shift + ' 0 384 160" role="img" aria-label="' + title + '. ' + bgText(ev) + '">' + g + '</svg>';
+    '<text class="tx fl" style="fill:' + pc + '" x="' + f(fl[0]) + '" y="' + fl[1] + '" text-anchor="' + fl[2] + ('">' + _T('js.fokus') + '</text>') +
+    '<text class="tx sub fl" style="fill:' + pc + '" x="' + f(fl[0]) + '" y="' + (fl[1] + 12) + '" text-anchor="' + fl[2] + '">' + (bgShow(ev, i) ? bgShort(q.d) : '') + '</text>';
+  return '<svg class="bgf" viewBox="' + ev.shift + ' 0 ' + BG.W + ' 160" role="img" aria-label="' + title + '. ' + bgText(ev) + '">' + g + '</svg>';
 }
 // Zoom gambar: tombol perbesar / perkecil melangkah di BG_ZOOMS. 1 = pas selebar kartu, lebih besar = bisa digeser ke samping
-var BG_ZOOMS = [1, 1.25, 1.5, 2, 2.5, 3];
-function bgZi() { var i = BG_ZOOMS.indexOf(+S.bg.zoom); return i < 0 ? 0 : i; }
-function bgZoomBar(i) {
+var BG_ZOOMS = [0.4, 0.5, 0.65, 0.8, 1, 1.25, 1.5, 2, 2.5, 3], BG_ZMIN = 0.4, BG_ZMAX = 3;   // di bawah 1 gambar mengecil dan kartu memendek, di atas 1 bisa digeser ke samping
+var BG_HMIN = 60;
+function bgCh() { var h = +S.bg.ch; return h >= BG_HMIN ? Math.round(h) : 0; }   // tinggi kartu gambar (px), 0 = otomatis mengikuti isi. Terpisah dari zoom
+function bgMinH(zn) {   // tinggi minimum kartu = satu gambar meridian pada zoom sekarang (plus scrollbar horizontal bila ada)
+  var s = zn.querySelector('.bgf');
+  return s ? Math.max(BG_HMIN, Math.ceil(s.getBoundingClientRect().height + (parseFloat(getComputedStyle(s).marginTop) || 0) + (zn.offsetHeight - zn.clientHeight))) : BG_HMIN;
+}
+function bgHit() {   // area ketuk titik fokus: tetap sekitar 44 px di layar berapa pun zoom dan lebar kartunya (satuan gambar = px layar ÷ skala)
+  Array.prototype.forEach.call($$('#bg-fig .bgf'), function (s) {
+    var k = s.getBoundingClientRect().width / BG.W;
+    if (k > 0) Array.prototype.forEach.call(s.querySelectorAll('.bgh'), function (c) { c.setAttribute('r', Math.min(60, Math.max(12, 22 / k)).toFixed(1)); });
+    if (k > 0) Array.prototype.forEach.call(s.querySelectorAll('.bgh2'), function (r) {   // area ketuk lensa: lebar sekitar 44 px di layar, di tengah lensa
+      var w = Math.min(120, Math.max(44, 44 / k)), c = +r.getAttribute('data-cx');
+      r.setAttribute('x', (c - w / 2).toFixed(1)); r.setAttribute('width', w.toFixed(1));
+    });
+  });
+}
+if (window.ResizeObserver) new ResizeObserver(bgHit).observe($('#bg-fig')); else window.addEventListener('resize', bgHit);
+function bgZv() { var z = +S.bg.zoom; return z >= BG_ZMIN && z <= BG_ZMAX ? z : 1; }
+function bgZoomBar(z) {
   var ic = function (plus) { return '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.6"/><path d="M10.5 10.5L14 14M5 7h4' + (plus ? 'M7 5v4' : '') + '"/></svg>'; };
-  var z = BG_ZOOMS[i], first = i === 0 ? ' disabled' : '', last = i === BG_ZOOMS.length - 1 ? ' disabled' : '';
+  var lo = z <= BG_ZMIN + 0.001 ? ' disabled' : '', hi = z >= BG_ZMAX - 0.001 ? ' disabled' : '', one = Math.abs(z - 1) < 0.001 ? ' disabled' : '';
   return '<div class="bgz-btns" role="group" aria-label="' + _T('js.zoom_gambar') + '">' +
-    '<button type="button" class="tr-btn zb" data-bgz="out" title="' + _T('js.perkecil_gambar') + '" aria-label="' + _T('js.perkecil_gambar') + '"' + first + '>' + ic(false) + '</button>' +
-    '<button type="button" class="tr-btn zv" data-bgz="reset" title="' + _T('js.kembalikan_ke_ukuran_awal') + '"' + first + '>' + Math.round(z * 100) + '%</button>' +
-    '<button type="button" class="tr-btn zb" data-bgz="in" title="' + _T('js.perbesar_gambar') + '" aria-label="' + _T('js.perbesar_gambar') + '"' + last + '>' + ic(true) + '</button></div>';
+    '<button type="button" class="tr-btn zb" data-bgz="out" title="' + _T('js.perkecil_gambar') + '" aria-label="' + _T('js.perkecil_gambar') + '"' + lo + '>' + ic(false) + '</button>' +
+    '<button type="button" class="tr-btn zv" data-bgz="reset" title="' + _T('js.kembalikan_ke_ukuran_awal') + '"' + one + '>' + Math.round(z * 100) + '%</button>' +
+    '<button type="button" class="tr-btn zb" data-bgz="in" title="' + _T('js.perbesar_gambar') + '" aria-label="' + _T('js.perbesar_gambar') + '"' + hi + '>' + ic(true) + '</button></div>';
 }
 function bgHTML(ev) {
   var head = ('<div class="eye-h"><h2>' + _T('js.gambar') + '</h2></div>');
   if (ev.state === 'empty') return { fig: '', out: '<section class="card">' + head + ('<p class="hint">' + _T('js.isi_power_mata_untuk') + '</p></section>') };
   if (ev.state === 'error') return { fig: '', out: '<section class="card">' + head + '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div></section>' };
   var rw = function (l, n, v) { return '<div class="bgr"><span class="l">' + l + '<small>' + n + '</small></span><span class="v">' + v + '</span></div>'; };
-  var mg = ev.two ? ('<button type="button" class="tr-btn" data-bgv aria-pressed="') + (S.bg.view === 'one' ? 'true' : 'false') + ('" title="' + _T('js.gabungkan_kedua_meridian_dalam') + '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="6" cy="8" r="3.6"/><circle cx="10" cy="8" r="3.6"/></svg><span>' + _T('js.gabung_meridian') + '</span></button>') : '';
+  var mg = ev.two ? ('<button type="button" class="tr-btn" data-bgv aria-pressed="') + (S.bg.view === 'sep' ? 'true' : 'false') + ('" title="' + _T('js.gabungkan_kedua_meridian_dalam') + '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="4.5" cy="8" r="3"/><circle cx="11.5" cy="8" r="3"/></svg><span>' + _T('js.gabung_meridian') + '</span></button>') : '';
+  if (!(ev.two && S.bg.view === 'one')) bgSel = -1;
   var q = ev.m, k = ev.kind, figs = ev.two && S.bg.view === 'one' ? bgBoth(ev) : bgPanel(ev, 0) + (ev.two ? bgPanel(ev, 1) : '');
   var rows = rw(ev.cor ? _T('js.hasil_dengan_lensa') : _T('js.jenis'), ev.cor ? 'sisa refraksi' : 'dari power mata', ev.cor && k === 'emm' ? 'terkoreksi penuh' : BG_NAME[k] + (ev.cor ? (' ' + _T('js.sisa')) : ''));
   if (ev.cor) rows += rw(_T('js.lensa_2'), ev.auto ? _T('js.otomatis_koreksi_penuh') : _T('js.ukuran_lensa_dari_anda'), bgLensStr(ev.ls, ev.lc, ev.la));
+  if (ev.cor && ev.vd > 0) rows += rw('Jarak vertex', 'lensa ke kornea', ev.vd + ' mm') + rw('Power efektif di mata', 'F ÷ (1 − d × F)', bgLensStr(ev.es, ev.ec, ev.la));
   if (!ev.two) {
     if (!ev.cor) rows += rw(_T('js.titik_jauh'), _T('js.1_sph'), k === 'emm' ? 'tak terhingga' : (100 / Math.abs(q[0].P)).toFixed(1) + ' cm ' + (k === 'myo' ? 'di depan mata' : 'di belakang mata')) + rw(_T('js.lensa_koreksi'), _T('js.sama_dengan_sph'), k === 'emm' ? 'tidak perlu' : bgLensStr(ev.sph, 0, 180) + ' (' + (k === 'myo' ? 'cekung' : 'cembung') + ')');
-    rows += rw(ev.cor ? _T('js.fokus_dengan_lensa') : _T('js.fokus_tanpa_lensa'), 'terhadap retina', bgPos(q[0].d));
+    rows += rw(ev.cor ? _T('js.fokus_dengan_lensa') : _T('js.fokus_tanpa_lensa'), 'terhadap retina', bgV(ev, 0, q[0].d));
   } else {
-    rows += rw(_T('js.fokus_meridian_1'), 'meridian ' + q[0].phi + '°', bgPos(q[0].d)) + rw(_T('js.fokus_meridian_2'), 'meridian ' + q[1].phi + '°', bgPos(q[1].d)) +
-      rw(_T('js.interval_sturm'), _T('js.fokus_1_fokus_2'), Math.abs(q[0].d - q[1].d).toFixed(2) + ' mm') + rw(_T('js.kabur_terkecil'), 'rata-rata sisa ' + sgn(ev.mean) + ' D', bgPos(BG.N / (BG.F + ev.mean) - BG.X0));
+    rows += rw(_T('js.fokus_meridian_1'), 'meridian ' + bgDeg(q[0].phi) + '°', bgV(ev, 0, q[0].d)) + rw(_T('js.fokus_meridian_2'), 'meridian ' + bgDeg(q[1].phi) + '°', bgV(ev, 1, q[1].d)) +
+      rw(_T('js.interval_sturm'), _T('js.fokus_1_fokus_2'), Math.abs(q[0].d - q[1].d).toFixed(2) + ' mm') + rw(_T('js.kabur_terkecil'), 'rata-rata sisa ' + sgn(ev.mean) + ' D', bgV(ev, -1, BG.N / (BG.F + ev.mean) - BG.X0));
     if (!ev.cor) rows += rw(_T('js.lensa_koreksi'), _T('js.sph_cyl_axis'), bgLensStr(ev.sph, ev.cyl, ev.ax));
   }
-  var zi = bgZi(), zm = BG_ZOOMS[zi];
+  var zm = bgZv(), ch = bgCh(), off = S.bg.rays === 'off', rs = '<div class="bgrs" role="separator" aria-orientation="horizontal" tabindex="0" aria-label="Ubah tinggi kartu gambar" aria-valuemin="' + BG_HMIN + '" aria-valuenow="' + (ch || BG_HMIN) + '" title="Tarik untuk mengubah tinggi kartu gambar, ketuk dua kali untuk mengembalikan"></div>';
+  var rb = '<button type="button" class=\"tr-btn\" data-bgr aria-pressed=\"' + (off ? 'true' : 'false') + '\" title=\"Sembunyikan atau tampilkan garis sinar\"><svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M1.5 3L8 8M1.5 8H8M1.5 13L8 8M8 8h6.5\"/></svg><span>Sembunyikan sinar</span></button>';
+  var tipTxt = bgSel >= 0 ? bgTip(ev, bgSel) : (ev.two && S.bg.view === 'one' ? 'Ketuk titik fokus atau nama meridian untuk menyorotnya.' : 'Ketuk titik fokus untuk melihat detailnya.');
+  var nt = [ev.clamp ? _T('js.perhitungan_dibatasi_sampai') + BG.MAX + ' D.' : '', ev.sat ? _T('js.untuk_power_besar_jarak') : '', ev.shift ? _T('js.gambar_digeser_agar_titik') : '', ev.cor && ev.vd > BG.VMAX ? 'Jarak vertex di atas ' + BG.VMAX + ' mm digambar di batas kiri gambar.' : ''].filter(Boolean).join(' ');   // catatan khusus saja, tanpa kalimat ringkasan
   return {
-    fig: '<section class="card"><div class="bgfig-h"><h2>' + _T('js.gambar') + '</h2>' + mg + bgZoomBar(zi) + '</div><div class="bgz" style="--z:' + zm + '"' + (zm > 1 ? ' tabindex="0" role="group" aria-label="' + _T('js.gambar') + '"' : '') + '>' + figs + '</div>' +
-      (zm > 1 ? '<p class="hint bgz-hint">' + _T('js.geser_gambar_ke_samping') + '</p>' : '') + '</section>',
+    fig: '<section class="card"><div class="bgfig-h"><h2>' + _T('js.gambar') + '</h2>' + mg + rb + bgZoomBar(zm) + '</div><div class="bgz' + (ch ? ' hc' : '') + '" style="--z:' + zm + (ch ? ';--ch:' + ch + 'px' : '') + '"' + (zm > 1 || ch ? ' tabindex="0" role="group" aria-label="' + _T('js.gambar') + '"' : '') + '>' + figs + '</div>' +
+      (zm > 1 ? '<p class="hint bgz-hint">' + _T('js.geser_gambar_ke_samping') + '</p>' : '') + rs + '</section>',
     out: '<section class="card"><div class="eye-h"><h2>' + _T('bagan.hasil') + '</h2></div><div class="tbl">' + rows + '</div>' +
-      '<div class="msg info">' + bgText(ev) + (ev.clamp ? (' ' + _T('js.perhitungan_dibatasi_sampai')) + BG.MAX + ' D.' : '') + (ev.sat ? (' ' + _T('js.untuk_power_besar_jarak')) : '') + (ev.shift ? (' ' + _T('js.gambar_digeser_agar_titik')) : '') + '</div></section>'
+      (nt ? '<div class="msg info">' + nt + '</div>' : '') + '</section>'
   };
 }
 function bgRows() {
@@ -4834,7 +4902,8 @@ function bgRows() {
     { dt: _T('js.fokus'), dd: _T('js.retina_diam_di_22') },
     { dt: _T('js.astigmatisme'), dd: _T('js.dua_meridian_utama_punya') },
     { dt: _T('js.titik_jauh'), dd: _T('js.titik_jauh_1_sph') },
-    { dt: _T('js.lensa_koreksi'), dd: _T('js.lensa_menempel_di_mata') }
+    { dt: _T('js.lensa_koreksi'), dd: _T('js.lensa_menempel_di_mata') },
+    { dt: 'Jarak vertex', dd: 'Jarak bagian belakang lensa ke kornea.' }
   ];
 }
 function bgRF() { return bgRows().map(function (g) { return [g.dt, g.dd]; }); }
@@ -4846,39 +4915,61 @@ function bgRender() {
   fg.innerHTML = L(hh.fig); fg.hidden = !hh.fig;
   $('#bg-out').innerHTML = L(hh.out);
   var zn = $('#bg-fig .bgz');
+  if (zn && bgCh()) bgSetH(zn, Math.max(bgMinH(zn), bgCh()));
+  bgHit();
   if (zn && zr) { zn.scrollLeft = zr[0] * zn.scrollWidth - zn.clientWidth / 2; zn.scrollTop = zr[1] * zn.scrollHeight - zn.clientHeight / 2; }
+  var rh = $('#bg-fig .bgrs'); if (zn && rh) { rh.setAttribute('aria-valuenow', Math.round(zn.getBoundingClientRect().height)); rh.setAttribute('aria-valuemin', bgMinH(zn)); rh.setAttribute('aria-valuemax', Math.max(BG_HMIN, zn.scrollHeight)); }
   var fh = L(bgRows().map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
   if ($('#bg-rumus').innerHTML !== fh) $('#bg-rumus').innerHTML = fh;
   $('#bg-lens').hidden = S.bg.cor !== 'on';
   var es = num(S.bg.sph), ec = num(S.bg.cyl), ea = num(S.bg.axis);   // kolom lensa kosong = tampilkan koreksi penuh sebagai petunjuk
-  $('#bg-lsph').placeholder = Lx(bad(es) ? '0.00' : sgn(es));
-  $('#bg-lcyl').placeholder = Lx(bad(ec) ? '0.00' : sgn(ec));
+  var vq = num(S.bg.vd), vk = (bad(vq) || vq < 0 || vq > 40) ? 0 : vq / 1000, cv = function (P) { var q = 1 + vk * P; return q > 0.05 ? P / q : P; };   // petunjuk = koreksi penuh di bidang kacamata
+  var h0 = bad(es) ? 0 : cv(es), h1 = bad(es) ? 0 : cv(es + (bad(ec) ? 0 : ec));
+  $('#bg-lsph').placeholder = Lx(bad(es) ? '0.00' : sgn(h0));
+  $('#bg-lcyl').placeholder = Lx(bad(ec) ? '0.00' : sgn(h1 - h0));
   $('#bg-laxis').placeholder = (bad(ec) || ec === 0 || bad(ea)) ? '180' : String(ea === 0 ? 180 : ea);
   var lv = $('#bg-live'), ty = $('#bg-type');
-  ty.hidden = ev.state !== 'ok';
+  ty.hidden = ev.state !== 'ok'; lv.hidden = ev.state === 'ok';   // kotak ini hanya muncul untuk pesan isian kosong atau salah
   if (ev.state === 'ok') {
     ty.textContent = BG_NAME[ev.kind];
     ty.className = 'pill' + ({ myo: ' red', smyo: ' red', cmyo: ' red', hyp: ' grn', shyp: ' grn', chyp: ' grn', mix: ' warn' }[ev.kind] || '');   // miopia merah, hiperopia hijau, mixtus kuning
-    lv.className = 'live'; lv.textContent = Lx(bgText(ev));
+    lv.className = 'live'; lv.textContent = '';
   } else { lv.className = 'live dim'; lv.textContent = ev.state === 'error' ? _T('js.periksa_isian_power') : _T('js.isi_power_mata_sph'); }
 }
+// Isian axis dan jarak vertex: [isian] [▼] [▲], tombol tanpa warna. u = satuan di label
+function bgStepField(f, label, u, who, o) {
+  var p = 'bg.' + f, st = o.axis ? '1°' : '1 mm';
+  return '<div class="f wide"><label for="bg-' + f + '">' + label + ' <small>' + u + '</small></label>' + pfRow({
+    ax: true, who: who,
+    input: 'id="bg-' + f + '" data-k="' + p + '" data-bgsi="1" data-rule="' + o.rule + '" inputmode="' + o.mode + '" autocomplete="off" placeholder="' + o.ph + '" enterkeyhint="' + o.hint + '"',
+    dn: 'data-bgs="' + p + '" data-dir="down"', dnL: 'Kurangi ' + who + ' ' + st, dnT: 'Kurang ' + st,
+    up: 'data-bgs="' + p + '" data-dir="up"', upL: 'Tambah ' + who + ' ' + st, upT: 'Tambah ' + st
+  }) + '</div>';
+}
 $('#bg-fields').innerHTML = powerField('bg', 'sph', _T('js.spheris_sph'), '') + powerField('bg', 'cyl', _T('js.cylinder_cyl'), '') +
-  ('<div class="f"><label for="bg-axis">' + _T('js.axis') + ' ' + '<small>°</small></label><input type="text" id="bg-axis" data-k="bg.axis" data-rule="axis" inputmode="numeric" autocomplete="off" placeholder="180" enterkeyhint="done"></div>');
+  bgStepField('axis', _T('js.axis'), '°', 'axis mata', { axis: true, rule: 'axis', mode: 'numeric', ph: '180', hint: 'done' });
 $('#bg-lens').innerHTML = ('<p class="hint" style="grid-column:1/-1">' + _T('js.ukuran_lensa_koreksi_kosongkan') + '</p>') +
   powerField('bg', 'lsph', _T('js.spheris_lensa'), '') + powerField('bg', 'lcyl', _T('js.cylinder_lensa'), '') +
-  ('<div class="f"><label for="bg-laxis">' + _T('js.axis_lensa') + ' ' + '<small>°</small></label><input type="text" id="bg-laxis" data-k="bg.laxis" data-rule="axis" inputmode="numeric" autocomplete="off" placeholder="180" enterkeyhint="done"></div>');
-// Tombol gabung meridian di kartu hasil: kartu digambar ulang tiap update, jadi pakai delegasi klik
+  bgStepField('laxis', _T('js.axis_lensa'), '°', 'axis lensa', { axis: true, rule: 'axis', mode: 'numeric', ph: '180', hint: 'next' }) +
+  bgStepField('vd', 'Jarak vertex', 'mm', 'jarak vertex', { axis: false, rule: 'vd', mode: 'decimal', ph: '0', hint: 'done' });
+// Tombol pisah meridian di kartu hasil (default gambar sudah gabung; tombol biru saat dipisah): kartu digambar ulang tiap update, jadi pakai delegasi klik
 // Tombol tidak memindahkan fokus dari isian, biar ketukan pertama tidak hilang
 document.addEventListener('mousedown', function (e) {
-  if (e.target.closest && e.target.closest('[data-bgv],[data-bgz]')) e.preventDefault();
+  if (e.target.closest && e.target.closest('[data-bgv],[data-bgz],[data-bgr],.bgm')) e.preventDefault();
 });
-// Tombol zoom gambar: perbesar, perkecil, atau balik ke 100%
+// Klik di mana pun selain lensa atau titik fokus: sorotan dan keterangan di gambar dilepas
+document.addEventListener('click', function (e) {
+  if (Date.now() - bgNoClick < 400) return;   // akhir seretan bukan klik
+  if (e.target.closest && e.target.closest('.bgl[data-bgl],.bgm')) return;
+  if (!bgLn && bgSel < 0 && !bgCap[0] && !bgCap[1]) return;
+  bgLn = false; bgSel = -1; bgCap = [false, false]; update();
+});
+// Tombol zoom gambar: perbesar, perkecil, atau balik ke 100% (melangkah di BG_ZOOMS dari nilai sekarang)
 document.addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('[data-bgz]') : null;
   if (!b || b.disabled) return;
-  var a = b.getAttribute('data-bgz'), i = bgZi();
-  i = a === 'in' ? Math.min(BG_ZOOMS.length - 1, i + 1) : a === 'out' ? Math.max(0, i - 1) : 0;
-  S.bg.zoom = BG_ZOOMS[i];
+  var a = b.getAttribute('data-bgz'), z = bgZv();
+  S.bg.zoom = a === 'reset' ? 1 : a === 'in' ? (BG_ZOOMS.filter(function (x) { return x > z + 0.001; })[0] || BG_ZMAX) : (BG_ZOOMS.filter(function (x) { return x < z - 0.001; }).pop() || BG_ZMIN);
   save(); update();
   if (e.detail === 0) { var nb = $('[data-bgz="' + a + '"]'); if (!nb || nb.disabled) nb = $('.bgz-btns [data-bgz]:not(:disabled)'); if (nb) nb.focus(); }   // keyboard: fokus tetap di tombol zoom
 });
@@ -4889,8 +4980,174 @@ document.addEventListener('click', function (e) {
   save(); update();
   if (e.detail === 0) { var nb = $('[data-bgv]'); if (nb) nb.focus(); }   // keyboard: fokus tetap di tombol
 });
-$('#bg-reset').addEventListener('click', function () {
-  var kz = S.bg.zoom; S.bg = blank().bg; S.bg.zoom = kz; hydrate(); save(); update();   // zoom bukan isian, jadi tidak ikut direset
+// Tombol sinar: sembunyikan atau tampilkan garis cahaya
+document.addEventListener('click', function (e) {
+  var b = e.target.closest ? e.target.closest('[data-bgr]') : null;
+  if (!b) return;
+  S.bg.rays = S.bg.rays === 'off' ? 'on' : 'off';
+  save(); update();
+  if (e.detail === 0) { var nb = $('[data-bgr]'); if (nb) nb.focus(); }
+});
+// Lensa di gambar: ketuk untuk menampilkan atau menyembunyikan keterangan vertex dan axis
+document.addEventListener('click', function (e) {
+  var t = e.target.closest ? e.target.closest('[data-bgl]') : null;
+  if (!t || Date.now() - bgNoClick < 400) return;
+  bgLn = !bgLn; if (bgLn) { bgSel = -1; bgCap = [false, false]; }
+  update();
+  if (e.detail === 0) { var nb = $('.bgl'); if (nb) nb.focus(); }   // keyboard: fokus tetap di lensa
+});
+// Titik fokus dan legenda: ketuk untuk menyorot meridian (gambar gabungan) atau menampilkan detail fokus
+document.addEventListener('click', function (e) {
+  var t = e.target.closest ? e.target.closest('[data-bgm],[data-bgd]') : null;
+  if (!t || Date.now() - bgNoClick < 400) return;
+  if (t.hasAttribute('data-bgm')) {
+    var j = +t.getAttribute('data-bgm'); bgSel = bgSel === j ? -1 : j; bgLn = false; bgCap = [false, false]; update();
+    if (e.detail === 0) { var nb = $('.bgm[data-bgm="' + j + '"]'); if (nb) nb.focus(); }
+  } else {
+    var i = +t.getAttribute('data-bgd'), on = !bgCap[i]; bgCap = [false, false]; bgCap[i] = on; bgLn = false; bgSel = -1; update();
+    if (e.detail === 0) { var nb = $('.bgm[data-bgd="' + i + '"]'); if (nb) nb.focus(); }
+  }
+});
+document.addEventListener('keydown', function (e) {
+  var t = e.target.closest ? e.target.closest('.bgm') : null;
+  if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); t.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+});
+// Seret titik fokus kiri atau kanan untuk mengubah power mata. Meridian 1 mengubah Sph, meridian 2 mengubah Cyl (jika ada cylinder). Bergeser per 0.25 D
+function bgInv(o) {   // kebalikan bgOff: jarak di gambar (px dari retina) jadi posisi fokus (mm)
+  var neg = o < 0, a = Math.abs(o), T = neg ? 110 : 190, E = neg ? 175 : 260, u = a <= T ? a : T - (E - T) * Math.log(Math.max(1e-6, 1 - (a - T) / (E - T)));
+  return (neg ? -u : u) / BG.KD;
+}
+var bgDrag = null;
+document.addEventListener('pointerdown', function (e) {
+  var t = e.target.closest ? e.target.closest('.bgm[data-bgd]') : null;
+  if (!t || (e.button && e.button !== 0)) return;
+  var ev = bgEval(); if (ev.state !== 'ok') return;
+  var j = +t.getAttribute('data-bgd'), sv = t.closest('svg');
+  bgDrag = { j: j, id: e.pointerId, si: Array.prototype.indexOf.call($$('#bg-fig .bgf'), sv), sph: bad(num(S.bg.sph)) ? 0 : num(S.bg.sph), cyl: ev.cyl, R0: ev.m[j].R,
+    w: Math.pow(Math.sin((ev.m[j].phi - ev.ax) * bgRad), 2), auto: ev.auto && ev.cor, x0: e.clientX, y0: e.clientY, moved: false, warned: false };
+});
+document.addEventListener('pointermove', function (e) {
+  var d = bgDrag; if (!d || e.pointerId !== d.id) return;
+  if (e.buttons === 0) { bgAbort(); return; }
+  if (!d.moved && Math.hypot(e.clientX - d.x0, e.clientY - d.y0) < 4) return;
+  if (!d.cap) { d.cap = true; try { $('#bg-fig').setPointerCapture(e.pointerId); } catch (x) {} }   // baru saat mulai diseret (kartu digambar ulang), supaya ketukan biasa tetap jadi klik di titik
+  d.moved = true; document.documentElement.classList.add('bgdrag');
+  if (d.auto) {
+    if (!d.warned) { d.warned = true; var lv = $('#bg-live'); if (lv) { lv.hidden = false; lv.className = 'live'; lv.textContent = 'Kolom lensa kosong = koreksi penuh, fokus selalu di retina. Isi ukuran lensa agar titik bisa digeser.'; } }
+    return;
+  }
+  var sv = $$('#bg-fig .bgf')[d.si]; if (!sv || !sv.getScreenCTM) return;
+  var pt = sv.createSVGPoint(); pt.x = e.clientX; pt.y = e.clientY;
+  var o = pt.matrixTransform(sv.getScreenCTM().inverse()).x - (BG.x0 + BG.Lp);
+  var R = Math.max(-BG.MAX, Math.min(BG.MAX, BG.N / (bgInv(o) + BG.X0) - BG.F)), dR = d.R0 - R;   // R = L − P, jadi power mata berubah sebesar R awal − R tujuan
+  var useCyl = d.cyl !== 0 && d.w > 0.5, path = useCyl ? 'bg.cyl' : 'bg.sph';
+  var v = Math.max(-30, Math.min(30, Math.round((useCyl ? d.cyl + dR / d.w : d.sph + dR) / 0.25) * 0.25));
+  var sx = Lx((v > 0 ? '+' : v < 0 ? '-' : '') + Math.abs(v).toFixed(2)), inp = $('#' + path.replace('.', '-'));
+  if (!inp || num(inp.value) === v) return;
+  inp.value = sx; setPath(path, sx); touch(path);
+});
+['pointerup', 'pointercancel'].forEach(function (n) {
+  document.addEventListener(n, function (e) { if (bgDrag) { document.documentElement.classList.remove('bgdrag'); if (bgDrag.moved) { bgNoClick = Date.now(); bgDrag = null; update(); } else bgDrag = null; } }, true);
+});
+// Seret lensa di gambar ke kiri atau kanan untuk mengubah jarak vertex (1 mm per langkah, 0 sampai 40 mm). Lensa menjauh dari mata = vertex bertambah
+var bgLD = null;
+// Geseran yang kehilangan pointerup (dilepas di luar jendela, dibatalkan peramban, jendela kehilangan fokus) tidak boleh menggantung: keadaan geser dibuang
+function bgAbort() {
+  var had = !!(bgLD || bgDrag);
+  bgLD = null; bgDrag = null; document.documentElement.classList.remove('bgdrag');
+  if (had) update();
+}
+window.addEventListener('blur', bgAbort);
+document.addEventListener('visibilitychange', function () { if (document.hidden) bgAbort(); });
+document.addEventListener('input', function (e) { if (bgLD || bgDrag) bgAbort(); }, true);   // mengetik di isian selalu mengakhiri geseran
+function bgSetVd(v) {   // true jika isian vertex berubah
+  v = Math.max(0, Math.min(40, Math.round(v)));
+  var inp = $('#bg-vd'), t = String(v);
+  if (!inp || num(inp.value) === v) return false;
+  inp.value = t; setPath('bg.vd', t); touch('bg.vd');
+  return true;
+}
+document.addEventListener('pointerdown', function (e) {
+  var t = e.target.closest ? e.target.closest('.bgl[data-bgl]') : null;
+  if (!t || (e.button && e.button !== 0)) return;
+  var ev = bgEval(); if (ev.state !== 'ok' || !ev.cor) return;
+  var sv = t.closest('svg'), k = sv ? sv.getBoundingClientRect().width / BG.W : 0;   // px layar per satuan gambar. Tetap selama diseret, walau pandangan gambar bergeser
+  if (!(k > 0)) return;
+  bgLD = { id: e.pointerId, k: k, v0: Math.min(40, Math.max(0, ev.vd || 0)), x0: e.clientX, moved: false, cap: false };
+});
+document.addEventListener('pointermove', function (e) {
+  var d = bgLD; if (!d || e.pointerId !== d.id) return;
+  if (e.buttons === 0) { bgAbort(); return; }   // tombol sudah dilepas tapi pointerup tidak terbaca
+  if (!d.moved && Math.abs(e.clientX - d.x0) < 4) return;
+  var first = !d.moved;
+  if (!d.cap) { d.cap = true; try { $('#bg-fig').setPointerCapture(e.pointerId); } catch (x) {} }   // baru saat mulai diseret, supaya ketukan biasa tetap jadi klik di lensa
+  d.moved = true; document.documentElement.classList.add('bgdrag');
+  if (!bgSetVd(d.v0 - (e.clientX - d.x0) / d.k / BG.VS) && first) update();   // geser ke kiri = menjauh dari mata. Gambar digambar ulang agar keterangan langsung tampil
+});
+['pointerup', 'pointercancel'].forEach(function (n) {
+  document.addEventListener(n, function (e) {
+    var d = bgLD; if (!d) return;
+    document.documentElement.classList.remove('bgdrag'); bgLD = null;
+    if (d.moved) { bgNoClick = Date.now(); update(); }
+  }, true);
+});
+// Tombol panah axis (1° per langkah, berputar 1 sampai 180) dan jarak vertex (1 mm per langkah, 0 sampai 40). Ketuk = satu langkah, tahan = mengulang
+function bgStep(path, dir) {
+  var inp = $('#' + path.replace('.', '-')), v = num(inp.value), ax = path !== 'bg.vd', x;
+  if (bad(v) || (ax && (v < 0 || v > 180))) v = ax ? 180 : 0;   // kosong atau tidak valid: mulai dari nilai awal (axis 180, vertex 0)
+  x = dir > 0 ? Math.floor(v + 1e-9) + 1 : Math.ceil(v - 1e-9) - 1;
+  x = ax ? (((x - 1) % 180) + 180) % 180 + 1 : Math.max(0, Math.min(40, x));
+  var t = String(x);
+  inp.value = t; setPath(path, t); touch(path);
+}
+holdRepeat(document, '[data-bgs]', function (b) { bgStep(b.dataset.bgs, dirOf(b)); });
+document.addEventListener('keydown', function (e) {   // panah atas bawah di dalam isian axis dan vertex, seperti isian power
+  var t = e.target;
+  if (!t || !t.dataset || !t.dataset.bgsi || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+  e.preventDefault();
+  bgStep(t.dataset.k, e.key === 'ArrowUp' ? 1 : -1);
+});
+// Pegangan di bawah kartu gambar: tarik ke bawah untuk memanjangkan kartu, ke atas untuk memendekkan. Hanya tinggi kartu yang berubah, zoom gambar tetap (bagian yang tidak muat bisa digulir). Ketuk dua kali = tinggi otomatis
+var bgRs = null;
+function bgSetH(zn, h) {   // terapkan tinggi sementara tanpa menggambar ulang. Selama tarikan melewati tinggi isi, hasilnya 0 (otomatis)
+  var auto = h >= zn.scrollHeight - 1;
+  zn.classList.toggle('hc', !auto);
+  if (auto) zn.style.removeProperty('--ch'); else zn.style.setProperty('--ch', h + 'px');
+  return auto ? 0 : h;
+}
+document.addEventListener('pointerdown', function (e) {
+  var h = e.target.closest ? e.target.closest('.bgrs') : null, zn = $('#bg-fig .bgz');
+  if (!h || !zn || (e.button && e.button !== 0)) return;
+  bgRs = { id: e.pointerId, y0: e.clientY, h0: zn.getBoundingClientRect().height, h: bgCh() };
+  try { h.setPointerCapture(e.pointerId); } catch (x) {}
+  e.preventDefault();
+});
+document.addEventListener('pointermove', function (e) {
+  var d = bgRs; if (!d || e.pointerId !== d.id) return;
+  var zn = $('#bg-fig .bgz'); if (!zn) return;
+  d.h = bgSetH(zn, Math.max(bgMinH(zn), Math.round(d.h0 + e.clientY - d.y0)));
+});
+['pointerup', 'pointercancel'].forEach(function (n) {
+  document.addEventListener(n, function (e) {
+    var d = bgRs; if (!d || e.pointerId !== d.id) return;
+    bgRs = null;
+    if (d.h !== bgCh()) { S.bg.ch = d.h; save(); update(); }
+  }, true);
+});
+document.addEventListener('dblclick', function (e) {
+  if (!(e.target.closest && e.target.closest('.bgrs')) || !bgCh()) return;
+  S.bg.ch = 0; save(); update();
+});
+document.addEventListener('keydown', function (e) {
+  var h = e.target.closest ? e.target.closest('.bgrs') : null, zn = $('#bg-fig .bgz');
+  if (!h || !zn || ['ArrowUp', 'ArrowDown', 'Home'].indexOf(e.key) < 0) return;
+  e.preventDefault();
+  S.bg.ch = e.key === 'Home' ? 0 : bgSetH(zn, Math.max(bgMinH(zn), Math.round(zn.getBoundingClientRect().height) + (e.key === 'ArrowDown' ? 24 : -24)));
+  save(); update();
+  var nh = $('#bg-fig .bgrs'); if (nh) nh.focus();
+});
+bindReset('#bg-reset', function () {
+  var kz = S.bg.zoom, kr = S.bg.rays, kc = S.bg.ch; S.bg = blank().bg; S.bg.zoom = kz; S.bg.rays = kr; S.bg.ch = kc; bgSel = -1; bgCap = [false, false]; bgLn = false; hydrate(); save(); update();   // zoom dan tinggi kartu bukan isian, jadi tidak ikut direset
 });
 
 /* ---------- Snellen Chart ---------- */
@@ -5478,12 +5735,7 @@ document.addEventListener('contextmenu', function (e) {
 });
 var snRz = null;
 window.addEventListener('resize', function () { if (shown !== 'snellen') return; clearTimeout(snRz); snRz = setTimeout(snRender, 120); });
-var snRstT = null;   // "Atur ulang" juga dua ketukan, pola sama dengan tombol Kosongkan di halaman lain
-function snRstOff() { clearTimeout(snRstT); snRstT = null; var b = $('#sn-reset'); b.textContent = _T('snellen.atur_ulang'); b.classList.remove('armed'); }
-$('#sn-reset').addEventListener('click', function () {
-  var b = this;
-  if (!snRstT) { b.textContent = _T('js.ketuk_lagi_untuk_mengatur_ulang'); b.classList.add('armed'); snRstT = setTimeout(snRstOff, 3500); return; }
-  snRstOff();
+bindReset('#sn-reset', function () {
   clearTimeout(snClrT); snClrT = null;
   S.sn = blank().sn; hydrate(); save(); update();
 });
@@ -6551,6 +6803,7 @@ function update() {
       if (Number.isNaN(v)) inv = true;
       else if (r === 'pos') inv = v <= 0;
       else if (r === 'axis') inv = v < 0 || v > 180;
+      else if (r === 'vd') inv = v < 0 || v > 40;
       else if (r === 'n') inv = v <= 1;
       else if (r === 'kr') inv = v < KR_MIN || v > KR_MAX;
     }
@@ -6728,38 +6981,27 @@ document.addEventListener('keydown', function (e) {
   stepPower(t.dataset.k, e.key === 'ArrowUp' ? 1 : -1);
 });
 
-var armTimer = null;
-function disarm() { clearTimeout(armTimer); armTimer = null; var b = $('#reset'); b.textContent = _T('js.kosongkan'); b.classList.remove('armed'); }
-$('#reset').addEventListener('click', function () {
-  var b = $('#reset');
-  if (!armTimer) { b.textContent = _T('js.ketuk_lagi_untuk_mengosongkan'); b.classList.add('armed'); armTimer = setTimeout(disarm, 3500); return; }
-  disarm();
-  var keepMbs = S.mbs, keepSag = S.sag, keepBc = S.bc, keepFt = S.ft, keepRad = S.rad, keepEt = S.et, keepCalc = S.calc, keepKr = S.kr, keepBg = S.bg, keepSn = S.sn, keepLk = S.lk;   // Kosongkan di kartu kerja tidak menghapus isian halaman lain
+bindReset('#reset', function () {
+  var keepMbs = S.mbs, keepSag = S.sag, keepBc = S.bc, keepFt = S.ft, keepRad = S.rad, keepEt = S.et, keepCalc = S.calc, keepKr = S.kr, keepBg = S.bg, keepSn = S.sn, keepLk = S.lk;   // Atur ulang di kartu kerja tidak menghapus isian halaman lain
   S = blank(); S.mbs = keepMbs; S.sag = keepSag; S.bc = keepBc; S.ft = keepFt; S.rad = keepRad; S.et = keepEt; S.calc = keepCalc; S.kr = keepKr; S.bg = keepBg; S.sn = keepSn; S.lk = keepLk; hydrate(); save(); update(); setTab('input');
 });
-$('#mbs-reset').addEventListener('click', function () {
+bindReset('#mbs-reset', function () {
   S.mbs = blank().mbs; hydrate(); save(); update();
-  $('#mbs-A').focus();
 });
-$('#sag-reset').addEventListener('click', function () {
+bindReset('#sag-reset', function () {
   S.sag = blank().sag; hydrate(); save(); update();
-  $('#sag-sph').focus();
 });
-$('#ft-reset').addEventListener('click', function () {
+bindReset('#ft-reset', function () {
   S.ft = blank().ft; hydrate(); save(); update();
-  $('#ft-sph').focus();
 });
-$('#rad-reset').addEventListener('click', function () {
+bindReset('#rad-reset', function () {
   S.rad = blank().rad; hydrate(); save(); update();
-  $('#rad-sph').focus();
 });
-$('#et-reset').addEventListener('click', function () {
+bindReset('#et-reset', function () {
   S.et = blank().et; hydrate(); save(); update();
-  $('#et-sph').focus();
 });
-$('#bc-reset').addEventListener('click', function () {
+bindReset('#bc-reset', function () {
   S.bc = blank().bc; hydrate(); save(); update();
-  $('#bc-sph').focus();
 });
 
 /* ---------- Beranda dan perpindahan halaman ---------- */
@@ -7170,7 +7412,7 @@ function bindLiveHint(live, show, UI, redraw) {
   $('#lm-new').addEventListener('click', function () { newLens(); draw(); });
   $('#lm-chk').addEventListener('click', function () { check(); draw(); });
   $('#lm-key').addEventListener('click', function () { T.shown = true; draw(); });
-  $('#lm-reset').addEventListener('click', function () {
+  bindReset('#lm-reset', function () {
     if (S.mode === 'train') { ['drum', 'dial', 'asph', 'acyl', 'aaxis', 'aadd'].forEach(function (k) { S[k] = DEF[k]; }); S.pos = 'far'; T.shown = false; $('#lm-fb').innerHTML = ''; }   // drum kembali ke 0 (kalibrasi)
     else rst();
     draw();
@@ -7685,7 +7927,7 @@ function stRF() {
   $('#st-new').addEventListener('click', function () { newPatient(); draw(); });
   $('#st-chk').addEventListener('click', function () { check(); draw(); });
   $('#st-key').addEventListener('click', function () { T.shown = true; draw(); });
-  $('#st-reset').addEventListener('click', function () {
+  bindReset('#st-reset', function () {
     if (S.mode === 'train') { clearExam(); S.mirror = DEF.mirror; S.wdcm = DEF.wdcm; }   // pasien latihan tetap sama
     else { rst(); T.shown = false; $('#st-fb').innerHTML = ''; }
     phase = 0; draw(); kick();
@@ -8059,15 +8301,10 @@ $('#set-defaults').addEventListener('click', function () {
   saveSet(); applyTheme(); normSep(); save(); syncSettings(); renderRF(); update();
   setMsg(_T('js.pengaturan_dikembalikan_ke_stand'));
 });
-var wipeTimer = null;
-function disarmWipe() { clearTimeout(wipeTimer); wipeTimer = null; var b = $('#set-wipe'); b.textContent = _T('js.hapus_semua_isian_tersimpan'); b.classList.remove('armed'); }
-$('#set-wipe').addEventListener('click', function () {
-  var b = this;
-  if (!wipeTimer) { b.textContent = _T('js.ketuk_lagi_untuk_menghapus'); b.classList.add('armed'); wipeTimer = setTimeout(disarmWipe, 3500); return; }
-  disarmWipe();
+bindArm('#set-wipe', function () {
   S = blank(); hydrate(); save(); update();
   setMsg(_T('js.semua_isian_di_semua'));
-});
+}, 'js.hapus_semua_isian_tersimpan', 'js.ketuk_lagi_untuk_menghapus');
 
 /* ---------- Kalkulator scientific ---------- */
 // Inti hitungan: parser sendiri (tanpa eval) buat ekspresi seperti 2π × sin(30) + 3^2
@@ -8361,6 +8598,7 @@ function calcFracStr(x, mixed) {
 /* CALC-CORE-END */
 
 var calcSec = false, calcDone = false, calcLast = null, calcErr = '';
+var calcEggArm = false, calcEggOn = false;   // easter egg: 0.4052006 lalu = dua kali -> "Mei"
 // Rumus ke layar: tiap variabel = satu karakter penanda (U+E000 dst.) yang digambar sebagai kotak berlabel
 // PHV: [id di templat, label di layar, keterangan]. 11 pertama jangan diubah urutannya (ekspresi lama yang tersimpan memakainya)
 var PHV = [
@@ -8642,6 +8880,7 @@ function calcMove(to) {   // to: 'left', 'right', 'up' (ke pembilang), 'down' (k
 function calcPress(act) {
   var c = CS(), i = act.indexOf(':'), kind = i < 0 ? act : act.slice(0, i), arg = i < 0 ? '' : act.slice(i + 1), v, m, mv = null;
   calcErr = '';
+  var eggWas = calcEggArm && calcDone; calcEggArm = false; calcEggOn = false;   // easter egg: hanya bertahan jika ketukan sebelumnya adalah "=" pertama
   // Semua ketukan bekerja di bagian sebelum kursor (pre). Bagian sesudahnya (suf) tetap utuh
   var pos = calcDone ? c.expr.length : calcCursor();
   var pre = c.expr.slice(0, pos), suf = c.expr.slice(pos);
@@ -8811,6 +9050,11 @@ function calcPress(act) {
       break;
     }
     case 'eq':
+      if (calcDone && eggWas && kind === 'eq') {   // "=" kedua tepat sesudah 0.4052006
+        calcEggOn = true;
+        $('#calc-sr').textContent = (_T('js.hasil') + ' ') + 'Mei';
+        break;
+      }
       if (calcDone || c.expr === '') break;
       if (PH_ANY.test(c.expr)) {   // masih ada kotak variabel yang belum diisi
         var miss = [];
@@ -8823,6 +9067,7 @@ function calcPress(act) {
         v = calcEvalStr(c.expr, c.deg, c.ans);
         calcHistAdd(c.expr, v, c.deg, prevAns);
         c.ans = v; calcLast = v; calcDone = true;
+        calcEggArm = (c.expr === '0.4052006');
         $('#calc-sr').textContent = (_T('js.hasil') + ' ') + calcShowR(v).replace('⁄', ' per ');
       } catch (er) { calcErr = calcMsg(er); }
       break;
@@ -8943,6 +9188,7 @@ function calcRender() {
   }
   var out = '', cls = 'calc-res', rv = null;
   if (calcErr) { out = esc(calcErr); cls += ' err'; }
+  else if (calcDone && calcEggOn) { out = 'Mei'; }   // easter egg
   else if (calcDone && calcLast !== null) { rv = calcLast; out = calcResHTML(calcLast); }
   else if (c.expr !== '') {   // hasil sementara saat mengetik
     var pv = calcPreview(c.expr, c.deg, c.ans);
@@ -8976,9 +9222,9 @@ function calcRender() {
   calcFxView();
 }
 // Riwayat: panel menggantikan papan tombol selama terbuka. Daftar digambar cuma saat panel terbuka
-var calcHistOpen = false, histWipeTimer = null;
+var calcHistOpen = false, histOff = null;
 var CALC_TRIG = /(sin|cos|tan)\(/;
-function disarmHist() { clearTimeout(histWipeTimer); histWipeTimer = null; var b = $('#ch-clr'); if (!b) return; b.textContent = _T('kalkulator.hapus_riwayat'); b.classList.remove('armed'); }
+function disarmHist() { if (histOff) histOff(); }   // histOff dipasang oleh bindArm di bawah
 function calcHistView() {
   var panel = $('#calc-hist');
   if (!panel) return;
@@ -9122,14 +9368,11 @@ $('#ch-list').addEventListener('click', function (e) {
   calcSec = false;
   calcPress((ex ? 'hexp:' : 'hres:') + (ex ? b.dataset.hx : b.dataset.hr));
 });
-$('#ch-clr').addEventListener('click', function () {
-  var b = this;
-  if (!histWipeTimer) { b.textContent = _T('js.ketuk_lagi_untuk_menghapus'); b.classList.add('armed'); histWipeTimer = setTimeout(disarmHist, 3500); return; }
-  disarmHist();
+histOff = bindArm('#ch-clr', function () {
   CS().hist = []; save();
   $('#calc-sr').textContent = _T('js.riwayat_dihapus');
   calcHistView();
-});
+}, 'kalkulator.hapus_riwayat', 'js.ketuk_lagi_untuk_menghapus');
 $('#ch-tog').addEventListener('mousedown', function (e) { e.preventDefault(); });   // sama seperti papan tombol: fokus tidak pindah ke tombol, jadi Enter dari keyboard tetap menjadi =
 $('#calc-hist').addEventListener('mousedown', function (e) { if (e.target.closest && e.target.closest('button')) e.preventDefault(); });
 $('#calc-keys').addEventListener('mousedown', function (e) { if (e.target.closest && e.target.closest('.ck, .ck-tog')) e.preventDefault(); });   // fokus tetap di halaman, jadi Enter dari keyboard tidak mengulang tombol terakhir
