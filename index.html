@@ -163,14 +163,19 @@ body.no-tabs { padding-bottom: 2.5rem; }
 .inst-steps li::before { content: counter(ist); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); font-weight: 700; font-size: .9rem; }
 .inst-dlg .hint { margin: 0; font-size: .85rem; }
 
+/* Dua tampilan di seluruh aplikasi:
+   - Tampilan desktop = lebar 900 px ke atas DAN landscape (lebar:tinggi 63:50 atau lebih lebar): laptop, monitor, tablet landscape.
+   - Tampilan HP = selain itu: HP, tablet portrait (lebar berapa pun, termasuk iPad Pro 12.9"), dan jendela di bawah 900 px.
+   Dua kondisi ini saling melengkapi ("not all and ..."), jadi tidak ada celah dan tidak pernah aktif bersamaan.
+   Rasio dipakai, bukan orientation, supaya keyboard layar yang memendekkan jendela tidak memindahkan tampilan. */
 /* layout */
 .cols { display: grid; gap: 14px; }
 .panel { display: grid; gap: 14px; align-content: start; min-width: 0; }
-@media (max-width: 899px) {
+@media not all and (min-width: 900px) and (min-aspect-ratio: 63/50) {
   .cols[data-tab="input"] #p-result { display: none; }
   .cols[data-tab="result"] #p-input { display: none; }
 }
-@media (min-width: 900px) {
+@media (min-width: 900px) and (min-aspect-ratio: 63/50) {
   .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
   .tabs, .go { display: none !important; }
   body { padding-bottom: 2.5rem; }
@@ -469,7 +474,8 @@ input:disabled, select:disabled { opacity: .62; }
 .rq-pick { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 8; display: flex; gap: 6px; padding: 6px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 10px 28px rgba(0,0,0,.22); }
 .rq-o { min-width: 64px; height: 42px; padding: 0 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); color: var(--ink); font: 650 .9rem/1 var(--f-num); touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .rq-o.on { background: var(--accent); border-color: transparent; color: var(--accent-ink); }
-@media (min-width: 720px) {
+/* dua kolom hanya di layar landscape (HP landscape, tablet landscape, desktop); tablet portrait tetap satu kolom seperti HP */
+@media (min-width: 720px) and (min-aspect-ratio: 63/50) {
   #v-kalkulator .calc { max-width: 54rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); column-gap: 16px; align-items: start; }
   #v-kalkulator .calc-disp { grid-column: 1; grid-row: 1; }
   #v-kalkulator .calc-hist, #v-kalkulator .calc-keys { grid-column: 2; grid-row: 1; }
@@ -498,7 +504,7 @@ input:disabled, select:disabled { opacity: .62; }
 .cat-chev { width: 20px; height: 20px; color: #fff; transition: transform .2s ease; }
 .cat-btn[aria-expanded="true"] .cat-chev { transform: rotate(180deg); }
 .cat .menu { margin-top: 12px; }
-@media (min-width: 720px) {   /* layar lebar: panel sedikit lebih tinggi, gambar lebih besar */
+@media (min-width: 720px) and (min-aspect-ratio: 63/50) {   /* layar lebar landscape: panel sedikit lebih tinggi, gambar lebih besar. Tablet portrait tetap ukuran HP */
   .cat-btn { min-height: 132px; padding-left: 26px; }
   .cat-art { width: 250px; right: 70px; }
   .cat-tx { max-width: 20rem; }
@@ -565,7 +571,7 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .bgz-hint { margin-top: 6px; font-size: .8rem; }
 /* layar kecil: gambar nempel di atas selama halaman di-scroll, jadi perubahan power langsung kelihatan */
 .bg-cols { display: flex; flex-direction: column; }
-@media (max-width: 899px) {
+@media not all and (min-width: 900px) and (min-aspect-ratio: 63/50) {
   .bg-fig { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; margin: 0 -4px; padding: 6px 4px; background: var(--bg); }
   .bg-fig .card { padding: 10px; box-shadow: 0 4px 14px rgba(0,0,0,.14); }
   .bg-fig h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* judul tetap ada buat pembaca layar */
@@ -577,7 +583,9 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
   .bg-fig .bgfig-h .tr-btn.zv { min-width: 3.6rem; padding: 0 8px; }
   .bg-fig .bgz-hint { display: none; }
 }
-@media (min-width: 900px) {
+/* Seperti Lensometer dan Streak: gambar hanya menempel kalau tinggi layar minimal 561 px. Di HP landscape dan jendela pendek gambar ikut digulir, supaya isian di bawahnya tetap terjangkau. */
+@media (max-height: 560px) { .bg-fig { position: static; } }
+@media (min-width: 900px) and (min-aspect-ratio: 63/50) {
   .bg-cols { display: grid; grid-template-areas: "inp fig" "inp res"; grid-template-rows: auto 1fr; row-gap: 0; }
   .bg-fig { grid-area: fig; margin-bottom: 20px; }
   .bg-inp { grid-area: inp; }
@@ -586,7 +594,7 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 /* Snellen Chart */
 .sn { display: grid; gap: 14px; align-content: start; }
 .sn > * { min-width: 0; }
-@media (min-width: 900px) {
+@media (min-width: 900px) and (min-aspect-ratio: 63/50) {
   .sn { grid-template-columns: minmax(0, 24rem) minmax(0, 1fr); grid-template-rows: repeat(4, auto) 1fr; grid-template-areas: "cal chart" "ctl chart" "res chart" "frm chart" ". chart"; gap: 14px 20px; align-items: start; }
   #sn-ctl { grid-area: ctl; }
   #sn-res { grid-area: res; }
@@ -834,8 +842,11 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 #v-lenso .lm-show[hidden] { display: none; }
 #v-lenso .lm-show svg { width: 14px; height: 14px; flex: none; }
 #v-lenso .lm-show:active { background: var(--accent-soft); }
-/* HP: gambar lensometer nempel di atas layar. Tidak dipakai di layar lebar dan HP landscape */
-@media (max-width: 899px) and (min-height: 561px) {
+/* Tampilan HP (HP, tablet portrait, jendela di bawah 900 px): gambar lensometer nempel di atas layar. Tidak dipakai di tampilan desktop dan di HP landscape (tinggi di bawah 561 px).
+   Di lebar 900 px ke atas, rasio 5:4 atau lebih tegak = portrait = tampilan HP (mis. iPad Pro 12.9" portrait).
+   Rasio dipakai, bukan orientation, supaya keyboard layar yang memendekkan jendela tidak memindahkan tampilan ke desktop. */
+@media (max-width: 899px) and (min-height: 561px),
+       (min-width: 900px) and (max-aspect-ratio: 5/4) and (min-height: 561px) {
   #v-lenso .panel { display: contents; }   /* kartu jadi anak langsung .cols, biar bisa nempel di sepanjang halaman */
   #v-lenso .lm-view { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; padding: 10px 12px 12px;
     box-shadow: 0 -16px 0 0 var(--bg), 0 10px 16px -12px rgba(0,0,0,.45); }   /* bayangan pertama menutup sela di atas kartu, yang kedua memisahkannya dari isi di bawahnya */
@@ -859,7 +870,8 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   #v-lenso .lm-nudge-x .lm-arw:last-child { grid-column: 3; }
 }
 /* HP pendek: keyboard layar makan tempat, jadi gambar dilepas dulu selama mengetik */
-@media (max-width: 899px) and (min-height: 561px) and (max-height: 699px) {
+@media (max-width: 899px) and (min-height: 561px) and (max-height: 699px),
+       (min-width: 900px) and (max-aspect-ratio: 5/4) and (min-height: 561px) and (max-height: 699px) {
   #v-lenso.lm-typing .lm-view { position: static; box-shadow: none; }
 }
 
@@ -1044,8 +1056,10 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 #v-streak .st-fpv .pt.m { fill: var(--accent); }
 #v-streak .st-fpv .ln { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 3 3; fill: none; }
 #v-streak .st-fpv .ln.m { stroke: var(--accent); }
-/* HP: gambar nempel di atas layar selama kontrol digeser. Tidak dipakai di layar lebar dan HP landscape */
-@media (max-width: 899px) and (min-height: 561px) {
+/* Tampilan HP (HP, tablet portrait, jendela di bawah 900 px): gambar nempel di atas layar selama kontrol digeser. Tidak dipakai di tampilan desktop dan di HP landscape.
+   Syarat sama dengan blok Lensometer di atas. */
+@media (max-width: 899px) and (min-height: 561px),
+       (min-width: 900px) and (max-aspect-ratio: 5/4) and (min-height: 561px) {
   #v-streak .panel { display: contents; }
   #v-streak .st-view { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; padding: 10px 12px 12px;
     box-shadow: 0 -16px 0 0 var(--bg), 0 10px 16px -12px rgba(0,0,0,.45); }
@@ -1058,8 +1072,38 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   #v-streak .st-view .live { margin-top: 8px; padding: 5px 9px; font-size: .76rem; line-height: 1.35; }
   #v-streak .st-view .st-leg { display: none; }
 }
-@media (max-width: 899px) and (min-height: 561px) and (max-height: 699px) {
+@media (max-width: 899px) and (min-height: 561px) and (max-height: 699px),
+       (min-width: 900px) and (max-aspect-ratio: 5/4) and (min-height: 561px) and (max-height: 699px) {
   #v-streak.st-typing .st-view { position: static; box-shadow: none; }
+}
+
+/* Tampilan desktop (laptop, monitor, tablet landscape): gambar nempel di kolom kiri, semua kontrol di kolom kanan dan ikut digulir, jadi gambar tetap kelihatan selama power diatur.
+   Aturannya sama dengan seluruh aplikasi: lebar 900 px ke atas DAN landscape (rasio lebar:tinggi 63:50 atau lebih lebar). Tablet portrait, berapa pun lebarnya, tetap dapat tampilan HP.
+   Batas rasio blok HP (5/4) dan blok ini (63/50) sengaja tidak berimpit, supaya aturan keduanya tidak pernah aktif bersamaan.
+   Jendela yang sangat pendek (di bawah 400 px) memakai susunan biasa. */
+@media (min-width: 900px) and (min-aspect-ratio: 63/50) and (min-height: 400px) {
+  /* dua kolom dasarnya sudah diatur .cols global; di sini jarak dirapikan dan kartu dipilah per kolom */
+  #v-lenso .cols, #v-streak .cols { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 20px; row-gap: 0; align-items: start; }   /* jarak antarkartu kolom kanan dipindah ke margin-bottom, supaya baris kosong tidak menambah tinggi */
+  #v-lenso .panel, #v-streak .panel { display: contents; }   /* kartu jadi anak langsung .cols, biar bisa dipilah per kolom */
+  #v-lenso .panel > *, #v-streak .panel > * { grid-column: 2; margin-bottom: 14px; }
+  #v-lenso .lm-view, #v-streak .st-view { grid-column: 1; grid-row: 1 / span 12; margin-bottom: 0; position: sticky; top: 12px; align-self: start; }
+  #v-lenso .lm-field { width: min(100%, 23rem, max(200px, calc(100vh - 260px))); }
+  #v-streak .st-field { width: min(100%, 34rem, max(260px, calc((100vh - 300px) * 1.69))); }
+  /* roda lensometer dibuat ringkas seperti di HP, supaya kartunya pendek dan isian di bawahnya tetap dekat */
+  #v-lenso .lm-realrow { display: grid; grid-template-columns: auto 1fr; column-gap: 14px; row-gap: 6px; align-items: center; justify-items: center; }
+  #v-lenso .lm-drumw, #v-lenso .lm-nudge { display: contents; }
+  #v-lenso .lm-drumw > .lbl { grid-column: 1 / -1; grid-row: 1; justify-self: start; }
+  #v-lenso .lm-drum { grid-column: 1; grid-row: 2 / span 3; width: 100px; height: 217px; }   /* tebal drum disamakan dengan tebal axis wheel (sekitar 100 px) */
+  #v-lenso .lm-nudge .lm-arw.up { grid-column: 2; grid-row: 2; }
+  #v-lenso .lm-drumw > .pf { grid-column: 2; grid-row: 3; }
+  #v-lenso .lm-nudge .lm-arw.dn { grid-column: 2; grid-row: 4; }
+  #v-lenso .lm-axw { grid-template-columns: 46px minmax(0, 1fr) 46px; column-gap: 10px; align-items: center; margin-top: 10px; }
+  #v-lenso .lm-axw .lm-lbl { grid-column: 1 / -1; }
+  #v-lenso .lm-axw .lm-wheel { grid-column: 2; grid-row: 2; }
+  #v-lenso .lm-nudge-x { display: contents; }
+  #v-lenso .lm-nudge-x .lm-arw { width: 46px; height: 46px; grid-row: 2; }
+  #v-lenso .lm-nudge-x .lm-arw:first-child { grid-column: 1; }
+  #v-lenso .lm-nudge-x .lm-arw:last-child { grid-column: 3; }
 }
 
 /* ===== Warna tanda: plus hijau, minus merah, nol putih ===== */
@@ -1776,14 +1820,7 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
         </section>
         <section class="card">
           <div class="eye-h"><h2 data-t="lenso.roda_lensometer"></h2></div>
-          <div class="f" role="radiogroup" aria-labelledby="lm-ctl-l" style="margin-bottom:14px">
-            <span class="lbl" id="lm-ctl-l" data-t="lenso.kontrol"></span>
-            <div class="seg">
-              <label><input type="radio" name="lm-ctl" value="real"><span data-t="lenso.realistik"></span></label>
-              <label><input type="radio" name="lm-ctl" value="plain"><span data-t="lenso.biasa"></span></label>
-            </div>
-          </div>
-          <div id="lm-real">
+          <div>
             <div class="lm-realrow">
               <div class="lm-drumw">
                 <span class="lbl"><span data-t="lenso.power_drum"></span> <small>D</small></span>
@@ -1814,7 +1851,6 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
               </div>
             </div>
           </div>
-          <div class="lm-rows" id="lm-dial" hidden></div>
         </section>
       </section>
       <section class="panel" data-t-aria-label="lenso.lensa_dan_hasil">
@@ -3259,9 +3295,6 @@ var TEKS = {
   "lenso.ketuk_untuk_menyembunyikan_petunjuk": "Ketuk untuk menyembunyikan petunjuk",
   "lenso.tampilkan_petunjuk": "Tampilkan petunjuk",
   "lenso.roda_lensometer": "Roda lensometer",
-  "lenso.kontrol": "Kontrol",
-  "lenso.realistik": "Realistik",
-  "lenso.biasa": "Biasa",
   "lenso.power_drum": "Power drum",
   "lenso.power_drum_geser_ke_atas": "Power drum, geser ke atas atau ke bawah",
   "lenso.tambah_power_drum_plus": "Tambah power drum (plus)",
@@ -6932,8 +6965,9 @@ function bindEditors(V, cfg) {
   function reveal(el) {
     if (!el || !document.body.contains(el)) return;
     var vv = window.visualViewport, top = vv ? vv.offsetTop : 0, bot = top + (vv ? vv.height : window.innerHeight);
-    var pin = $(cfg.pin, V); if (pin && getComputedStyle(pin).position === 'sticky') top = Math.max(top, pin.getBoundingClientRect().bottom);
     var r = el.getBoundingClientRect();
+    var pin = $(cfg.pin, V);
+    if (pin && getComputedStyle(pin).position === 'sticky') { var pr = pin.getBoundingClientRect(); if (pr.left < r.right && pr.right > r.left) top = Math.max(top, pr.bottom); }   // di desktop gambar ada di kolom lain: tidak menutupi isian
     if (r.top < top + 8) window.scrollBy(0, r.top - top - 12);
     else if (r.bottom > bot - 8) window.scrollBy(0, r.bottom - bot + 12);
   }
@@ -7175,7 +7209,7 @@ function bindLiveHint(live, show, UI, redraw) {
   const V = $('#v-lenso'); if (!V) return;
   const DEF = { sph: 0, cyl: 0, axis: 180, add: 0, pos: 'far', drum: 0, dial: 90, mode: 'demo', asph: 0, acyl: 0, aaxis: 180, aadd: 0 };
   const T = { shown: false, demo: null };
-  const UI = { ctl: 'real', hide: false, hidelive: false };   // tampilan kontrol: real = drum dan axis wheel digeser, plain = isian ketik dengan panah
+  const UI = { hide: false, hidelive: false };
   const syncHint = bindLiveHint($('#lm-live'), $('#lm-show-live'), UI, function () { draw(); });
   const S = {}; function rst() { Object.keys(DEF).forEach(function (k) { S[k] = DEF[k]; }); } rst();
   // [kunci, label, min, max, langkah, jenis (d = dioptri, a = derajat)]
@@ -7203,9 +7237,8 @@ function bindLiveHint(live, show, UI, redraw) {
     return '<div class="f"><label for="lm-in-' + c[0] + '">' + (lab || c[1]) + ' <small>' + (c[5] === 'd' ? 'D' : '°') + '</small></label>' + ed(c[0], 'lm-in-' + c[0], pre + (lab || c[1]), true) + '</div>';
   }
   $('#lm-lens').innerHTML = CT.slice(0, 4).map(function (c) { return mk(c, 'Lensa '); }).join('');
-  $('#lm-dial').innerHTML = CT.slice(4, 6).map(function (c) { return mk(c, ''); }).join('');
   $('#lm-ans').innerHTML = CT.slice(6).map(function (c) { return mk(c, 'Jawaban ', c[1].replace('Jawaban: ', '')); }).join('');
-  $('#lm-drum-ed').outerHTML = ed('drum', 'lm-rin-drum', 'Power drum, dioptri');   // kontrol Realistik: isian di bawah drum dan di samping label axis wheel
+  $('#lm-drum-ed').outerHTML = ed('drum', 'lm-rin-drum', 'Power drum, dioptri');   // isian di bawah drum dan di samping label axis wheel
   $('#lm-wheel-ed').outerHTML = ed('dial', 'lm-rin-dial', 'Axis wheel, derajat');
   function fmtIn(k) { return CTM[k][5] === 'a' ? String(Math.round(S[k])) : fd(S[k]); }
   // busur derajat setengah lingkaran (0 kanan, 90 atas, 180 kiri): tanda tiap 5°, angka tiap 30°, garis ke tengah tiap 10°
@@ -7249,15 +7282,11 @@ function bindLiveHint(live, show, UI, redraw) {
     $('#lm-demo').hidden = tr; $('#lm-train').hidden = !tr; $('#lm-ans-card').hidden = !tr;
     $('#lm-res-card').hidden = tr && !T.shown;
     $$('input[name="lm-mode"]', V).forEach(function (r) { r.checked = r.value === S.mode; });
-    $$('input[name="lm-ctl"]', V).forEach(function (r) { r.checked = r.value === UI.ctl; });
     $('#lm-lens-body').hidden = UI.hide; $('#lm-lens-card').classList.toggle('lm-fold', UI.hide);
     $('#lm-hide').textContent = UI.hide ? 'Tampilkan' : 'Sembunyikan'; $('#lm-hide').setAttribute('aria-expanded', UI.hide ? 'false' : 'true');
     syncHint();   // teks petunjuk di bawah gambar
-    const rl = UI.ctl === 'real'; $('#lm-real').hidden = !rl; $('#lm-dial').hidden = rl;
-    if (rl) {
-      renderDrum(); renderWheel();
-      $('#lm-drum').setAttribute('aria-valuenow', S.drum); $('#lm-wheel').setAttribute('aria-valuenow', Math.round(S.dial));
-    }
+    renderDrum(); renderWheel();
+    $('#lm-drum').setAttribute('aria-valuenow', S.drum); $('#lm-wheel').setAttribute('aria-valuenow', Math.round(S.dial));
     $('#lm-lensrow').hidden = !S.add; $('#lm-posf').hidden = !S.add; $('#lm-pill').hidden = !S.add;
     $('#lm-ap').setAttribute('cy', S.pos === 'near' ? 62 : 26);
     $('#lm-pill').textContent = S.pos === 'near' ? 'Segmen' : 'Induk';
@@ -7333,10 +7362,11 @@ function bindLiveHint(live, show, UI, redraw) {
     const k = { ArrowRight: 1, ArrowUp: 1, ArrowLeft: -1, ArrowDown: -1, PageUp: 5, PageDown: -5 }[e.key]; if (k === undefined) return;
     e.preventDefault(); S.dial = norm(S.dial + k); draw();
   });
-  V.addEventListener('click', function (e) {
-    const b = e.target.closest ? e.target.closest('button[data-lmw]') : null; if (!b) return;
+  // Panah roda (drum dan axis wheel): satu langkah per ketuk, tahan untuk mengulang, sama seperti panah di samping isian
+  const unfocusTyped = function () { const a = document.activeElement; if (a && a.getAttribute && a.getAttribute('data-lmn')) a.blur(); };   // isian yang diketik dirapikan dulu, biar teks lamanya tidak menimpa langkah panah
+  holdRepeat(V, 'button[data-lmw]', function (b) {
     S.dial = norm(S.dial + (+b.getAttribute('data-lmw'))); draw();
-  });
+  }, { before: unfocusTyped });
   function newLens(keep) {   // keep = true: roda drum dan axis dibiarkan seperti sebelumnya (dipakai saat ganti mode)
     let kd = $('#lm-kind').value; if (kd === 'rand') kd = ['sph', 'cyl', 'add'][Math.floor(Math.random() * 3)];
     S.sph = pickRand(-8, 6, .25); S.cyl = 0; S.axis = 180; S.add = 0;
@@ -7389,15 +7419,13 @@ function bindLiveHint(live, show, UI, redraw) {
     draw();
   }
   bindEditors(V, { inAttr: 'data-lmn', signAttr: 'data-lms', stepAttr: 'data-lma', typing: 'lm-typing', pin: '.lm-view', typed: typed, stepKey: stepKey, fmtIn: fmtIn });
-  V.addEventListener('click', function (e) {
-    const b = e.target.closest ? e.target.closest('button[data-lm]') : null; if (!b) return;
+  holdRepeat(V, 'button[data-lm]', function (b) {
     const k = b.getAttribute('data-lm'), c = CT.filter(function (x) { return x[0] === k; })[0];
     S[k] = Math.min(c[3], Math.max(c[2], S[k] + (+b.getAttribute('data-d')) * c[4])); draw();
-  });
+  }, { before: unfocusTyped });
   V.addEventListener('change', function (e) {
     const n = e.target.name, v = e.target.value;
     if (n === 'lm-pos') S.pos = v;
-    else if (n === 'lm-ctl') UI.ctl = v;
     else if (n === 'lm-mode') {
       if (v === 'train' && S.mode !== 'train') { T.demo = { sph: S.sph, cyl: S.cyl, axis: S.axis, add: S.add }; T.hl = UI.hidelive; S.mode = 'train'; newLens(true); }
       else if (v === 'demo' && S.mode === 'train') {
