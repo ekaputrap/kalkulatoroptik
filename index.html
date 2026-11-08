@@ -604,21 +604,42 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 }
 /* kepala kartu chart: judul, status baris terpilih, lalu tombol */
 .sn-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 8px; margin-bottom: 12px; }
-.sn-ttl { order: 1; flex: 1 1 auto; font-size: 1rem; line-height: 24px; }   /* tinggi tetap supaya chart tidak bergeser saat label baris muncul */
-#sn-sel { order: 2; margin-left: auto; padding: 2px 10px; }
-.sn-bar { order: 3; flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.sn-ttl { order: 1; flex: 0 0 auto; font-size: 1rem; line-height: 24px; }   /* tinggi tetap supaya chart tidak bergeser saat label baris muncul */
+/* OD/OS punya tempat sendiri di luar bar alat (kelas .sn-eyes), di baris judul. Bentuknya sama dengan pilihan mata di halaman Lensometer dan Streak (.lv-sg .lv-eyes): kotak bersudut 10 px, OD teks merah, OS teks biru, yang dipilih terisi penuh. Di layar penuh ada di pojok kanan atas, sebelum label baris */
+.sn-eyes { order: 3; margin-left: auto; display: flex; flex: 0 0 88px; box-sizing: border-box; height: 40px; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface-2); }
+.sn-eyes .tr-btn { flex: 1 1 auto; min-width: 0; width: auto; height: auto; margin-left: 0; padding: 0 10px; justify-content: center; border: 0; border-radius: 0; background: transparent; font: 700 .82rem/1 var(--f-num); letter-spacing: .04em; }
+.sn-eyes .tr-btn + .tr-btn { border-left: 1px solid var(--line); }
+.sn-eyes .tr-btn:first-child { border-radius: 9px 0 0 9px; }   /* sama dengan lengkung dalam pembungkus (10 px - border 1 px), supaya garis tepi gelap tombol terpilih di layar penuh (inset box-shadow) tidak dipotong oleh overflow: hidden di sudut */
+.sn-eyes .tr-btn:last-child { border-radius: 0 9px 9px 0; }
+.sn-eyes .tr-btn:focus-visible { outline-offset: -3px; }
+#sn-od { color: var(--od); }
+#sn-os { color: var(--os); }
+#sn-sel { order: 2; margin-left: 0; padding: 2px 10px; white-space: nowrap; }   /* label OD | SC ada di sebelah judul, OD/OS tetap di ujung kanan (margin-left: auto) apa pun isi atau ada tidaknya label */
+.sn-bar { order: 4; flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .sn-bar .tr-btn { margin-left: 0; justify-content: center; }
+/* tombol alat dikelompokkan per baris (.sn-row): (1) tombol pemeriksaan: Pinhole, Fan dial, Duochrome. (2) tombol tata letak: Satu baris, panah, Acak, Layar penuh (Tutup di layar penuh). Di layar penuh pembungkus ini dilepas (display: contents) jadi semua ikon sebaris, dan garis .sn-sep memisahkan kedua kelompok */
+.sn-row { flex: 1 0 100%; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
+.sn-card.full .sn-row { display: contents; }
+.sn-sep { display: none; }
+.sn-card.full .sn-sep { display: block; flex: 0 0 2px; align-self: center; width: 2px; height: 24px; margin: 0 1px; border-radius: 1px; background: rgba(43, 52, 59, .55); box-shadow: 0 0 0 1px rgba(255, 255, 255, .55); }   /* jarak antar kelompok = gap 4 + 1 + garis 2 + 1 + gap 4. Di HP 360 px toolbar 6 tombol + garis + OD/OS tetap satu baris (lihat media max-width 380px: jarak kolom kepala 4 px dan rel OD/OS 80 px). Garis tipis gelap dengan halo putih tipis: tetap terbaca di latar putih, merah, maupun hijau */
 .sn-bar .tr-btn:disabled { opacity: .4; cursor: not-allowed; }
-/* tombol bar: ikon di samping teks: OD dan OS kotak kecil, tombol lain selebar isinya dan merata di tiap baris. Layar penuh: hanya ikon dalam satu baris, keterangan tampil di #sn-tip saat kursor di atas tombol atau tombol ditekan */
+/* tombol bar: ikon di samping teks: OD dan OS kotak kecil, tombol lain selebar isinya dan merata di tiap baris. Layar penuh: hanya ikon dalam satu baris, keterangan tampil di #sn-tip saat kursor di atas tombol atau tombol ditekan. #sn-tip diposisikan absolut oleh JS tepat di bawah tombolnya, jadi tidak ikut tata letak flex (sebelumnya terdorong ke kanan, di sebelah label OD | SC) */
 .sn-bar { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; max-width: 100%; }
 .sn-bar .tr-btn { flex: 1 1 auto; justify-content: center; margin-left: 0; min-width: 0; gap: 4px; padding: 0 10px 0 8px; font-size: .8rem; }
 .sn-bar .tr-btn.ic { flex: 0 0 38px; width: 38px; padding: 0; }
 @media (min-width: 560px) { .sn-bar .tr-btn { flex: 0 0 auto; } }
+@media (max-width: 380px) { .sn-row { gap: 6px; } .sn-bar .tr-btn:not(.ic) { gap: 3px; padding: 0 7px 0 6px; } }   /* HP sempit (360 px): Pinhole, Fan dial, Duochrome tetap muat satu baris */
 .sn-card.full .sn-bar { display: flex; flex-wrap: nowrap; gap: 4px; }
 .sn-card.full .sn-bar .tr-btn { flex: 0 1 40px; flex-direction: row; width: 40px; height: 40px; padding: 0; position: relative; }
 .sn-card.full .sn-bar .tr-btn > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* layar penuh, tampilan satu baris: panah baris (naik/turun) di pojok kiri atas, tepat di bawah bar alat (baris kedua kepala kartu), di semua lebar layar. Label OD | SC 6/9 tetap di tempatnya (sama dengan mode semua baris). Posisi tetap (fixed) supaya bar alat dan rel OD/OS tidak bergeser dan tetap satu baris di HP 360 px. top = jarak atas (8 px) + tinggi tombol (40) + jarak baris kepala (10). Panah tanpa keterangan */
+.sn-card.full .sn-bar #sn-up, .sn-card.full .sn-bar #sn-dn { position: fixed; z-index: 3; top: calc(max(8px, env(safe-area-inset-top, 0px)) + 50px); }
+.sn-card.full .sn-bar #sn-up { left: max(8px, env(safe-area-inset-left, 0px)); }
+.sn-card.full .sn-bar #sn-dn { left: calc(max(8px, env(safe-area-inset-left, 0px)) + 44px); }
+@media (max-width: 380px) { .sn-card.full .sn-bar #sn-up, .sn-card.full .sn-bar #sn-dn { top: calc(max(8px, env(safe-area-inset-top, 0px)) + 48px); width: 38px; flex-basis: 38px; height: 38px; } .sn-card.full .sn-bar #sn-dn { left: calc(max(8px, env(safe-area-inset-left, 0px)) + 42px); } }
+@media (max-width: 380px) { .sn-card.full .sn-bar .tr-btn:not(.ic) { flex-basis: 38px; width: 38px; height: 38px; } .sn-card.full .sn-eyes { flex-basis: 80px; height: 38px; } .sn-card.full .sn-head { column-gap: 4px; } }   /* HP 360 px: ikon alat + garis pemisah + OD/OS tetap satu baris di layar penuh */
 .sn-tip { display: none; }
-.sn-card.full .sn-tip:not([hidden]) { display: block; order: 4; flex: 0 0 auto; padding: 4px 10px; border-radius: 8px; background: #2b343b; color: #fff; font: 600 .8rem var(--f-ui); box-shadow: 0 2px 10px rgba(0, 0, 0, .28); pointer-events: none; }
+.sn-card.full .sn-tip:not([hidden]) { display: block; position: absolute; z-index: 4; top: 0; left: 0; white-space: nowrap; padding: 4px 10px; border-radius: 8px; background: #2b343b; color: #fff; font: 600 .8rem var(--f-ui); box-shadow: 0 2px 10px rgba(0, 0, 0, .28); pointer-events: none; }
 /* peringatan kalibrasi: satu baris ringkas. Catatan lain ada di bawah chart */
 #sn-warn:not(:empty) { margin-bottom: 12px; }
 #sn-warn .msg { margin: 0; padding: 8px 12px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; font-size: .85rem; }
@@ -648,7 +669,11 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .sn-card.full .sn-head { position: fixed; z-index: 3; margin: 0; padding: 0; background: none; pointer-events: none;
   top: max(8px, env(safe-area-inset-top, 0px)); left: max(8px, env(safe-area-inset-left, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); }
 .sn-card.full .sn-head > * { pointer-events: auto; }
-.sn-card.full .sn-bar { order: 1; flex: 0 1 auto; }
+.sn-card.full .sn-head { justify-content: flex-end; }   /* bar alat di kiri (margin-right: auto), rel OD/OS dan label baris menempel di kanan, juga saat label turun ke baris kedua */
+.sn-card.full .sn-bar { order: 1; flex: 0 1 auto; margin-right: auto; }
+.sn-card.full #sn-sel { margin-left: 0; order: 3; }
+.sn-card.full .sn-eyes { order: 2; margin-left: 0; }
+@media (min-width: 521px) { .sn-card.full #sn-sel { order: 2; } .sn-card.full .sn-eyes { order: 3; } }   /* layar lebar: bar alat | label | OD/OS, OD/OS tidak bergeser saat label muncul. Layar sempit: label turun ke baris kedua di kanan */
 /* layar penuh: Acak dan Tutup hanya ikon. Teksnya tetap ada untuk pembaca layar, hanya disembunyikan secara visual */
 .sn-bar #sn-full .i-close, .sn-card.full .sn-bar #sn-full .i-open { display: none; }
 .sn-card.full .sn-bar #sn-full .i-close { display: block; }
@@ -658,13 +683,13 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .sn-card.full.sn-one .sn-r.act .sn-no { color: #111; }
 /* satu baris di layar penuh: barisnya di tengah layar. Padding atas dan bawah sama supaya benar-benar di tengah */
 .sn-card.full.sn-one .sn-surf { display: flex; flex-direction: column; justify-content: center;
-  padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 52px); padding-bottom: calc(max(8px, env(safe-area-inset-top, 0px)) + 52px); }
+  padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 100px); padding-bottom: calc(max(8px, env(safe-area-inset-top, 0px)) + 100px); }
 .sn-card.full .tr-btn, .sn-card.full #sn-sel { box-shadow: 0 2px 10px rgba(0, 0, 0, .28); }
-.sn-card.full #sn-sel { background: var(--surface); color: var(--ink); padding: 6px 12px; font-size: .8rem; }
+.sn-card.full #sn-sel { box-sizing: border-box; height: 40px; padding: 0 14px; justify-content: center; border: 1px solid #c3cad0; border-radius: 10px; background: #eceff1; color: #2b343b; font-size: .85rem; }   /* layar penuh: label bergaya sama dengan rel OD/OS (kotak sudut 10 px, abu-abu netral, tinggi sama dengan tombol) supaya tidak menonjol dibanding tombol lain */
+@media (max-width: 380px) { .sn-card.full #sn-sel { height: 38px; } }   /* sama dengan tinggi OD/OS dan tombol di HP 360 px */
 .sn-card.full .sn-surf { border: 0; border-radius: 0; flex: 1 0 auto; box-sizing: border-box;
   padding: calc(max(8px, env(safe-area-inset-top, 0px)) + 52px) 0 max(12px, env(safe-area-inset-bottom, 0px)); }
 /* tombol mata (OD, OS) dan pinhole di atas chart */
-.sn-bar .tr-btn.eye { font-family: var(--f-num); font-weight: 700; letter-spacing: .03em; }
 #sn-od[aria-pressed="true"] { background: var(--od); border-color: var(--od); color: var(--on-od); }
 #sn-os[aria-pressed="true"] { background: var(--os); border-color: var(--os); color: var(--on-os); }
 /* layar penuh: semua tombol abu-abu netral, termasuk Tutup. Warna pada tombol mengalihkan perhatian pasien dari chart.
@@ -676,8 +701,13 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .sn-card.full .sn-bar #sn-od[aria-pressed="true"],
 .sn-card.full .sn-bar #sn-os[aria-pressed="true"] { background: #eceff1; border-color: #c3cad0; color: #2b343b; }
 .sn-card.full .sn-bar .tr-btn[aria-pressed="true"]:not(#sn-full) { border-color: #2b343b; box-shadow: 0 0 0 1px #2b343b, 0 2px 10px rgba(0, 0, 0, .28); }
-/* layar sempit: label OD • SC turun ke baris kedua, beri ruang agar tidak menimpa fan dial */
-@media (max-width: 520px) { .sn-card.full .sn-surf { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 92px); } }
+/* OD/OS di layar penuh: abu-abu netral (tanpa merah/biru, seperti tombol lain). Mata yang dipilih = putih dengan garis tepi gelap di dalamnya */
+.sn-card.full .sn-eyes { background: #eceff1; border-color: #c3cad0; box-shadow: 0 2px 10px rgba(0, 0, 0, .28); }
+.sn-card.full .sn-eyes #sn-od, .sn-card.full .sn-eyes #sn-os,
+.sn-card.full .sn-eyes #sn-od[aria-pressed="true"], .sn-card.full .sn-eyes #sn-os[aria-pressed="true"] { background: transparent; border-color: #c3cad0; color: #2b343b; box-shadow: none; }
+.sn-card.full .sn-eyes #sn-od[aria-pressed="true"], .sn-card.full .sn-eyes #sn-os[aria-pressed="true"] { background: #fff; box-shadow: inset 0 0 0 2px #2b343b; }
+/* layar sempit: label OD | SC turun ke baris kedua, beri ruang agar tidak menimpa fan dial */
+@media (max-width: 520px) { .sn-card.full .sn-surf { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 100px); } }
 /* fan dial setengah lingkaran di atas baris huruf, satu permukaan dengan chart. Hanya garis dan angka derajat, tanpa teks lain */
 .sn-fan { display: grid; justify-items: center; padding: 8px 0 14px; }
 .sn-dial { display: block; max-width: 100%; height: auto; }
@@ -696,7 +726,8 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .sn-dw.one .sn-dr { padding-block: calc(var(--h) * 1.5); }
 .sn-dp.sn-cr { background: var(--duo-r); }
 .sn-dp.sn-cg { background: var(--duo-g); }
-.sn-dp.on { box-shadow: inset 0 -5px 0 rgba(0, 0, 0, .6); }
+/* sisi terpilih: garis di dasar sisi (seperti semula), berwarna kuning terang supaya jelas di atas merah maupun hijau. Warnanya diatur di --duo-pick */
+.sn-dp.on { box-shadow: inset 0 -5px 0 var(--duo-pick); }
 .sn-dp:focus-visible { outline: 3px solid #000; outline-offset: -3px; }
 .sn-card.full .sn-dw.one .sn-dr { padding-block: calc(var(--h) * 2.5); }
 /* kelas .sn-duos (permukaan) dan .sn-din (pembungkus) dipasang dari JS. Sebelumnya memakai :has(), yang tidak jalan di browser lama sehingga panel tidak memenuhi tinggi layar dan putih terlihat */
@@ -708,20 +739,53 @@ html.bgdrag, html.bgdrag * { cursor: grabbing !important; }
 .sn-card.full .sn-dw { flex: 1; }
 /* duochrome tidak boleh ada putih: setiap lapisan di belakang panel diberi dasar merah | hijau 50/50, jadi celah tipis antar panel (pembulatan piksel), sisa tinggi layar, tepi bulat, dan area gulir/tarik tetap merah atau hijau */
 /* merah dan hijau dibuat sama terang (luminans relatif 0,240; kontras huruf hitam 5,8:1 di kedua sisi). Sebelumnya hijau 0,319 vs merah 0,196, jadi sisi hijau tampak lebih mudah dibaca dan bisa membiaskan pilihan pasien */
-:root { --duo-r: #ff3434; --duo-g: #1e9b3c; --duo-bg: linear-gradient(to right, var(--duo-r) 50%, var(--duo-g) 50%); }
+:root { --duo-r: #ff3434; --duo-g: #1e9b3c; --duo-pick: #ffe600; --duo-bg: linear-gradient(to right, var(--duo-r) 50%, var(--duo-g) 50%); }
 .sn-surf.sn-duos { background: var(--duo-bg); border: 0; }
 .sn-in.sn-din { background: var(--duo-bg); }
 .sn-card.full.sn-duo { background: var(--duo-bg); }
 html.sn-duofull { background: var(--duo-bg); }
 .sn-surf.sn-duos { padding: 0; }
 .sn-card.full .sn-surf.sn-duos, .sn-card.full.sn-one .sn-surf.sn-duos { padding: 0; }
-.sn-card.full .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 52px); padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
-@media (max-width: 520px) { .sn-card.full .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 92px); } }
-.sn-dans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
-.sn-dans .ghost { max-width: none; width: 100%; height: 46px; padding: 0 6px; }
-.sn-dans .ghost[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
-.sn-dans .ghost.sn-cr { box-shadow: inset 0 -4px 0 var(--duo-r); }
-.sn-dans .ghost.sn-cg { box-shadow: inset 0 -4px 0 var(--duo-g); }
+/* layar penuh: kepala kartu punya satu baris tambahan (tombol Ganti lensa di bawah label), jadi padding atas panel ikut naik satu baris (48 px) */
+.sn-card.full .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 100px); padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 520px) { .sn-card.full .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 148px); } }
+.sn-card.full.sn-one .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 100px); }   /* satu baris: baris panah di kiri atas, sejajar dengan baris tombol Ganti lensa di kanan (layar lebar) */
+@media (max-width: 520px) { .sn-card.full.sn-one .sn-dp { padding-top: calc(max(8px, env(safe-area-inset-top, 0px)) + 148px); } }
+/* tombol ganti lensa duochrome: baris sendiri di bawah label (flex-basis 100% memaksa baris baru). Baris ini ada selama duochrome aktif, jadi chart tidak bergeser saat sisi dipilih. Merah lebih jelas (UNDER) = S −0.25, hijau lebih jelas (OVER) = S +0.25. Teks tombol hanya S ±0.25. Belum dipilih atau BALANCE: tombol disembunyikan dengan visibility (tempatnya tetap ada, jadi chart tidak bergeser saat sisi dipilih). Hanya layar penuh; di mode biasa tombolnya menempel di Duochrome (lihat .sn-grp) dan disembunyikan penuh bila tidak dipakai */
+/* tombol gabungan (mode biasa): tombol utama + tombol tempelan di sisi kanannya, jadi tidak ada lagi baris tombol di bawah chart. Satu baris + panah baris (tempelan muncul hanya saat Satu baris menyala). Duochrome + S ±0.25 (tempelan muncul hanya saat duochrome aktif dan satu sisi dipilih). Ujung kiri dan kanan membulat seperti satu tombol, antar-segmen dipisah garis 1 px, tepi grup berwarna aksen mengikuti tombol utama yang menyala. Kelas .ext dipasang JS di snRender saat tempelannya tampil. Di layar penuh pembungkus .sn-grp dilepas (display: contents), jadi ikon, posisi panah, dan tombol S di layar penuh tidak berubah */
+.sn-grp { display: inline-flex; align-items: stretch; flex: 1 1 auto; min-width: 0; }
+@media (min-width: 560px) { .sn-grp { flex: 0 0 auto; } }
+.sn-card.full .sn-grp { display: contents; }
+.sn-card:not(.full) .sn-grp.ext > .tr-btn { border-radius: 0; }
+.sn-card:not(.full) .sn-grp.ext > .tr-btn:first-child { border-radius: 999px 0 0 999px; }
+.sn-card:not(.full) .sn-grp.ext > .tr-btn:last-child { border-radius: 0 999px 999px 0; }
+.sn-card:not(.full) .sn-grp.ext > .tr-btn:not(:first-child) { flex: 0 0 auto; margin-left: -1px; border-color: var(--accent); background: var(--surface); color: var(--ink); }
+.sn-card:not(.full) .sn-grp.ext > .tr-btn:not(:first-child):active { background: var(--accent-soft); }
+.sn-card:not(.full) .sn-grp.ext > #sn-lens { margin-left: -1px; padding: 0 14px 0 12px; }
+@media (max-width: 380px) { .sn-card:not(.full) .sn-grp.ext > #sn-lens { gap: 3px; padding: 0 10px 0 8px; } }   /* HP 360 px: ikon Duochrome + tombol S tetap muat bersama Pinhole dan Fan dial dalam satu baris */
+/* layar sempit: tombol utama jadi ikon saja selama tempelannya tampil (teks tetap terbaca oleh pembaca layar), supaya baris tidak bertambah satu saat panah atau tombol S muncul */
+@media (max-width: 459px) {
+  .sn-card:not(.full) .sn-grp.ext > .tr-btn:first-child { position: relative; flex: 0 0 38px; width: 38px; padding: 0; }
+  .sn-card:not(.full) .sn-grp.ext > .tr-btn:first-child > span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+.sn-lensrow { order: 4; flex: 1 0 100%; display: flex; min-width: 0; }
+/* tombol S ±0.25: tanpa alas warna. Angka spheris memakai warna sisi chart (merah = UNDER, S −0.25; hijau = OVER, S +0.25), huruf S berwarna teks biasa. Warna angka dicampur sedikit dengan --ink supaya tetap terbaca di latar putih maupun gelap. Mode biasa: segmen putih yang menempel di Duochrome, sama dengan segmen panah di Satu baris. Layar penuh: tombol abu-abu seperti tombol lain */
+#sn-lens { --lk: var(--ink); margin-left: 0; gap: 5px; padding: 0 15px; font-weight: 800; font-size: .86rem; font-variant-numeric: tabular-nums; }
+#sn-lens .sn-sk { font-size: .78rem; font-weight: 700; color: var(--ink-2); }
+#sn-lens .sn-sv { color: var(--lk); }
+#sn-lens.sn-cr { --lk: var(--duo-r); }
+#sn-lens.sn-cg { --lk: var(--duo-g); }
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  #sn-lens.sn-cr { --lk: color-mix(in srgb, var(--duo-r) 85%, var(--ink)); }
+  #sn-lens.sn-cg { --lk: color-mix(in srgb, var(--duo-g) 85%, var(--ink)); }
+}
+/* layar penuh: baris tombol di kanan (di bawah label), abu-abu netral seperti tombol lain; hanya angka S yang berwarna */
+.sn-card.full .sn-head > .sn-lensrow { justify-content: flex-end; pointer-events: none; }
+.sn-card.full #sn-lens { pointer-events: auto; background: #eceff1; border-color: #c3cad0; color: #2b343b; }
+.sn-card.full #sn-lens .sn-sk { color: #55616b; }
+.sn-card.full #sn-lens.sn-cr .sn-sv { color: #c91f2f; }   /* layar penuh: hanya angka S yang berwarna (merah −0.25, hijau +0.25), tombol dan label lain tetap netral */
+.sn-card.full #sn-lens.sn-cg .sn-sv { color: #17772f; }
+@media (max-width: 380px) { .sn-card.full #sn-lens { height: 38px; padding: 0 12px; } }
 /* hasil per mata dan alur pemeriksaan */
 .sn-ex { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
 .sn-ex .pill { margin-left: auto; }
@@ -1734,24 +1798,17 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
               <option value="1" data-t="snellen.1_m"></option>
             </select>
           </div>
-          <div class="f" role="radiogroup" aria-labelledby="lbl-sn-view">
-            <span class="lbl" id="lbl-sn-view" data-t="snellen.tampilan"></span>
-            <div class="seg">
-              <label><input type="radio" name="sn-view" data-k="sn.view" value="full"><span data-t="snellen.semua_baris"></span></label>
-              <label><input type="radio" name="sn-view" data-k="sn.view" value="single"><span data-t="snellen.satu_baris"></span></label>
-            </div>
-          </div>
         </div>
         <p class="hint" style="margin-top:12px" data-t="snellen.ukuran_huruf_mengikuti_jarak"></p>
         <details class="sn-how">
           <summary>Alur pemeriksaan</summary>
           <ol>
             <li>Pilih mata (OD dulu), tutup mata yang lain dengan okluder tanpa menekan bola mata.</li>
-            <li>Tanpa koreksi, ketuk baris terkecil yang terbaca, tandai huruf yang salah, lalu simpan visus awal.</li>
-            <li>Jika belum 6/6, tekan Pinhole, minta pasien membaca ulang, lalu simpan visus pinhole.</li>
-            <li>Jika pinhole membaik dan belum 6/6, tampilkan fan dial (tampilan satu baris: naik satu langkah dari baris 6/60), tanyakan garis yang paling jelas, lalu ketuk garis itu.</li>
+            <li>Tanpa koreksi, ketuk baris terkecil yang terbaca dan tandai huruf yang salah. Visus Awal (SC) langsung tercatat otomatis.</li>
+            <li>Jika belum 6/6, tekan Pinhole. Chart mulai dari baris visus awal (SC), bukan dari 6/60. Minta pasien membaca ulang, ketuk baris terkecil yang terbaca, dan visus Pinhole tercatat otomatis.</li>
+            <li>Jika pinhole membaik dan belum 6/6, tampilkan fan dial (tampilan satu baris: naik satu langkah dari baris 6/60), tanyakan garis yang paling jelas, lalu ketuk garis itu. Axis tercatat otomatis.</li>
             <li>Baca tentative spheris, cylinder, dan axis di Hasil, pasang di trial frame, lalu lanjutkan refraksi subjektif.</li>
-            <li>Setelah cyl dan axis pas, ketuk Duochrome dan sesuaikan spheris sampai kedua sisi sama jelas.</li>
+            <li>Setelah cyl dan axis pas, ketuk Duochrome dan sesuaikan spheris sampai kedua sisi sama jelas (label OVER, UNDER, atau BALANCE tampil sesuai warna yang dipilih). Setelah lensa diganti, ketuk tombol S +0.25 atau S −0.25 (tombol ini menempel di sisi kanan tombol Duochrome, atau di bawah label saat layar penuh) supaya penyesuaian tercatat.</li>
           </ol>
         </details>
       </section>
@@ -1759,13 +1816,15 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
       <section class="card sn-card" id="sn-chartcard">
         <div class="sn-head">
           <h2 class="sn-ttl" data-t="snellen.chart"></h2>
+          <div class="sn-eyes" id="sn-eyes" role="group" aria-label="Mata yang diperiksa"></div>
           <span class="pill" id="sn-sel"></span>
+          <div class="sn-lensrow" id="sn-lensrow" hidden><button type="button" class="tr-btn" id="sn-lens" data-sn="dapply"></button></div>
           <div class="sn-bar" id="sn-bar"></div>
           <span class="sn-tip" id="sn-tip" role="status" hidden></span>
         </div>
         <div id="sn-warn"></div>
         <div class="sn-surf" id="sn-surf" role="group" data-t-aria-label="snellen.chart_snellen"></div>
-        <details class="sn-how" id="sn-notebox" open>
+        <details class="sn-how" id="sn-notebox">
           <summary>Jarak dan petunjuk chart</summary>
           <p class="how" id="sn-note"></p>
         </details>
@@ -2941,7 +3000,7 @@ var TEKS = {
   "js.logmar_log10_desimal_padanan": "logMAR = −log10(desimal). Padanan feet: 6/6 = 20/20, 6/12 = 20/40, 6/60 = 20/200.",
   "js.mar_1_desimal_dalam": "MAR = 1 ÷ desimal = D ÷ 6, dalam menit busur (′). Baris 6/6 = 1.00, 6/60 = 10.00.",
   "js.huruf_salah": "Huruf salah",
-  "js.baris_ditulis_6_d": "Baris ditulis 6/D −m jika m huruf salah. Baris dianggap terbaca jika lebih dari separuh hurufnya benar. Separuh atau kurang: pakai baris di atasnya, ditulis 6/D +n jika n huruf di baris yang diuji masih benar (mis. 6/12 +2). Saat disimpan, hasilnya otomatis dicatat seperti itu.",
+  "js.baris_ditulis_6_d": "Baris ditulis 6/D −m jika m huruf salah. Baris dianggap terbaca jika lebih dari separuh hurufnya benar. Separuh atau kurang: pakai baris di atasnya, ditulis 6/D +n jika n huruf di baris yang diuji masih benar (mis. 6/12 +2). Hasilnya otomatis tercatat seperti itu.",
   "js.jarak": "Jarak",
   "js.otomatis_memilih_jarak_terjauh": "Otomatis memilih jarak terjauh (6, 5, 4, 3, 2, atau 1 m) di mana baris terlebar masih muat di layar.",
   "js.kalibrasi": "Kalibrasi",
@@ -2958,7 +3017,7 @@ var TEKS = {
   "js.belum_terbaca": "belum terbaca.",
   "js.pakai_baris_di_atasnya": "Pakai baris di atasnya (",
   "js.visus_di_bawah_6": "Visus di bawah 6/60.",
-  "js.tidak_bisa_disimpan": "Tidak ada baris di atasnya, jadi tidak bisa disimpan sebagai visus Snellen.",
+  "js.tidak_bisa_disimpan": "Tidak ada baris di atasnya, jadi tidak dicatat sebagai visus Snellen.",
   "js.hapus_catatan": "Hapus catatan",
   "js.terpilih": ", terpilih",
   "js.kalibrasi_sekarang": "Kalibrasi sekarang",
@@ -2972,7 +3031,7 @@ var TEKS = {
   "js.pasien_duduk": "Pasien duduk",
   "js.dari_layar": "dari layar",
   "js.otomatis_3": "(otomatis)",
-  "js.ketuk_baris_untuk_memilih": "Ketuk baris untuk memilih, lalu ketuk huruf yang salah dibaca pasien.",
+  "js.ketuk_baris_untuk_memilih": "Ketuk baris untuk memilih, lalu ketuk huruf yang salah dibaca pasien. Hasil tercatat otomatis.",
   "js.belum_ada_baris_dipilih_2": "Belum ada baris dipilih",
   "js.tutup": "Tutup",
   "js.layar_penuh": "Layar penuh",
@@ -5215,6 +5274,7 @@ var SN_LAB = 58;                                          // lebar kolom label b
 var SN_CARD = 53.98;                                      // sisi pendek kartu ID-1 (ATM, KTP) dalam mm
 var SN_PX_MIN = 2, SN_PX_MAX = 9;
 var snFull = false;
+var snLabFan = false;   // mode semua baris: ketukan terakhir di fan dial (label baris terpilih menampilkan axis, mis. OD | X 180). Ketuk baris, ganti mata, pinhole, tampilan, atau chart: kembali ke SC/PH. Tidak disimpan
 var snClrT = null;   // "Hapus catatan" butuh dua ketukan: ketukan pertama hanya mengaktifkan, padam sendiri setelah 3,5 detik. Status disimpan di sini karena tombolnya digambar ulang tiap render
 // Rumus tinggi huruf, pecahan bertingkat
 var SN_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.h_sama_dengan_d') + '"><i>' + _T('js.h_2') + '</i><span>=</span><span class="frac"><span class="num"><i>' + _T('js.d_2') + '</i> ' + _T('js.1000_tan_5') + ' ' + '<i>' + _T('js.d') + '</i></span><span class="den">6</span></span></span>');
@@ -5306,6 +5366,22 @@ function snRec(nm) {   // nm: 'rec' = visus awal tanpa koreksi, 'rph' = visus de
 function snNS(t) { return '<span class="nosg">' + t + '</span>'; }   // visus 6/12 +2 atau 6/9 −1: tanda + dan − bukan dioptri, jangan diwarnai
 function snRecTxt(x) { return x && snIdx(x.id) >= 0 ? snNS(snLbl(x)) : '–'; }
 function snGo(a) { S.sn.line = String(a); S.sn.miss = []; }
+// Baris awal saat mata atau mode berganti. Pinhole mulai dari baris visus awal (SC) mata itu, bukan dari 6/60. Tanpa SC atau mode SC: kosong (tampilan baku)
+function snStartLine(k, md) {
+  if (md === 'ph') { var r = snRec('rec')[k]; if (r) { var i = snIdx(r.id); if (i >= 0) return String(i); } }
+  return '';
+}
+// Catat visus dari baris yang dipilih ke mata dan mode yang sedang aktif (SC atau pinhole), tanpa tombol simpan.
+// Baris belum terbaca → yang dicatat baris di atasnya (snEff). Di bawah 6/60 → catatan dikosongkan.
+// up = true (geser baris dengan panah, keyboard, atau geser jari): hanya mencatat jika baris lebih kecil dari catatan yang ada, jadi naik ke fan dial lewat baris besar tidak menurunkan visus
+function snAutoSave(up) {
+  if (S.sn.cht === 'duo' || snIsFan()) return;
+  var a = snActive(); if (a < 0) return;
+  var ef = snEff(a, snMiss(a).length), nm = snMode() === 'ph' ? 'rph' : 'rec', k = snEye(), cur = snRec(nm)[k];
+  if (up && cur && snIdx(cur.id) >= ef.i) return;
+  snRec(nm)[k] = ef.below ? null : { id: ef.id, m: ef.m, p: ef.p };
+}
+var SN_DUO_LBL = { r: 'UNDER', g: 'OVER', eq: 'BALANCE' };   // merah lebih jelas = under-minus, hijau lebih jelas = over-minus
 function snHmm(D, d) { return D * d * SN_K; }
 function snRowW(r, d) { return (2 * r.n - 1) * snHmm(r.D, d) * SET.snPx; }   // lebar satu baris (px)
 function snFit(d, list) { return Math.max.apply(null, list.map(function (i) { return snRowW(SN_ROWS[i], d); })) + 2 * SN_LAB; }
@@ -5322,11 +5398,11 @@ function snFormulaRows() {
     { dt: _T('js.baris'), dd: lnH(_T('js.6_60_1_huruf'), '6/12 (5), 6/9 (6), 6/7.5 (7), 6/6 (8)') },
     { dt: _T('js.visus'), dd: lnH(_T('js.visus_6_d_desimal'), _T('js.mar_1_desimal_dalam'), _T('js.logmar_log10_desimal_padanan')) },
     { dt: _T('js.huruf_salah'), dd: _T('js.baris_ditulis_6_d') },
-    { dt: 'Pinhole', dd: lnH('Baca tanpa koreksi (sc), lalu ulangi dengan pinhole, tiap mata.', 'Membaik minimal 1 baris: penyebabnya kelainan refraksi, tentative dihitung.', 'Tidak membaik: bukan kelainan refraksi murni, periksa kelainan organik atau rujuk.') },
+    { dt: 'Pinhole', dd: lnH('Baca tanpa koreksi (sc), lalu ulangi dengan pinhole, tiap mata. Baris pinhole dimulai dari baris visus awal, tidak dari 6/60.', 'Membaik minimal 1 baris: penyebabnya kelainan refraksi, tentative dihitung.', 'Tidak membaik: bukan kelainan refraksi murni, periksa kelainan organik atau rujuk.') },
     { dt: 'Tentative Sph', dd: lnH('Jarak baris visus awal ke baris pinhole × ½, hasilnya S−.', 'Contoh 6/60 → 6/9 = 5 baris. 5 × ½ = 2.5, jadi S −2.50.') },
     { dt: 'Tentative Cyl', dd: lnH('Jarak baris pinhole ke baris 6/6 × 1, hasilnya C−.', 'Contoh 6/9 → 6/6 = 2 baris (6/7.5 dan 6/6). 2 × 1 = 2, jadi C −2.00.') },
     { dt: 'Axis (fan dial)', dd: lnH('Axis C− = derajat garis terjelas + 90°, yaitu tegak lurus garis terjelas. Contoh garis terjelas 30° → axis 120°, 90° → axis 180°, 0° atau 180° → axis 90°.', 'Garis terjelas = garis yang paling hitam dan tajam menurut pasien.', 'Lebih dapat dipercaya jika dibaca dengan S tentative terpasang dan mata sedikit di-fog.') },
-    { dt: 'Duochrome', dd: lnH('Merah lebih jelas: tambah minus 0.25. Hijau lebih jelas: tambah plus 0.25. Berhenti saat sama jelas.') },
+    { dt: 'Duochrome', dd: lnH('Merah lebih jelas (UNDER): tambah minus 0.25. Hijau lebih jelas (OVER): tambah plus 0.25. Sama jelas (BALANCE): berhenti.') },
     { dt: _T('js.jarak'), dd: _T('js.otomatis_memilih_jarak_terjauh') },
     { dt: _T('js.kalibrasi'), dd: _T('js.skala_px_per_mm') }
   ];
@@ -5347,6 +5423,7 @@ function snAxis(l) { return (l + 90) % 180 || 180; }   // axis C− tegak lurus 
 function snFanPick(l) {   // ketuk garis: pilih sebagai terjelas, ketuk lagi: batal
   var k = snEye(), m = snDlMap();
   m[k] = snDl(k) === l ? null : l;
+  snLabFan = snDl(k) !== null;   // dipilih: label jadi axis. Dibatalkan: label kembali ke SC/PH
   save(); snRender();
 }
 // Tentative (perkiraan awal untuk trial frame). Jarak dihitung dalam baris chart:
@@ -5388,7 +5465,7 @@ function snDuoOpto(i, s) {   // susunan huruf beda di tiap sisi supaya pasien ti
 function snDuoHTML(d, px) {
   var list = snDuoList(), v = snDuoMap()[snEye()];
   return '<div class="sn-dw' + (list.length === 1 ? ' one' : '') + '">' + ['r', 'g'].map(function (c, s) {
-    return '<div class="sn-dp sn-c' + c + (v === c || v === 'eq' ? ' on' : '') + '" data-c="' + c + '" tabindex="0" role="button" aria-label="' + (c === 'r' ? 'Sisi merah' : 'Sisi hijau') + '">' +
+    return '<div class="sn-dp sn-c' + c + (v === c || v === 'eq' ? ' on' : '') + '" data-c="' + c + '" tabindex="0" role="button" aria-pressed="' + (v === c || v === 'eq' ? 'true' : 'false') + '" aria-label="' + (c === 'r' ? 'Sisi merah' : 'Sisi hijau') + '">' +
       list.map(function (i) {
         return '<div class="sn-dr" style="--h:' + (snHmm(SN_ROWS[i].D, d) * px).toFixed(2) + 'px"><span class="sn-os">' +
           snDuoOpto(i, s).map(function (o) { return '<span class="sn-o"><svg viewBox="0 0 5 5" aria-hidden="true"><path fill-rule="evenodd" d="' + SN_G[o.k] + '"' + (o.rot ? ' transform="rotate(' + o.rot + ' 2.5 2.5)"' : '') + '/></svg></span>'; }).join('') + '</span></div>';
@@ -5396,11 +5473,10 @@ function snDuoHTML(d, px) {
   }).join('') + '</div>';
 }
 function snDuoResHTML() {
-  var k = snEye(), v = snDuoMap()[k], adv = snDuoAdv(v), st = snDst(k);
-  var btn = function (c, t) { return '<button type="button" class="ghost ' + (c === 'eq' ? '' : 'sn-c' + c) + '" data-sn="dr:' + c + '" aria-pressed="' + (v === c ? 'true' : 'false') + '">' + t + '</button>'; };
-  var h = '<div class="eye-h"><h2>Duochrome</h2><span class="pill">' + k.toUpperCase() + '</span></div><div class="sn-dans">' + btn('r', 'Merah') + btn('eq', 'Sama jelas') + btn('g', 'Hijau') + '</div>';
-  if (adv) h += '<div style="margin-top:12px"><button type="button" class="ghost block" data-sn="dapply">Sudah ganti lensa: S ' + sgn(adv.st) + '</button></div>';
-  else if (v === 'eq') h += '<div class="msg info" style="margin-top:12px">Titik akhir spheris tercapai.</div>';
+  var k = snEye(), v = snDuoMap()[k], st = snDst(k);   // semua terisi dari chart: sisi dari ketukan di gambar, penyesuaian dari tombol S ±0.25 di bawah label
+  var h = '<div class="eye-h"><h2>Duochrome</h2><span class="pill">' + k.toUpperCase() + '</span></div>';
+  if (v === 'eq') h += '<div class="msg info" style="margin-top:12px">Titik akhir spheris tercapai.</div>';
+  else h += '<p class="hint">Ketuk sisi yang lebih jelas menurut pasien di chart. Setelah lensa diganti, ketuk tombol S di samping Duochrome.</p>';
   if (st.length) h += '<p class="how">Penyesuaian: S ' + sgn(snDsum(k)) + '</p><div style="margin-top:12px"><button type="button" class="ghost block" data-sn="dundo">Batalkan langkah terakhir</button></div>';
   return h;
 }
@@ -5412,16 +5488,15 @@ function snEyeHTML(k, cur) {
   var phNote = !ph ? '' : t.st === 'ok' ? 'membaik ' + t.r1 + ' baris' : t.st === 'noimp' ? 'tidak membaik' : ft(ph);
   var h = '<div class="sn-ex"><div class="res-h"><span class="chip ' + k + '">' + nm + '</span><h2>' + long + '</h2>' + (cur ? '<span class="pill">Sedang diperiksa</span>' : '') + '</div>';
   h += '<div class="tbl" style="--cols:1">' +
-    row('Visus awal', [sc ? snRecTxt(sc) : '–'], 1, { note: sc ? 'tanpa koreksi · ' + ft(sc) : 'tanpa koreksi' }) +
+    row('Visus Awal (SC)', [sc ? snRecTxt(sc) : '–'], 1, { note: sc ? 'tanpa koreksi · ' + ft(sc) : 'tanpa koreksi' }) +
     row('Pinhole', [ph ? snRecTxt(ph) : '–'], 1, { note: phNote }) +
-    row('Fan dial', [isN ? dl + '°' : dl === 'same' ? 'sama jelas' : '–'], 1, { note: isN ? 'garis terjelas → axis ' + snAxis(dl) + '°' : '' }) +
+    row('Axis', [isN ? snAxis(dl) + '°' : dl === 'same' ? 'sama jelas' : '–'], 1, { note: isN ? 'garis terjelas ' + dl + '°' : dl === 'same' ? 'fan dial: semua garis sama jelas' : '' }) +
     row('Duochrome', [dv === 'r' ? 'Merah' : dv === 'g' ? 'Hijau' : dv === 'eq' ? 'Sama jelas' : '–'], 1, { note: dn ? 'penyesuaian S ' + sgn(dsum) : '' }) + '</div>';
-  if (cur) h += '<div class="stack" style="margin-top:12px"><button type="button" class="ghost block" data-sn="fan0">' + (dl === 'same' ? 'Batalkan: semua garis sama jelas' : 'Fan dial: semua garis sama jelas') + '</button></div>';
   if (t.st === 'ok') {
     h += '<div class="tiles" style="margin-top:12px">' +
         '<div class="tile main"><small>Tentative Spheris</small><b>' + sgn(t.sph) + '</b></div>' +
         '<div class="tile' + (t.r2 ? ' main' : '') + '"><small>Tentative Cylinder</small><b>' + (t.r2 ? sgn(t.cyl) : '–') + '</b></div>' +
-        '<div class="tile"><small>Axis</small><b>' + (t.r2 && t.axd ? t.axd + '°' : '–') + '</b></div></div>' +
+        '<div class="tile' + (t.r2 && t.axd ? ' main' : '') + '"><small>Axis</small><b>' + (t.r2 && t.axd ? t.axd + '°' : '–') + '</b></div></div>' +
       '<div class="spec" style="margin-top:12px"><b>' + snRx(t) + '</b></div>' +
       '<p class="how">' + sc.id + ' → ' + ph.id + ' = ' + t.r1 + ' baris × ½ = ' + (t.r1 / 2).toFixed(2) + ' → S ' + sgn(t.sph) + '<br>' +
       (t.r2 ? ph.id + ' → 6/6 = ' + t.r2 + ' baris × 1 = ' + t.r2.toFixed(2) + ' → C ' + sgn(t.cyl) : ph.id + ' sudah 6/6, tanpa cyl') + '</p>';
@@ -5430,9 +5505,9 @@ function snEyeHTML(k, cur) {
     else if (t.ax === 'same') h += '<div class="msg warn">Semua garis fan dial sama jelas, jadi axis belum bisa ditentukan. Ulangi fan dial dengan S tentative terpasang dan mata sedikit di-fog.</div>';
     if (dn) h += '<p class="how">Setelah duochrome: S ' + sgn(t.sph + dsum) + '</p>';
     h += '<p class="hint" style="margin-top:10px">Perkiraan awal untuk trial frame. Ukuran akhir lewat refraksi subjektif.</p>';
-  } else if (t.st === 'nosc') h += '<p class="empty">Belum ada visus awal. Baca chart tanpa koreksi, lalu simpan.</p>';
+  } else if (t.st === 'nosc') h += '<p class="empty">Belum ada visus awal. Baca chart tanpa koreksi, lalu ketuk baris terkecil yang terbaca.</p>';
   else if (t.st === 'good') h += '<div class="msg info">' + _T('js.visus_6_6_bisa') + '</div>';
-  else if (t.st === 'nph') h += '<div class="msg info">Visus awal belum 6/6. Lakukan pinhole: tekan Pinhole di atas chart, minta pasien membaca ulang, lalu simpan visus pinhole.</div>';
+  else if (t.st === 'nph') h += '<div class="msg info">Visus awal belum 6/6. Lakukan pinhole: tekan Pinhole di atas chart, minta pasien membaca ulang, lalu ketuk baris terkecil yang terbaca.</div>';
   else h += '<div class="msg bad">Pinhole tidak membaik (' + t.sc.id + ' → ' + t.ph.id + '). Penurunan visus kemungkinan bukan karena kelainan refraksi, jadi tentative tidak dihitung. Periksa media, retina, dan saraf optik, atau rujuk.</div>';
   return h + '</div>';
 }
@@ -5458,7 +5533,7 @@ function snFanHTML(avail, d, px) {
 
 function snResHTML(a) {
   var k = snEye(), ph = snMode() === 'ph', nm = k.toUpperCase();
-  var head = ('<div class="eye-h"><h2>' + _T('js.hasil_baca') + '</h2><span class="pill">') + nm + ' • ' + (ph ? 'PH' : 'SC') + '</span></div>', body, f2 = function (x) { return x.toFixed(2); };
+  var head = ('<div class="eye-h"><h2>' + _T('js.hasil_baca') + '</h2><span class="pill">') + nm + ' | ' + (ph ? 'PH' : 'SC') + '</span></div>', body, f2 = function (x) { return x.toFixed(2); };
   var duo = S.sn.cht === 'duo';
   if (duo) { head = ''; body = snDuoResHTML(); }
   else if (a < 0) body = snIsFan() ? '<p class="hint">Ketuk garis yang paling jelas menurut pasien.</p>' : ('<p class="hint">' + _T('js.belum_ada_baris_dipilih') + '</p>');
@@ -5476,7 +5551,7 @@ function snResHTML(a) {
           ('<div class="tile"><small>' + _T('js.mar_judul') + '</small><b>') + f2(1 / dec) + '</b></div>' +
           ('<div class="tile"><small>' + _T('js.logmar_2') + '</small><b>') + f2(Math.max(0, -Math.log10(dec))) + '</b></div></div>' +
         ('<p class="how">' + _T('js.baris_dianggap_terbaca_bila') + ' ') + need + ' dari ' + r.n + (' ' + _T('js.huruf_benar_2') + '</p>');
-      body += '<div style="margin-top:14px"><button type="button" class="ghost block sv" data-sn="save"><span class="chip ' + k + '">' + nm + '</span>' + (ph ? 'Simpan visus pinhole' : 'Simpan visus awal') + '</button></div>';
+      body += '<p class="hint" style="margin-top:12px">Otomatis tercatat sebagai ' + (ph ? 'Pinhole' : 'Visus Awal (SC)') + ' ' + nm + '.</p>';
     }
   }
   var any = snDuoAny() || snDl('od') !== null || snDl('os') !== null || ['rec', 'rph'].some(function (n) { var q = snRec(n); return !!(q.od || q.os); });
@@ -5484,9 +5559,15 @@ function snResHTML(a) {
   return head + body + snEyeHTML('od', k === 'od') + snEyeHTML('os', k === 'os') + ex;
 }
 
+// Tombol S ±0.25: di mode biasa menempel di sisi kanan tombol Duochrome (grup #sn-duog di bar alat). Di layar penuh dikembalikan ke baris di bawah label (#sn-lensrow), karena CSS layar penuh bergantung pada induknya. Panah baris tidak pernah dipindah: selalu menempel di tombol Satu baris (#sn-viewg); CSS layar penuh melepas pembungkusnya. Pemindahan hanya terjadi saat induknya beda
+function snPlaceSteps() {
+  var ln = $('#sn-lens'), to = snFull ? $('#sn-lensrow') : $('#sn-duog');
+  if (ln.parentNode !== to) to.appendChild(ln);
+}
 function snRender() {
   var surf = $('#sn-surf');
   if (!surf || shown !== 'snellen') return;
+  snPlaceSteps();
   var duo = S.sn.cht === 'duo', a = duo ? snDuoRow() : snActive(), px = SET.snPx, miss = duo ? [] : snMiss(a);
   var avail = surf.clientWidth || Math.max(240, (document.documentElement.clientWidth || 360) - 64);
   var dv = num(S.sn.dist), auto = SN_DISTS.indexOf(dv) < 0, d = auto ? (duo ? snDuoAuto(avail) : snAuto(avail)) : dv;
@@ -5522,8 +5603,13 @@ function snRender() {
 
   var sel = $('#sn-sel');
   var ef0 = a >= 0 ? snEff(a, miss.length) : null;
-  sel.textContent = a >= 0 ? snEye().toUpperCase() + ' • ' + (duo ? 'DUO' : snMode() === 'ph' ? 'PH' : 'SC') + ' ' + (ef0.below ? '<6/60' : snLbl(ef0)) : _T('js.belum_ada_baris_dipilih_2');
-  if (duo && S.sn.view !== 'single') sel.textContent = snEye().toUpperCase() + ' • DUO';
+  sel.textContent = a >= 0 ? snEye().toUpperCase() + ' | ' + (duo ? 'DUO' : snMode() === 'ph' ? 'PH' : 'SC') + ' ' + (ef0.below ? '<6/60' : snLbl(ef0)) : _T('js.belum_ada_baris_dipilih_2');
+  if (duo) sel.textContent = snEye().toUpperCase() + ' | ' + (SN_DUO_LBL[snDuoMap()[snEye()]] || 'DUO');   // label mengikuti warna yang dipilih: OVER (hijau), UNDER (merah), BALANCE (sama jelas). Belum dipilih: DUO
+  var fanLab = isFan || (!duo && S.sn.view !== 'single' && S.sn.fan !== 'off' && snLabFan && snDl(snEye()) !== null);   // satu baris: fan dial tampil sendiri. Semua baris: fan dial di atas chart dan garisnya baru saja dipilih
+  if (fanLab) {   // fan dial tampil sendiri (satu baris), atau garisnya baru dipilih (semua baris): label = mata + axis dari garis terjelas yang dipilih (mis. OD | X 180). Axis = snAxis(garis), sama dengan yang dipakai di hasil tentative. Belum dipilih: OD | Fan dial. Fan dial tidak terikat SC/PH, jadi tanpa mode
+    var fdl = snDl(snEye());
+    sel.textContent = snEye().toUpperCase() + ' | ' + (fdl === 'same' ? 'Fan dial sama jelas' : fdl !== null ? 'X ' + snAxis(fdl) : 'Fan dial');
+  }
   sel.textContent = Lx(sel.textContent);
   var one = S.sn.view === 'single';
   $('#sn-chartcard').classList.toggle('sn-duo', duo);   // dasar merah | hijau di kartu saat layar penuh
@@ -5531,9 +5617,10 @@ function snRender() {
   var snCc = $('#sn-chartcard');
   snCc.classList.toggle('sn-one', one);   // bukan 'one': kelas itu sudah dipakai halaman lain (.one { max-width: 40rem }) dan membuat kartu chart menyempit
   snCc.classList.toggle('sn-sw', snFull && one && snCc.scrollHeight <= snCc.clientHeight + 2);   // geser untuk pindah baris hanya bila kartu tidak perlu digulir. Diukur setelah sn-one terpasang karena kelas itu memengaruhi tinggi isi
-  sel.hidden = a < 0 || (one && snFull);   // belum ada baris dipilih, atau layar penuh satu baris (nama baris sudah tampil di chart): label tidak perlu
+  sel.hidden = a < 0 && !fanLab;   // hanya disembunyikan bila belum ada baris dipilih dan fan dial tidak tampil. Label sama di mode semua baris dan satu baris, juga di layar penuh: nomor baris di chart tidak memuat mata (OD/OS), mode (SC/PH), maupun sisa huruf salah (mis. 6/9 −1)
   // panah baris hanya perlu di tampilan "Satu baris" (satu-satunya cara pindah baris di sana). Di "Semua baris" cukup ketuk barisnya
   $('#sn-up').hidden = $('#sn-dn').hidden = !one;
+  $('#sn-view').setAttribute('aria-pressed', one ? 'true' : 'false');   // satu baris = tombol menyala; ketuk lagi untuk kembali ke semua baris
   $('#sn-up').disabled = duo ? a === 0 : isFan;
   $('#sn-dn').disabled = a === SN_ROWS.length - 1;
   var ek = snEye(), md = snMode();
@@ -5541,8 +5628,18 @@ function snRender() {
   $('#sn-os').setAttribute('aria-pressed', ek === 'os' ? 'true' : 'false');
   $('#sn-ph').setAttribute('aria-pressed', md === 'ph' ? 'true' : 'false');
   $('#sn-duo').setAttribute('aria-pressed', duo ? 'true' : 'false');
-  $('#sn-fb').hidden = duo;   // fan dial tidak dipakai di duochrome
-  $('#sn-fb').setAttribute('aria-pressed', (S.sn.view === 'single' ? isFan : S.sn.fan !== 'off') ? 'true' : 'false');
+  // tombol ganti lensa (hanya di duochrome; mode biasa: menempel di Duochrome, layar penuh: di bawah label): teks hanya S −0.25 (UNDER, merah) atau S +0.25 (OVER, hijau). Klik = penyesuaian tercatat di snDst (data-sn="dapply") dan pilihan sisi dikosongkan. Belum dipilih atau BALANCE: disembunyikan dengan visibility, tempatnya tetap supaya chart tidak bergeser
+  var lz = $('#sn-lensrow'), lbn = $('#sn-lens'), lad = duo ? snDuoAdv(snDuoMap()[ek]) : null;
+  lz.hidden = !(duo && snFull);   // baris bawah label hanya dipakai di layar penuh; di mode biasa tombolnya ada di grup Duochrome
+  lbn.className = 'tr-btn' + (lad ? (lad.st < 0 ? ' sn-cr' : ' sn-cg') : '');
+  lbn.hidden = !snFull && !lad;   // mode biasa: tombol ada hanya saat dipakai (menempel di Duochrome); layar penuh: tempat tetap, disembunyikan dengan visibility
+  lbn.style.visibility = snFull && !lad ? 'hidden' : '';
+  $('#sn-duog').classList.toggle('ext', !snFull && !!lad);
+  $('#sn-viewg').classList.toggle('ext', one);
+  lbn.innerHTML = lad ? '<span class="sn-sk">S</span><span class="sn-sv">' + Lx(sgn(lad.st)) + '</span>' : '';   // huruf S biasa, angka spheris berwarna merah (−0.25) atau hijau (+0.25)
+  if (lad) lbn.setAttribute('aria-label', Lx('Ganti lensa: S ' + sgn(lad.st))); else lbn.removeAttribute('aria-label');
+  // fan dial tetap tampil di duochrome. Di sana tombolnya tidak menyala (chart yang tampil duochrome); ditekan = keluar dari duochrome ke chart Snellen dengan fan dial
+  $('#sn-fb').setAttribute('aria-pressed', !duo && (S.sn.view === 'single' ? isFan : S.sn.fan !== 'off') ? 'true' : 'false');
   $('#sn-full').setAttribute('aria-pressed', snFull ? 'true' : 'false');
   $('#sn-full-t').textContent = snFull ? _T('js.tutup') : _T('js.layar_penuh');
   $('#sn-full').setAttribute('data-tip', snFull ? _T('js.tutup') : _T('js.chart_memenuhi_layar'));   // layar penuh: tombol hanya ikon, jadi nama tombol ada di title
@@ -5625,7 +5722,7 @@ function snStepRow(dir) {
   var a = snActive(), isF = snIsFan(), fe = document.activeElement, inChart = !!(fe && fe.closest && fe.closest('.sn-r'));
   var lo = S.sn.view === 'single' ? -1 : 0;   // satu baris: fan dial ada satu langkah di atas 6/60
   a = Math.max(lo, Math.min(SN_ROWS.length - 1, isF ? -1 + dir : a < 0 ? 4 : a + dir));
-  if (a < 0) { S.sn.line = 'fan'; S.sn.miss = []; } else snGo(a);
+  if (a < 0) { S.sn.line = 'fan'; S.sn.miss = []; } else { snGo(a); snAutoSave(true); }
   save(); snRender();
   if (inChart && a >= 0) {   // fokus keyboard ikut ke baris aktif
     var nf = $('#sn-surf .sn-r[data-r="' + a + '"]');
@@ -5635,29 +5732,47 @@ function snStepRow(dir) {
 
 var SNI = function (d) { return '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"/></svg>'; };
 $('#sn-bar').innerHTML =
-  ('<button type="button" class="tr-btn ic" id="sn-up" data-sn="up" aria-label="' + _T('js.pindah_ke_baris_yang') + '" hidden>') + SNI('M4 12.5l6-6 6 6') + '</button>' +
-  ('<button type="button" class="tr-btn ic" id="sn-dn" data-sn="dn" aria-label="' + _T('js.pindah_ke_baris_yang_2') + '" hidden>') + SNI('M4 7.5l6 6 6-6') + '</button>' +
-  '<button type="button" class="tr-btn ic eye" id="sn-od" data-sn="eye:od" aria-pressed="true" title="Mata kanan (OD)">OD</button>' +
-  '<button type="button" class="tr-btn ic eye" id="sn-os" data-sn="eye:os" aria-pressed="false" title="Mata kiri (OS)">OS</button>' +
+  '<div class="sn-row">' +   // baris 1: Pinhole, Fan dial, Duochrome
   '<button type="button" class="tr-btn pin" id="sn-ph" data-sn="ph" aria-pressed="false" title="Pinhole">' + SNI('M10 3a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM10 10h.01') + '<span>Pinhole</span></button>' +
   '<button type="button" class="tr-btn" id="sn-fb" data-sn="fan" aria-pressed="true" title="Fan dial">' + SNI('M10 16H3M10 16l-5.8-6M10 16L7 4.5M10 16l3-11.5M10 16l5.8-6M10 16h7') + '<span>Fan dial</span></button>' +
+  '<div class="sn-grp" id="sn-duog">' +   // Duochrome + tombol S ±0.25 yang menempel di kanannya (dipindah JS, lihat snPlaceSteps)
   '<button type="button" class="tr-btn" id="sn-duo" data-sn="duo" aria-pressed="false" title="Duochrome">' + SNI('M10 3a7 7 0 1 0 0 14a7 7 0 1 0 0-14zM10 3v14') + '<span>Duochrome</span></button>' +
+  '</div>' +
+  '</div><span class="sn-sep" aria-hidden="true"></span><div class="sn-row">' +   // pemisah (hanya tampil di layar penuh). Baris 2 = tombol tata letak: Satu baris, panah baris (hanya mode satu baris), Acak, Layar penuh/Tutup
+  '<div class="sn-grp" id="sn-viewg">' +   // Satu baris + panah baris yang menempel di kanannya (panah hanya tampil di mode satu baris)
+  ('<button type="button" class="tr-btn" id="sn-view" data-sn="view" aria-pressed="false" title="' + _T('snellen.satu_baris') + '">') + '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h10M5 16h10" opacity=".4"/><path d="M3 10h14"/></svg>' + ('<span>' + _T('snellen.satu_baris') + '</span></button>') +
+  ('<button type="button" class="tr-btn ic" id="sn-up" data-sn="up" aria-label="' + _T('js.pindah_ke_baris_yang') + '" hidden>') + SNI('M4 12.5l6-6 6 6') + '</button>' +
+  ('<button type="button" class="tr-btn ic" id="sn-dn" data-sn="dn" aria-label="' + _T('js.pindah_ke_baris_yang_2') + '" hidden>') + SNI('M4 7.5l6 6 6-6') + '</button>' +
+  '</div>' +
   ('<button type="button" class="tr-btn" id="sn-shuf" data-sn="shuf" title="' + _T('js.acak') + '">') + SNI('M16 10a6 6 0 0 1-10.4 4M4 10a6 6 0 0 1 10.4-4M14.5 2.5V6H11M5.5 17.5V14H9') + ('<span>' + _T('js.acak') + '</span></button>') +
-  ('<button type="button" class="tr-btn" id="sn-full" data-sn="full" aria-pressed="false" title="' + _T('js.chart_memenuhi_layar') + '">') + SNI('M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4').replace('<svg ', '<svg class="i-open" ') + SNI('M5 5l10 10M15 5L5 15').replace('<svg ', '<svg class="i-close" ') + ('<span id="sn-full-t">' + _T('js.layar_penuh') + '</span></button>');
+  ('<button type="button" class="tr-btn" id="sn-full" data-sn="full" aria-pressed="false" title="' + _T('js.chart_memenuhi_layar') + '">') + SNI('M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4').replace('<svg ', '<svg class="i-open" ') + SNI('M5 5l10 10M15 5L5 15').replace('<svg ', '<svg class="i-close" ') + ('<span id="sn-full-t">' + _T('js.layar_penuh') + '</span></button>') +
+  '</div>';
 
 // Keterangan tombol di layar penuh: tampil saat kursor di atas tombol, saat ditekan, atau saat fokus keyboard
-Array.prototype.forEach.call($('#sn-bar').querySelectorAll('[title]'), function (b) {
+$('#sn-eyes').innerHTML =
+  '<button type="button" class="tr-btn eye" id="sn-od" data-sn="eye:od" aria-pressed="true" title="Mata kanan (OD)">OD</button>' +
+  '<button type="button" class="tr-btn eye" id="sn-os" data-sn="eye:os" aria-pressed="false" title="Mata kiri (OS)">OS</button>';
+Array.prototype.forEach.call($('#sn-chartcard').querySelectorAll('#sn-bar [title], #sn-eyes [title]'), function (b) {
   b.setAttribute('data-tip', b.title);
   if (!b.getAttribute('aria-label') && !b.querySelector('span')) b.setAttribute('aria-label', b.title);
   b.removeAttribute('title');
 });
 (function () {
-  var bar = $('#sn-bar'), tip = $('#sn-tip');
+  var bar = $('#sn-chartcard .sn-head'), tip = $('#sn-tip');   // seluruh kepala kartu: bar alat dan rel OD/OS
   function hide() { tip.hidden = true; }
+  // Letakkan keterangan tepat di bawah tombol, rata tengah terhadap tombol, dan jaga agar tidak keluar dari layar
+  function place(b) {
+    var cb = tip.offsetParent || tip.parentNode, cr = cb.getBoundingClientRect(), br = b.getBoundingClientRect();
+    var vw = document.documentElement.clientWidth, w = tip.offsetWidth;
+    var x = Math.max(8, Math.min(br.left + br.width / 2 - w / 2, vw - w - 8));
+    tip.style.left = (x - cr.left) + 'px';
+    tip.style.top = (br.bottom - cr.top + 6) + 'px';
+  }
   function show(e) {
     var b = e.target.closest ? e.target.closest('.tr-btn') : null;
     if (!b || !snFull || (e.type === 'focusin' && !b.matches(':focus-visible'))) return hide();
     tip.textContent = b.dataset.tip || ''; tip.hidden = !tip.textContent;
+    if (!tip.hidden) place(b);
   }
   ['pointerover', 'pointerdown', 'focusin'].forEach(function (t) { bar.addEventListener(t, show); });
   ['pointerout', 'pointerup', 'pointercancel', 'focusout'].forEach(function (t) { bar.addEventListener(t, hide); });
@@ -5671,15 +5786,17 @@ $('#sn-surf').addEventListener('click', function (e) {
   var rEl = e.target.closest ? e.target.closest('.sn-r') : null;
   if (!rEl) return;
   var r = +rEl.dataset.r, a = snActive(), oEl = e.target.closest('.sn-o');
+  snLabFan = false;   // ketuk baris atau huruf: label kembali ke SC/PH
   if (r !== a) snGo(r);
   else if (oEl) {
     var j = +oEl.dataset.j, m = snMiss(a), k = m.indexOf(j);
     if (k >= 0) m.splice(k, 1); else m.push(j);
     S.sn.miss = m;
   }
+  snAutoSave(false);   // ketuk baris atau tandai huruf = visus langsung tercatat (SC atau pinhole sesuai mode)
   save(); snRender();
 });
-// Tombol di halaman Snellen (data-sn): up, dn, shuf, full, cal, calok, save, eye:od, eye:os, ph, fan0, clear
+// Tombol di halaman Snellen (data-sn): up, dn, shuf, full, cal, calok, eye:od, eye:os, ph, clear
 document.addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('[data-sn]') : null;
   if (!b) return;
@@ -5694,25 +5811,23 @@ document.addEventListener('click', function (e) {
     return;
   }
   else if (k === 'calok') { SET.snCal = true; SET.snDpr = window.devicePixelRatio || 1; saveSet(); }
-  else if (k === 'save') {   // simpan ke mata dan mode yang sedang aktif: visus awal (sc) atau pinhole
-    if (a < 0) return;
-    var ef = snEff(a, snMiss(a).length);   // baris belum terbaca → simpan baris di atasnya
-    if (ef.below) return;                  // di bawah 6/60: tidak ada baris di atasnya
-    snRec(snMode() === 'ph' ? 'rph' : 'rec')[snEye()] = { id: ef.id, m: ef.m, p: ef.p };
-  }
-  else if (p[0] === 'eye') { S.sn.eye = p[1] === 'os' ? 'os' : 'od'; S.sn.line = ''; S.sn.miss = []; }   // mata lain membaca dari awal
-  else if (k === 'ph') { S.sn.mode = snMode() === 'ph' ? 'sc' : 'ph'; S.sn.line = ''; S.sn.miss = []; }
+  else if (p[0] === 'eye') { snLabFan = false; S.sn.eye = p[1] === 'os' ? 'os' : 'od'; S.sn.line = S.sn.cht === 'duo' ? '' : snStartLine(S.sn.eye, snMode()); S.sn.miss = []; }   // mata lain: SC dari awal, pinhole dari baris SC mata itu
+  else if (k === 'ph') { snLabFan = false; S.sn.mode = snMode() === 'ph' ? 'sc' : 'ph'; S.sn.line = S.sn.cht === 'duo' ? '' : snStartLine(snEye(), S.sn.mode); S.sn.miss = []; }   // pinhole mulai dari baris visus awal, bukan 6/60
   else if (k === 'fan') {
-    if (S.sn.view === 'single') {   // satu baris: langsung ke fan dial, ketuk lagi untuk kembali ke baris tadi
+    snLabFan = false;
+    if (S.sn.cht === 'duo') {   // dari duochrome: keluar ke chart Snellen dan langsung tampilkan fan dial
+      S.sn.cht = 'snellen';
+      if (S.sn.view === 'single') { if (S.sn.line !== 'fan') { S.sn.back = S.sn.line; S.sn.line = 'fan'; } }
+      else S.sn.fan = 'on';
+    } else if (S.sn.view === 'single') {   // satu baris: langsung ke fan dial, ketuk lagi untuk kembali ke baris tadi
       if (snIsFan()) { var bk = parseInt(S.sn.back, 10); S.sn.line = bk >= 0 && bk < SN_ROWS.length ? String(bk) : ''; }
       else { S.sn.back = S.sn.line; S.sn.line = 'fan'; }
     } else S.sn.fan = S.sn.fan === 'off' ? 'on' : 'off';   // semua baris: tampilkan atau sembunyikan fan dial di atas chart
   }
-  else if (k === 'duo') { S.sn.cht = S.sn.cht === 'duo' ? 'snellen' : 'duo'; }
-  else if (p[0] === 'dr') { var dm = snDuoMap(), de = snEye(); dm[de] = dm[de] === p[1] ? null : p[1]; }
+  else if (k === 'view') { snLabFan = false; S.sn.view = S.sn.view === 'single' ? 'full' : 'single'; }   // pindah dari radio "Tampilan" di Pengaturan chart
+  else if (k === 'duo') { snLabFan = false; S.sn.cht = S.sn.cht === 'duo' ? 'snellen' : 'duo'; }
   else if (k === 'dapply') { var ad = snDuoAdv(snDuoMap()[snEye()]); if (!ad) return; snDst(snEye()).push(ad.st); snDuoMap()[snEye()] = null; }
   else if (k === 'dundo') { snDst(snEye()).pop(); }
-  else if (k === 'fan0') { snDlMap()[snEye()] = snDl(snEye()) === 'same' ? null : 'same'; }   // semua garis sama jelas
   else if (k === 'clear') {
     if (!snClrT) {   // ketukan pertama: minta ketuk lagi
       snClrT = setTimeout(function () { snClrT = null; snRender(); }, 3500);
@@ -5732,7 +5847,7 @@ document.addEventListener('keydown', function (e) {
   if (shown !== 'snellen' || e.ctrlKey || e.metaKey || e.altKey) return;
   var t = e.target, tag = t && t.tagName, row = t && t.closest ? t.closest('.sn-r') : null;
   if (e.key === 'Escape' && snFull) { e.preventDefault(); snFullSet(false); return; }
-  if ((e.key === 'Enter' || e.key === ' ') && row && t === row) { e.preventDefault(); snGo(+row.dataset.r); save(); snRender(); return; }
+  if ((e.key === 'Enter' || e.key === ' ') && row && t === row) { e.preventDefault(); snGo(+row.dataset.r); snAutoSave(false); save(); snRender(); return; }
   var dpn = t && t.closest ? t.closest('.sn-dp') : null;
   if ((e.key === 'Enter' || e.key === ' ') && dpn && t === dpn) { e.preventDefault(); snDuoPick(dpn.dataset.c); return; }
   var fln = t && t.closest ? t.closest('.sn-fl') : null;
@@ -5769,7 +5884,7 @@ document.addEventListener('contextmenu', function (e) {
 var snRz = null;
 window.addEventListener('resize', function () { if (shown !== 'snellen') return; clearTimeout(snRz); snRz = setTimeout(snRender, 120); });
 bindReset('#sn-reset', function () {
-  clearTimeout(snClrT); snClrT = null;
+  clearTimeout(snClrT); snClrT = null; snLabFan = false;
   S.sn = blank().sn; hydrate(); save(); update();
 });
 
