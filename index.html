@@ -322,7 +322,9 @@ input:disabled, select:disabled { opacity: .62; }
 .rad > .rc { display: inline-flex; align-items: center; gap: .3em; padding: .2em .25em 0 .2em; border-top: 1.5px solid currentColor; }
 .pw { display: inline-flex; align-items: center; }
 .pw > sup { align-self: flex-start; font-size: .7em; line-height: 1; margin-left: .05em; }
-.bp { font-size: 1.7em; line-height: .8; font-weight: 300; }
+.bp { flex: none; align-self: stretch; width: .3em; margin: .04em; }   /* kurung tinggi: mengikuti tinggi pecahan di sebelahnya */
+.bp svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.bp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .tbl .over { color: var(--bad); font-weight: 700; }
 .ln { display: block; }
 .ln + .ln { margin-top: 3px; }
@@ -350,6 +352,13 @@ input:disabled, select:disabled { opacity: .62; }
 .x-num { align-self: end; padding: 0 .22em .06em; border-bottom: 1.5px solid currentColor; }
 .x-den { align-self: start; padding: .06em .22em 0; }
 .x-w { margin-right: .08em; }
+/* kurung (atau |...|) yang membungkus pecahan: tingginya mengikuti isi, jadi tidak kalah tinggi dari pecahan */
+.x-pg { position: relative; display: inline-block; padding: 0 .36em; }
+.x-pp { position: absolute; top: .04em; bottom: .04em; width: .3em; display: block; }
+.x-pp.l { left: .03em; }
+.x-pp.r { right: .03em; }
+.x-pp svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.x-pp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .x-slot { display: inline-block; box-sizing: border-box; min-width: .66em; height: .95em; border: 1.5px dashed var(--ink-2); border-radius: 3px; vertical-align: -.08em; }
 .x-rt { position: relative; display: inline-block; padding-left: .9em; margin: 0 .1em; }
 .x-rt.c3 { padding-left: 1.2em; }
@@ -4105,9 +4114,11 @@ function edBiasaEq(bulat, lhs) {
 function edFormulaHTML(pyth, bulat, lhs, note) {
   return (pyth ? edPythEq(lhs) : edBiasaEq(bulat, lhs)) + '<span class="eq-note">' + note + '</span>';
 }
+var BP_L = '<svg viewBox="0 0 8 40" preserveAspectRatio="none" aria-hidden="true"><path d="M7 .5C2 9 1 15 1 20S2 31 7 39.5"/></svg>';   // kurung tinggi di rumus (sama bentuknya dengan kurung di layar kalkulator)
+var BP_R = '<svg viewBox="0 0 8 40" preserveAspectRatio="none" aria-hidden="true"><path d="M1 .5C6 9 7 15 7 20S6 31 1 39.5"/></svg>';
 var SAG_EXACT_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.s_sama_dengan_r') + '"><i>' + _T('js.s') + '</i><span>=</span><i>' + _T('js.r') + '</i><span>−</span>') +
   '<span class="rad">' + SVG_RAD + ('<span class="rc"><span><i>' + _T('js.r') + '</i>²</span><span>−</span>') +
-  '<span class="pw"><span class="bp">(</span><span class="frac"><span class="num">Ø</span><span class="den">2</span></span><span class="bp">)</span><sup>2</sup></span></span></span></span>';
+  '<span class="pw"><span class="bp">' + BP_L + '</span><span class="frac"><span class="num">Ø</span><span class="den">2</span></span><span class="bp">' + BP_R + '</span><sup>2</sup></span></span></span></span>';
 var R_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.r_sama_dengan_1000') + '"><i>' + _T('js.r') + '</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den">|<i>' + _T('js.d') + '</i>|</span></span></span>');
 // Rumus radius kelengkungan, pecahan bertingkat
 var RAD_EQ = ('<span class="eq" role="math" aria-label="' + _T('js.radius_sama_dengan_1000') + '"><i>R</i><span>=</span><span class="frac"><span class="num">1000 · (<i>' + _T('js.n') + '</i> − 1)</span><span class="den">|<i>' + _T('js.d') + '</i>|</span></span></span>');
@@ -9274,9 +9285,38 @@ function calcPreview(s, deg, ans) {
 /* ---- Tampilan pecahan bertingkat dan akar ---- */
 var CURH = '<i class="cur"></i>';
 var CALC_BIN = { '+': 1, '−': 1, '×': 1, '÷': 1 };
+// Kurung yang membungkus pecahan digambar setinggi isinya (bukan huruf biasa). Pasangan buka-tutup dicari per barisan simpul
+var KURUNG_L = '<svg viewBox="0 0 8 40" preserveAspectRatio="none" aria-hidden="true"><path d="M7 .5C2 9 1 15 1 20S2 31 7 39.5"/></svg>';
+var KURUNG_R = '<svg viewBox="0 0 8 40" preserveAspectRatio="none" aria-hidden="true"><path d="M1 .5C6 9 7 15 7 20S6 31 1 39.5"/></svg>';
+var KURUNG_B = '<svg viewBox="0 0 8 40" preserveAspectRatio="none" aria-hidden="true"><path d="M4 .5V39.5"/></svg>';
+// o[i] = indeks penutup kurung buka di i (atau simpul terakhir jika belum ditutup). c[j] = indeks pembuka untuk penutup di j
+function calcPairs(nodes) {
+  var st = [], o = {}, c = {}, k, nd, i, last = nodes.length - 1;
+  for (k = 0; k <= last; k++) {
+    nd = nodes[k];
+    if (nd.t !== 'c') continue;
+    if (nd.s.charAt(nd.s.length - 1) === '(') st.push(k);
+    else if (nd.s === ')' && st.length) { i = st.pop(); o[i] = k; c[k] = i; }
+  }
+  while (st.length) o[st.pop()] = last;
+  return { o: o, c: c };
+}
+// Simpul ini memuat pecahan (atau bilangan campuran), termasuk yang ada di dalam akar? Pangkat tidak dihitung karena kotaknya kecil
+function calcHasFrac(nd) {
+  var i;
+  if (nd.t === 'f' || nd.t === 'm') return true;
+  if (nd.t === 'p' || !nd.slots) return false;
+  for (i = 0; i < nd.slots.length; i++) if (calcRangeFrac(nd.slots[i].nodes, 0, nd.slots[i].nodes.length - 1)) return true;
+  return false;
+}
+function calcRangeFrac(nodes, from, to) {
+  for (var i = from; i <= to; i++) if (calcHasFrac(nodes[i])) return true;
+  return false;
+}
 // Satu barisan simpul jadi HTML. st.at(q) = kursor di posisi q (sekali saja). boxed = isi kotak: kosong tampil sebagai kotak putus-putus
 function calcSeq(nodes, a, st, boxed) {
   var h = '', prevVal = false, k, nd, ln, ab = [], sh, inBox;   // ab: tumpukan kurung terbuka, 1 = abs( yang digambar sebagai |
+  var pg = calcPairs(nodes), wrap = [], bigC = {}, big, isAbs, nm, pp;   // wrap: indeks akhir pembungkus yang sedang terbuka. bigC: penutup yang digambar tinggi
   if (!nodes.length) return boxed ? '<span class="x-slot" data-a="' + a + '" data-z="' + a + '">' + (st.at(a) ? CURH : '') + '</span>' : '';
   for (k = 0; k < nodes.length; k++) {
     nd = nodes[k];
@@ -9290,12 +9330,28 @@ function calcSeq(nodes, a, st, boxed) {
       if (sh === 'rnd(') sh = '→0.25(';   // tampil sama dengan tombolnya
       else if (sh === 'rndf(') sh = '→0.125(';
       else if (sh === 'rndh(') sh = '→0.5(';
-      if (sh === 'abs(') { ab.push(1); sh = '|'; }
-      else if (sh.charAt(sh.length - 1) === '(') ab.push(0);
-      else if (sh === ')' && ab.length && ab.pop()) sh = '|';
-      h += '<span' + (CALC_BIN[nd.s] && prevVal ? ' class="x-o"' : '') + ' data-p="' + nd.p + '" data-e="' + nd.e + '">' + esc(sh.replace(/\./g, SEP)) + '</span>';   // operator biner diberi jarak
+      isAbs = sh === 'abs(';
+      big = false;
+      pp = ' data-p="' + nd.p + '" data-e="' + nd.e + '"';
+      if (sh.charAt(sh.length - 1) === '(') {
+        ab.push(isAbs ? 1 : 0);
+        big = pg.o.hasOwnProperty(k) && calcRangeFrac(nodes, k + 1, pg.o[k]);   // ada pecahan di dalam kurung ini
+        if (big && pg.c[pg.o[k]] === k) bigC[pg.o[k]] = isAbs ? 'b' : 'r';   // penutupnya (jika ada) ikut digambar tinggi
+        if (isAbs) sh = '|';
+      } else if (sh === ')' && ab.length && ab.pop()) sh = '|';
+      if (big) {   // kurung buka setinggi isinya: pembungkus dibuka di sini dan ditutup sesudah kurung tutupnya
+        nm = isAbs ? '' : sh.slice(0, -1);
+        if (nm) h += '<span' + pp + '>' + esc(nm.replace(/\./g, SEP)) + '</span>';   // nama fungsi (sin, log, ...) tetap huruf biasa
+        h += '<span class="x-pg" data-p="' + nd.p + '" data-e="' + nodes[pg.o[k]].e + '"><span class="x-pp l"' + pp + '>' + (isAbs ? KURUNG_B : KURUNG_L) + '<span class="sr">' + (isAbs ? '|' : '(') + '</span></span>';
+        wrap.push(pg.o[k]);
+      } else if (bigC.hasOwnProperty(k)) {
+        h += '<span class="x-pp r"' + pp + '>' + (bigC[k] === 'b' ? KURUNG_B : KURUNG_R) + '<span class="sr">' + (bigC[k] === 'b' ? '|' : ')') + '</span></span>';
+      } else {
+        h += '<span' + (CALC_BIN[nd.s] && prevVal ? ' class="x-o"' : '') + pp + '>' + esc(sh.replace(/\./g, SEP)) + '</span>';   // operator biner diberi jarak
+      }
       prevVal = CALC_VALUE_END.test(nd.s);
     } else { h += calcNodeHTML(nd, st); prevVal = true; }
+    while (wrap.length && wrap[wrap.length - 1] === k) { h += '</span>'; wrap.pop(); }   // tutup pembungkus kurung yang berakhir di simpul ini
   }
   ln = nodes[nodes.length - 1];
   if (!(ln.t === 'r' && !ln.closed) && st.at(ln.e)) h += CURH;   // akar yang belum ditutup: kursor di ujung ada di dalamnya
