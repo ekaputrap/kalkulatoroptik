@@ -349,6 +349,7 @@ input:disabled, select:disabled { opacity: .62; }
 .calc-expr .cur { position: relative; z-index: 1; display: inline-block; width: 2px; height: 1.15em; margin: 0 -1px; vertical-align: text-bottom; background: var(--accent); pointer-events: none; animation: calc-blink 1.1s steps(1) infinite; }
 .x-o { margin: 0 .2em; }
 .x-fr { display: inline-grid; grid-template-rows: 1fr 1fr; vertical-align: middle; margin: 0 .14em; text-align: center; line-height: 1.2; }
+.x-fr.x-fit { grid-template-rows: auto auto; }   /* tidak simetris: tinggi pembilang dan penyebut apa adanya (diatur calcFitFr), jadi pecahan di dalam pecahan tidak menyisakan ruang kosong */
 .x-num { align-self: end; padding: 0 .22em .06em; border-bottom: 1.5px solid currentColor; }
 .x-den { align-self: start; padding: .06em .22em 0; }
 .x-w { margin-right: .08em; }
@@ -7274,6 +7275,7 @@ function route(nav) {
   $('#tabs').hidden = !tabs;
   document.body.classList.toggle('no-tabs', !tabs);
   document.title = cfg ? cfg.title : HOME_TITLE;
+  if (v === 'kalkulator') calcRender();   // pecahan diukur saat halaman sudah tampil
   if (v === 'snellen') snRender(); else snFullSet(false);   // chart diukur saat halaman sudah tampil. Layar penuh menutup saat pindah halaman.
   if (nav) {
     window.scrollTo(0, 0);
@@ -9370,6 +9372,28 @@ function calcNodeHTML(nd, st) {
   if (nd.t === 'f') return '<span class="x-fr"' + pr + '>' + one(sl[0], 'x-num') + one(sl[1], 'x-den') + '</span>';
   return '<span class="x-mx"' + pr + '>' + one(sl[0], 'x-w') + '<span class="x-fr">' + one(sl[1], 'x-num') + one(sl[2], 'x-den') + '</span></span>';
 }
+// Pecahan dibuat tidak simetris (baris pembilang dan penyebut setinggi isinya masing-masing), lalu garis pecahannya dinaikkan atau
+// diturunkan supaya tepat di sumbu hitung, sejajar tanda + dan −. Hasilnya pecahan di dalam pecahan tidak menyisakan ruang kosong,
+// dan kurung di sekelilingnya setinggi isi yang sebenarnya. Diukur dari yang terdalam dulu. Dilewati jika sedang tersembunyi (route() merender ulang saat tampil)
+function calcFitFr(root) {
+  if (!root || !root.getClientRects().length) return;
+  var fr = root.querySelectorAll('.x-fr'), i, f, num, pr, base, bar, r, k, fs;
+  for (i = 0; i < fr.length; i++) { fr[i].classList.add('x-fit'); fr[i].style.verticalAlign = 'baseline'; }
+  for (i = fr.length - 1; i >= 0; i--) {
+    f = fr[i]; num = f.firstElementChild;
+    if (!num || !f.parentNode) continue;
+    pr = document.createElement('i');   // penanda tanpa ukuran di garis dasar baris yang sama dengan pecahan
+    pr.style.cssText = 'display:inline-block;width:0;height:0;vertical-align:baseline';
+    f.parentNode.insertBefore(pr, f);
+    base = pr.getBoundingClientRect().bottom;
+    f.parentNode.removeChild(pr);
+    bar = num.getBoundingClientRect().bottom - .75;   // tengah garis pecahan (tebal 1.5px di tepi bawah pembilang)
+    r = f.getBoundingClientRect();
+    k = (f.offsetHeight && r.height) ? f.offsetHeight / r.height : 1;   // jaga-jaga jika ada transform skala di induknya
+    fs = parseFloat(getComputedStyle(f.parentNode).fontSize) || 16;
+    f.style.verticalAlign = ((bar - base) * k + .25 * fs).toFixed(2) + 'px';   // sumbu hitung kira-kira .25em di atas garis dasar
+  }
+}
 function calcRender() {
   var c = CS(), box = $('#calc-expr'), res = $('#calc-res');
   if (!box) return;
@@ -9379,6 +9403,7 @@ function calcRender() {
   if (c.expr === '') html = '<span class="ph">0</span>' + (st.on ? CURH : '');
   else html = calcSeq(calcTree(c.expr), 0, st, false);
   box.innerHTML = '<div class="x-in">' + html + '</div>';
+  calcFitFr(box);
   var ci = box.querySelector('.cur');   // jaga kursor tetap terlihat di layar yang sempit
   if (!ci || pos >= c.expr.length) box.scrollLeft = box.scrollWidth;
   else {
@@ -9446,6 +9471,7 @@ function calcHistView() {
       '</div></div></li>';
   }
   $('#ch-list').innerHTML = html;
+  calcFitFr($('#ch-list'));
 }
 // Ketuk di ekspresi = kursor pindah ke sela terdekat: sebelum atau sesudah karakter, awal atau akhir kotak isian, kiri atau kanan pecahan dan akar
 // Ketuk di luar semuanya: kiri teks = awal, kanan teks = akhir
@@ -9511,6 +9537,7 @@ function calcFxView() {
   }
   if (html === '') html = '<li class="ch-empty">' + esc(_T('rumus.tidak_ada_rumus_yang')) + '</li>';
   $('#fx-list').innerHTML = html;
+  calcFitFr($('#fx-list'));
 }
 $('#fx-tog').addEventListener('click', function () {
   calcFxOpen = !calcFxOpen;
