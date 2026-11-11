@@ -355,8 +355,8 @@ input:disabled, select:disabled { opacity: .62; }
 /* kurung (atau |...|) yang membungkus pecahan: tingginya mengikuti isi, jadi tidak kalah tinggi dari pecahan */
 .x-pg { position: relative; display: inline-block; padding: 0 .36em; }
 .x-pp { position: absolute; top: .04em; bottom: .04em; width: .3em; display: block; }
-.x-pp.l { left: .03em; }
-.x-pp.r { right: .03em; }
+.x-pp.x-pl { left: .03em; }
+.x-pp.x-pr { right: .03em; }   /* jangan pakai nama kelas .l / .r polos: .r sudah dipakai baris tabel (padding dan garis atas) */
 .x-pp svg { display: block; width: 100%; height: 100%; overflow: visible; }
 .x-pp path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .x-slot { display: inline-block; box-sizing: border-box; min-width: .66em; height: .95em; border: 1.5px dashed var(--ink-2); border-radius: 3px; vertical-align: -.08em; }
@@ -9342,10 +9342,10 @@ function calcSeq(nodes, a, st, boxed) {
       if (big) {   // kurung buka setinggi isinya: pembungkus dibuka di sini dan ditutup sesudah kurung tutupnya
         nm = isAbs ? '' : sh.slice(0, -1);
         if (nm) h += '<span' + pp + '>' + esc(nm.replace(/\./g, SEP)) + '</span>';   // nama fungsi (sin, log, ...) tetap huruf biasa
-        h += '<span class="x-pg" data-p="' + nd.p + '" data-e="' + nodes[pg.o[k]].e + '"><span class="x-pp l"' + pp + '>' + (isAbs ? KURUNG_B : KURUNG_L) + '<span class="sr">' + (isAbs ? '|' : '(') + '</span></span>';
+        h += '<span class="x-pg" data-p="' + nd.p + '" data-e="' + nodes[pg.o[k]].e + '"><span class="x-pp x-pl"' + pp + '>' + (isAbs ? KURUNG_B : KURUNG_L) + '<span class="sr">' + (isAbs ? '|' : '(') + '</span></span>';
         wrap.push(pg.o[k]);
       } else if (bigC.hasOwnProperty(k)) {
-        h += '<span class="x-pp r"' + pp + '>' + (bigC[k] === 'b' ? KURUNG_B : KURUNG_R) + '<span class="sr">' + (bigC[k] === 'b' ? '|' : ')') + '</span></span>';
+        h += '<span class="x-pp x-pr"' + pp + '>' + (bigC[k] === 'b' ? KURUNG_B : KURUNG_R) + '<span class="sr">' + (bigC[k] === 'b' ? '|' : ')') + '</span></span>';
       } else {
         h += '<span' + (CALC_BIN[nd.s] && prevVal ? ' class="x-o"' : '') + pp + '>' + esc(sh.replace(/\./g, SEP)) + '</span>';   // operator biner diberi jarak
       }
