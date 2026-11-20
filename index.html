@@ -2078,15 +2078,6 @@ html[data-sgc="on"] button .sgm { color: inherit; fill: inherit; }   /* daftar s
               <option value="1" data-t="snellen.1_m"></option>
             </select>
           </div>
-          <div class="f" role="radiogroup" aria-labelledby="lbl-sn-tv">
-            <span class="lbl" id="lbl-sn-tv">Remote TV (panah dan OK)</span>
-            <div class="seg">
-              <label><input type="radio" name="sn-tv" value="auto"><span>Otomatis</span></label>
-              <label><input type="radio" name="sn-tv" value="on"><span>Aktif</span></label>
-              <label><input type="radio" name="sn-tv" value="off"><span>Mati</span></label>
-            </div>
-            <p class="hint" id="sn-tvnote" style="margin:6px 0 0"></p>
-          </div>
         </div>
         <p class="hint" style="margin-top:12px" data-t="snellen.ukuran_huruf_mengikuti_jarak"></p>
         <details class="sn-how">
@@ -2099,18 +2090,6 @@ html[data-sgc="on"] button .sgm { color: inherit; fill: inherit; }   /* daftar s
             <li>Baca tentative spheris, cylinder, dan axis di Hasil, pasang di trial frame, lalu lanjutkan refraksi subjektif.</li>
             <li>Setelah cyl dan axis pas, ketuk Duochrome dan sesuaikan spheris sampai kedua sisi sama jelas (label OVER, UNDER, atau BALANCE tampil sesuai warna yang dipilih). Setelah lensa diganti, ketuk tombol S +0.25 atau S −0.25 (tombol ini menempel di sisi kanan tombol Duochrome, atau di bawah label saat layar penuh) supaya penyesuaian tercatat.</li>
           </ol>
-        </details>
-        <details class="sn-how" id="sn-tvhow">
-          <summary>Kontrol remote TV</summary>
-          <ul>
-            <li>Panah memindahkan sorotan (cincin hitam putih), OK memilih. Memindahkan sorotan tidak mengubah apa pun, hanya OK yang mengubah.</li>
-            <li>Chart: ↑ ↓ pindah baris, OK memilih baris. Di baris terpilih, → masuk ke huruf: ← → pindah huruf, OK menandai atau membatalkan huruf salah, ← dari huruf pertama kembali ke baris.</li>
-            <li>Fan dial: ← → pindah garis (0° di kiri sampai 180° di kanan), OK memilih garis terjelas.</li>
-            <li>Duochrome: ← → pindah sisi merah atau hijau, OK memilih sisi. Setelah lensa diganti, ↑ ke tombol S dan tekan OK.</li>
-            <li>↑ dari baris atau fan dial paling atas naik ke tombol alat (Pinhole, Fan dial, Duochrome, Satu baris, Acak, Layar penuh) dan OD/OS. ↓ kembali ke chart.</li>
-            <li>Kalibrasi: di slider, ← → menggeser skala (tahan untuk lebih cepat) dan OK = Kalibrasi sudah sesuai. Pilihan jarak uji juga diganti dengan ← →.</li>
-            <li>Tombol Kembali di remote menutup layar penuh.</li>
-          </ul>
         </details>
       </section>
 
@@ -3889,7 +3868,7 @@ var DIA_MAX = DIA_DEFAULT;   // diameter lensa standar di pasaran, bisa diubah d
 var SKEY = 'kks-settings-v1';
 var SN_PX_MIN = 0.8, SN_PX_MAX = 7;   // batas skala kalibrasi Snellen (px per mm). Layar TV besar bisa hanya ~1 px/mm, HP biasanya 5.3 sampai 6.5. Ubah juga min dan max di <input id="sn-px"> bila angka ini diganti
 var DEC_MIN = 2, DEC_MAX = 6, DEC_DEFAULT = 3;   // digit desimal hasil: tidak boleh kurang dari 2
-var SET = { theme: 'auto', anim: true, sgc: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0, tv: 'auto' };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
+var SET = { theme: 'auto', anim: true, sgc: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0 };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
 var SEP = '.';   // tampilan desimal pake titik atau koma
 // Lx: titik desimal di teks biasa. L: sama, buat potongan HTML (tag dilewati)
 function Lx(s) { return SEP === ',' ? String(s).replace(/(\d)\.(?=\d)/g, '$1,') : String(s); }
@@ -3910,7 +3889,6 @@ try {
   if (so && so.anim === false) SET.anim = false;
   if (so && so.sgc === false) SET.sgc = false;
   if (so && typeof so.snDpr === 'number' && so.snDpr > 0) SET.snDpr = so.snDpr;
-  if (so && /^(auto|on|off)$/.test(so.tv)) SET.tv = so.tv;   // remote TV (panah dan OK) di halaman Snellen: otomatis di peramban TV, atau dipaksa nyala atau mati
 } catch (e) {}
 DIA_MAX = SET.diaMax;
 DECP = SET.dec;
@@ -6481,7 +6459,7 @@ bindReset('#sn-reset', function () {
 // hanya OK yang mengubah (hasilnya sama persis dengan mengetuk). Sorotan dicatat sebagai deskripsi, bukan elemen, karena isi chart digambar ulang tiap render:
 //   { k: 'ctl', el, q } kontrol biasa (tombol, pilihan, slider)   { k: 'row', r } satu baris chart   { k: 'let', r, j } satu huruf di baris terpilih
 //   { k: 'fan', l } satu garis fan dial                           { k: 'dp', c } sisi merah (r) atau hijau (g) duochrome
-// Aktif otomatis di peramban TV (TV_UA), bisa dipaksa nyala atau mati di Pengaturan chart. Sengaja tanpa fungsi panah dan tanpa :focus-visible supaya jalan di peramban TV lama.
+// Aktif otomatis di peramban TV (TV_UA), tidak ada pengaturan untuk mematikannya. Sengaja tanpa fungsi panah dan tanpa :focus-visible supaya jalan di peramban TV lama.
 var TV_UA = /SMART-?TV|Tizen|Web0S|webOS|NetCast|BRAVIA|Android TV|GoogleTV|AFT[A-Z]{1,4}\b|CrKey|HbbTV|VIDAA|Hisense|Viera|Roku|\bTV\b/i.test(navigator.userAgent || '');
 var tvF = null;        // sorotan sekarang
 var tvBar = null;      // kontrol terakhir yang disorot di kepala kartu chart (tombol alat, OD/OS): tujuan saat naik dari chart
@@ -6489,7 +6467,7 @@ var tvChart = null;    // isi chart terakhir yang disorot: tujuan saat kembali d
 var tvAwake = false;   // false = sorotan disembunyikan (belum ada tombol remote, atau baru memakai layar sentuh atau kursor). Tombol pertama hanya memunculkannya
 var tvSlT = 0, tvSlN = 0;   // slider kalibrasi: waktu dan jumlah tekanan beruntun, untuk mempercepat langkah
 
-function tvOn() { return SET.tv === 'on' || (SET.tv !== 'off' && TV_UA); }
+function tvOn() { return TV_UA; }
 function tvActive() { return shown === 'snellen' && tvOn(); }
 function tvVis(el) {
   if (!el || !el.getClientRects || !el.getClientRects().length) return false;
@@ -6535,14 +6513,6 @@ function tvFix(f) {   // sorotan lama sudah tidak ada: cari penggantinya
   e = tvEntry();
   return tvResolve(e) ? e : tvDefault();
 }
-function tvSync() {
-  var v = SET.tv === 'on' || SET.tv === 'off' ? SET.tv : 'auto', n = $('#sn-tvnote'), msg;
-  Array.prototype.forEach.call(document.querySelectorAll('input[name="sn-tv"]'), function (r) { r.checked = r.value === v; });
-  if (!n) return;
-  msg = tvOn() ? (v === 'auto' ? 'Aktif otomatis karena peramban TV terdeteksi. ' : 'Aktif. ') + 'Panah memindahkan sorotan, OK memilih.'
-    : v === 'off' ? 'Mati. Panah dan Enter bekerja seperti biasa.' : 'Belum aktif karena ini bukan peramban TV. Pilih Aktif untuk memakai remote TV.';
-  if (n.textContent !== msg) n.textContent = msg;
-}
 // Keterangan tombol (hanya ikon di layar penuh): tampil di bawah tombol yang disorot, sama seperti saat kursor di atasnya
 function tvTip(el) {
   var tip = $('#sn-tip'), b = el && snFull && el.classList.contains('tr-btn') && el.closest('.sn-head') ? el : null, cb, cr, br, vw, w, x;
@@ -6578,7 +6548,6 @@ function tvScroll(dir) {   // tidak ada tujuan lagi di arah itu: gulir, supaya k
 function tvApply(reveal) {
   var old = document.querySelectorAll('.tvf'), i, el, f;
   for (i = 0; i < old.length; i++) old[i].classList.remove('tvf');
-  tvSync();
   if (!tvActive() || !tvAwake || !tvF) { tvTip(null); return; }
   f = tvF;
   if (f.k === 'let' && (S.sn.cht === 'duo' || snIsFan() || snActive() !== f.r)) f = { k: 'row', r: f.r };   // hanya baris terpilih yang hurufnya bisa ditandai
@@ -6774,13 +6743,6 @@ document.addEventListener('keydown', function (e) {
 ['pointerdown', 'mousedown', 'touchstart'].forEach(function (t) {
   document.addEventListener(t, function () { if (tvAwake) { tvAwake = false; tvApply(); } }, true);
 });
-document.addEventListener('change', function (e) {
-  var t = e.target;
-  if (!t || t.name !== 'sn-tv' || !t.checked) return;
-  SET.tv = /^(auto|on|off)$/.test(t.value) ? t.value : 'auto'; saveSet();
-  tvApply();
-});
-tvSync();
 
 
 function setLive(el, pre, mono, pyth) {
