@@ -75,7 +75,7 @@ html { -webkit-text-size-adjust: 100%; }
 body {
   background: var(--bg); color: var(--ink);
   font: 15px/1.45 var(--f-ui);
-  padding-block: 0 6.5rem;
+  padding-top: 0; padding-bottom: 6.5rem;   /* bukan padding-block: browser lama (TV, Chrome di bawah 87) mengabaikannya */
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -85,7 +85,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* header */
-.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px 14px; }
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 18px; padding-bottom: 14px; }
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 /* logo di header buat buka menu lain */
 .mark { position: relative; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
@@ -241,7 +241,7 @@ input:disabled, select:disabled { opacity: .62; }
 
 .seg { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--surface-2); }
 .seg label { flex: 1; position: relative; min-width: 0; }
-.seg input { position: absolute; inset: 0; opacity: 0; margin: 0; }
+.seg input { position: absolute; top: 0; right: 0; bottom: 0; left: 0; opacity: 0; margin: 0; }
 .seg span { display: block; text-align: center; padding: 12px 6px; font-size: .9rem; font-weight: 600; white-space: nowrap; }
 .seg input:checked + span { background: var(--accent); color: var(--accent-ink); }
 .seg input:disabled { cursor: not-allowed; }
@@ -255,9 +255,9 @@ input:disabled, select:disabled { opacity: .62; }
 
 /* hasil */
 .tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.tile { background: var(--surface-2); border-radius: 10px; padding: 10px 12px; min-width: 0; }
+.tile { display: flex; flex-direction: column; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; min-width: 0; }   /* kotak sebaris sama tinggi, label di atas dan angka di dasar: angka tetap sejajar walau label satu kotak satu baris (AXIS) dan yang lain dua baris (TENTATIVE SPHERIS) */
 .tile small { display: block; color: var(--ink-2); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700; }
-.tile b { display: block; font-family: var(--f-num); font-size: 1.55rem; line-height: 1.25; font-variant-numeric: tabular-nums; }
+.tile b { display: block; margin-top: auto; font-family: var(--f-num); font-size: 1.55rem; line-height: 1.25; font-variant-numeric: tabular-nums; }
 .tile.main { background: var(--accent); color: var(--accent-ink); }
 .tile.main small { color: inherit; opacity: .85; }
 .tile.main.over { background: var(--bad); color: var(--on-bad); }
@@ -366,13 +366,13 @@ input:disabled, select:disabled { opacity: .62; }
 .x-rs { position: absolute; left: 0; top: .75px; width: .9em; height: calc(100% - .75px); overflow: visible; }
 .x-rt.c3 .x-rs { left: .3em; }
 .x-gx { position: absolute; z-index: 2; left: .08em; top: .12em; width: .44em; height: .44em; box-sizing: border-box; border: 1.5px dashed var(--ink-2); border-radius: 2px; opacity: .7; cursor: pointer; }   /* kotak indeks di kiri atas akar kuadrat */
-.x-gx::after { content: ""; position: absolute; inset: -.45em -.3em -.25em -.35em; }   /* area ketuk lebih luas dari kotaknya */
+.x-gx::after { content: ""; position: absolute; top: -.45em; right: -.3em; bottom: -.25em; left: -.35em; }   /* area ketuk lebih luas dari kotaknya */
 .x-rs path { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .x-idx { position: absolute; left: .04em; top: .22em; font-size: .55em; line-height: 1; }
 .x-sup { font-size: .66em; vertical-align: .85em; line-height: 1; margin-left: .05em; }
 .x-ix { font-size: .58em; vertical-align: 1.2em; margin-right: -.5em; line-height: 1; }
 .x-nr > .x-ix { position: relative; z-index: 2; cursor: text; font-size: .76em; vertical-align: .95em; margin-right: -.72em; }   /* indeks akar n: lebih besar, tepat di atas ujung kiri tanda akar */   /* indeks akar pangkat n berada di atas lapisan akar (yang menimpanya karena margin negatif), supaya bisa diketuk untuk memindahkan kursor */
-.x-nr > .x-ix::after { content: ""; position: absolute; inset: -.7em -.15em -.3em -.45em; }   /* area ketuk indeks diperluas */
+.x-nr > .x-ix::after { content: ""; position: absolute; top: -.7em; right: -.15em; bottom: -.3em; left: -.45em; }   /* area ketuk indeks diperluas */
 .x-rc { display: inline-block; min-width: .6em; padding: .12em .24em 0 .14em; border-top: 1.5px solid currentColor; text-align: left; }
 .calc-res .x-fr { font-size: .85em; }
 .calc-res .x-num, .calc-res .x-den { line-height: 1.15; }
@@ -465,7 +465,7 @@ input:disabled, select:disabled { opacity: .62; }
   #v-kalkulator { --kh: clamp(42px, calc((100dvh - 330px) / 5.8), 64px); }
   #v-kalkulator.sci-on { --kh: clamp(40px, calc((100dvh - 356px) / 9), 56px); }
 }
-#v-kalkulator .top { padding-block: 8px 6px; }
+#v-kalkulator .top { padding-top: 8px; padding-bottom: 6px; }
 #v-kalkulator .back { width: 40px; height: 40px; }
 #v-kalkulator .brand h1 { font-size: 1.05rem; }
 #v-kalkulator .calc, #v-kalkulator .calc-keys { gap: 8px; }
@@ -698,7 +698,7 @@ html.bgpan, html.bgpan * { cursor: grabbing !important; }
 .sn-o svg { display: block; width: var(--h); height: var(--h); fill: #000; }
 .sn-o.miss { box-shadow: inset 0 -3px 0 #c62828; }
 /* chart layar penuh: chart memenuhi layar. Hanya tombol dan label baris yang melayang di atasnya (tanpa latar), teks lain disembunyikan */
-.sn-card.full { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; margin: 0; padding: 0; border: 0; border-radius: 0; overflow: auto; background: #fff; }
+.sn-card.full { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 40; display: flex; flex-direction: column; margin: 0; padding: 0; border: 0; border-radius: 0; overflow: auto; background: #fff; }
 .sn-card.full .sn-ttl, .sn-card.full #sn-warn, .sn-card.full #sn-notebox, .sn-card.full #sn-info { display: none; }
 .sn-card.full .sn-head { position: fixed; z-index: 3; margin: 0; padding: 0; background: none; pointer-events: none;
   top: max(8px, env(safe-area-inset-top, 0px)); left: max(8px, env(safe-area-inset-left, 0px)); right: max(8px, env(safe-area-inset-right, 0px)); }
@@ -757,13 +757,13 @@ html.bgpan, html.bgpan * { cursor: grabbing !important; }
 .sn-dw { display: flex; width: max-content; min-width: 100%; box-sizing: border-box; }
 .sn-dp { flex: 1 0 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; box-sizing: border-box; padding: 8px 12px; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 .sn-dr { padding: calc(var(--h) * .5) 0; }
-.sn-dw.one .sn-dr { padding-block: calc(var(--h) * 1.5); }
+.sn-dw.one .sn-dr { padding-top: calc(var(--h) * 1.5); padding-bottom: calc(var(--h) * 1.5); }
 .sn-dp.sn-cr { background: var(--duo-r); }
 .sn-dp.sn-cg { background: var(--duo-g); }
 /* sisi terpilih: garis di dasar sisi (seperti semula), berwarna kuning terang supaya jelas di atas merah maupun hijau. Warnanya diatur di --duo-pick */
 .sn-dp.on { box-shadow: inset 0 -5px 0 var(--duo-pick); }
 .sn-dp:focus-visible { outline: 3px solid #000; outline-offset: -3px; }
-.sn-card.full .sn-dw.one .sn-dr { padding-block: calc(var(--h) * 2.5); }
+.sn-card.full .sn-dw.one .sn-dr { padding-top: calc(var(--h) * 2.5); padding-bottom: calc(var(--h) * 2.5); }
 /* kelas .sn-duos (permukaan) dan .sn-din (pembungkus) dipasang dari JS. Sebelumnya memakai :has(), yang tidak jalan di browser lama sehingga panel tidak memenuhi tinggi layar dan putih terlihat */
 /* layar penuh + kartu tidak perlu digulir (kelas .sn-sw dari JS): geser atas-bawah dipakai untuk pindah baris, jadi gulir vertikal bawaan browser dan tarik-untuk-muat-ulang dimatikan. Geser ke samping tetap jalan. Kalau kartu perlu digulir (layar pendek), kelas ini lepas dan gulir bawaan dipakai */
 .sn-card.full.sn-sw, .sn-card.full.sn-sw .sn-surf { touch-action: pan-x; }
@@ -778,6 +778,7 @@ html.bgpan, html.bgpan * { cursor: grabbing !important; }
 .sn-in.sn-din { background: var(--duo-bg); }
 .sn-card.full.sn-duo { background: var(--duo-bg); }
 html.sn-duofull { background: var(--duo-bg); }
+html.sn-duofull body { background: var(--duo-bg); }   /* body punya latar sendiri (putih keabuan) yang menutupi latar html. Kalau kartu layar penuh tidak menutup seluruh layar (browser TV lama), yang terlihat tetap merah | hijau, bukan putih */
 .sn-surf.sn-duos { padding: 0; }
 .sn-card.full .sn-surf.sn-duos, .sn-card.full.sn-one .sn-surf.sn-duos { padding: 0; }
 /* layar penuh: kepala kartu punya satu baris tambahan (tombol Ganti lensa di bawah label), jadi padding atas panel ikut naik satu baris (48 px) */
@@ -825,11 +826,24 @@ html.sn-duofull { background: var(--duo-bg); }
 .sn-ex .pill { margin-left: auto; }
 .sn-how { margin-top: 12px; }
 .sn-how summary { cursor: pointer; font-size: .9rem; font-weight: 650; }
-.sn-how ol { margin: 8px 0 0; padding-left: 1.2rem; display: grid; gap: 4px; color: var(--ink-2); font-size: .85rem; }
+.sn-how ol, .sn-how ul { margin: 8px 0 0; padding-left: 1.2rem; display: grid; gap: 4px; color: var(--ink-2); font-size: .85rem; }
+/* kontrol remote TV: sorotan berupa cincin hitam dengan lingkar putih dalam, jadi terlihat di latar terang, gelap, merah, dan hijau. Dipasang dari JS (kelas .tvf), bukan :focus-visible, karena peramban TV lama belum mengenalnya */
+.tvf { outline: 4px solid #111 !important; outline-offset: 2px !important; box-shadow: 0 0 0 2px #fff !important; }
+.sn-eyes .tvf, .seg label.tvf { outline-offset: -4px !important; box-shadow: inset 0 0 0 6px #fff !important; }   /* di dalam pembungkus yang memotong tepi (overflow: hidden): cincin digambar ke dalam */
+.seg label.tvf { box-shadow: none !important; }
+.sn-r.tvf { outline-offset: -4px !important; box-shadow: none !important; }   /* baris: cincin tipis ke dalam supaya tidak menutup huruf baris terkecil */
+.sn-dp.tvf { outline-width: 6px !important; outline-offset: -6px !important; box-shadow: inset 0 0 0 9px #fff !important; }
+.sn-o.tvf { outline-offset: 3px !important; box-shadow: none !important; }
+.sn-o.tvf.miss { box-shadow: inset 0 -3px 0 #c62828 !important; }   /* tanda salah tetap terlihat saat huruf disorot */
+.sn-fl.tvf { outline: 0 !important; box-shadow: none !important; }
+.sn-fl.tvf .pl { stroke: #111; stroke-width: 3; fill: #ffe600; }
+.sn-fl.tvf text { fill: #111; }
 .ghost.sv { display: flex; align-items: center; justify-content: center; gap: 8px; }
 /* Kalibrasi pake kartu */
 .sn-cw { overflow-x: auto; padding: 4px 0 6px; }
-.sn-cbar { height: 44px; box-sizing: border-box; border: 2px solid var(--accent); border-radius: 8px; background: var(--accent-soft); display: grid; place-items: center; color: var(--accent); font: 700 .8rem var(--f-num); }
+.sn-cbar { height: 44px; box-sizing: border-box; border: 2px solid var(--accent); border-radius: 8px; background: var(--accent-soft); display: grid; place-items: center; overflow: hidden; color: var(--accent); font: 700 .8rem var(--f-num); }
+.sn-cbar.sm { font-size: 0; }   /* kotak terlalu sempit untuk teks (layar besar seperti TV, skala kecil): keterangan pindah ke bawah kotak (.sn-clab) */
+.sn-clab { margin-top: 6px; color: var(--accent); font: 700 .8rem var(--f-num); }
 .ig input[type="range"] { flex: 1; min-width: 0; height: 46px; margin: 0; accent-color: var(--accent); background: transparent; }
 /* pencarian */
 .srch { position: relative; margin: 0 0 14px; }
@@ -999,7 +1013,7 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 .lv-mer { flex: 1 1 140px; }   /* mengisi sisa baris, atau satu baris penuh jika sempit */
 .lv-mer button { font-family: var(--f-num); padding: 0 12px; }
 .lv-views { margin-bottom: 10px; }
-.lv-ov { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.lv-ov { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 .lv[data-m="3d"] .lg-f { background: #62c3de; opacity: 1; } .lv[data-m="3d"] .lg-b { background: #f2a15c; opacity: 1; } .lv[data-m="3d"] .lg-w { background: #dc9be9; opacity: .6; }
 .lv[data-m="3d"] .lg-t { background: #d5e0e8; opacity: .45; }
 .lv[data-m="3d"] .lg-gr { background: #f2a15c; opacity: .35; } .lv[data-m="3d"] .lg-fn { background: #f2a15c; opacity: .6; } .lv[data-m="3d"] .lg-pl { background: #f2a15c; opacity: .9; } .lv[data-m="3d"] .lg-bl { background: #f2a15c; opacity: .4; }
@@ -1009,11 +1023,11 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
 .lv-stage .lv-empty { padding: 28px 16px; text-align: center; }
 .lv-2d svg { display: block; width: 100%; height: auto; }
 .lv-gl { position: relative; aspect-ratio: 5 / 4; background: #1a232c; }
-.lv-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -3px; }
+.lv-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; outline-offset: -3px; }
 .lv-canvas:active { cursor: grabbing; }
 .lv-hint { position: absolute; left: 10px; right: 10px; bottom: 7px; margin: 0; font-size: .7rem; line-height: 1.3; color: #dbe5ec; opacity: .78; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,.7); transition: opacity .25s ease, visibility 0s; }
 .lv-hint.off { opacity: 0; visibility: hidden; transition: opacity .25s ease, visibility 0s .25s; }
-.lv-nogl { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; text-align: center; color: #dbe5ec; }
+.lv-nogl { position: absolute; top: 0; right: 0; bottom: 0; left: 0; display: grid; place-items: center; padding: 20px; text-align: center; color: #dbe5ec; }
 .lv-ctl { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2px 14px; margin-top: 10px; }
 .lv-ctl[hidden] { display: none; }
 .lv-cam { flex: 1 1 100%; margin-top: 6px; }
@@ -1213,7 +1227,36 @@ html[data-sgc="on"] input[data-sg="z"] { color: var(--zero); }
 html[data-sgc="on"] .sgp { color: var(--pos); fill: var(--pos); }
 html[data-sgc="on"] .sgm { color: var(--neg); fill: var(--neg); }
 /* di dalam kotak, tombol, dan label berlatar warna (mis. kotak Base Curve), angka ikut warna teks kotaknya biar tetap terbaca */
-html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .seg, .primary, .ch-tog, .mark, .mi-ico, .hbtn, button) :is(.sgp, .sgm) { color: inherit; fill: inherit; }
+html[data-sgc="on"] .tile .sgp,
+html[data-sgc="on"] .tile .sgm,
+html[data-sgc="on"] .pill .sgp,
+html[data-sgc="on"] .pill .sgm,
+html[data-sgc="on"] .msg .sgp,
+html[data-sgc="on"] .msg .sgm,
+html[data-sgc="on"] .live .sgp,
+html[data-sgc="on"] .live .sgm,
+html[data-sgc="on"] .chip .sgp,
+html[data-sgc="on"] .chip .sgm,
+html[data-sgc="on"] .ck .sgp,
+html[data-sgc="on"] .ck .sgm,
+html[data-sgc="on"] .tr-btn .sgp,
+html[data-sgc="on"] .tr-btn .sgm,
+html[data-sgc="on"] .cs .sgp,
+html[data-sgc="on"] .cs .sgm,
+html[data-sgc="on"] .seg .sgp,
+html[data-sgc="on"] .seg .sgm,
+html[data-sgc="on"] .primary .sgp,
+html[data-sgc="on"] .primary .sgm,
+html[data-sgc="on"] .ch-tog .sgp,
+html[data-sgc="on"] .ch-tog .sgm,
+html[data-sgc="on"] .mark .sgp,
+html[data-sgc="on"] .mark .sgm,
+html[data-sgc="on"] .mi-ico .sgp,
+html[data-sgc="on"] .mi-ico .sgm,
+html[data-sgc="on"] .hbtn .sgp,
+html[data-sgc="on"] .hbtn .sgm,
+html[data-sgc="on"] button .sgp,
+html[data-sgc="on"] button .sgm { color: inherit; fill: inherit; }   /* daftar selektor ditulis penuh, bukan :is(), karena browser TV lama (di bawah Chrome 88) membuang seluruh aturan yang memuat :is() */
 /* tombol + hijau, tombol − merah. Berlaku di semua halaman: data-dir (kalkulator, keratometer), data-d (Lensometer, Streak) */
 /* tanpa warna: tombol axis (.ax), geser skala kerato (.neu), kalibrasi Snellen (data-snpx), digit desimal Pengaturan (#dec-dn, #dec-up) */
 .step[data-dir="up"], .step[data-d="1"] { --pm: var(--pos); }
@@ -1227,6 +1270,170 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
 </style>
 </head>
 <body>
+<script>
+/* Kompatibilitas browser lama. Browser layar TV dan Android TV sering di bawah Chrome 84 dan belum mengenal "gap" pada flexbox.
+   Tanpa gap, ikon menempel ke teks, tombol alat saling menempel, dan kepala kartu berantakan. Skrip ini hanya aktif bila gap flex
+   tidak didukung: browser baru cuma menjalankan pengecekan kecil di awal lalu berhenti, tidak ada yang berubah di sana.
+   Jarak dipasang sebagai margin inline pada elemen sebelumnya (margin-right; margin-top untuk baris kedua dan seterusnya pada
+   kontainer yang membungkus). Nilainya dibaca dari column-gap dan row-gap yang tertulis di CSS, jadi CSS tetap satu-satunya sumber
+   angka jarak. Margin dihitung ulang tiap isi halaman, tampilan, atau ukuran layar berubah. */
+(function () {
+  var FORCE = window.__fgForce === true;   // hanya untuk uji di browser baru: paksa aktif dan matikan gap bawaan, supaya tampilannya sama dengan browser lama
+  try {
+    var probe = document.createElement('div');
+    probe.style.cssText = 'display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';
+    probe.appendChild(document.createElement('div'));
+    probe.appendChild(document.createElement('div'));
+    document.body.appendChild(probe);
+    var ok = probe.scrollHeight === 1;
+    document.body.removeChild(probe);
+    if (ok && !FORCE) return;
+  } catch (err) { return; }
+
+  var ready = false, dirty = [], tmr = 0;
+  function px(v) { return /px$/.test(v) ? parseFloat(v) || 0 : 0; }
+
+  // margin inline yang dipasang disimpan di kontainer (c._fgm = [[elemen, properti, nilai inline asli], ...]) supaya bisa dilepas lagi
+  function mset(c, e, prop, val) {   // val = teks margin, atau null untuk mengembalikan nilai asli
+    var st = c._fgm, k;
+    for (k = 0; k < st.length; k++) if (st[k][0] === e && st[k][1] === prop) break;
+    if (k === st.length) { if (val === null) return; st.push([e, prop, e.style[prop]]); }
+    e.style[prop] = val === null ? st[k][2] : val;
+  }
+  function release(c) {
+    var st = c._fgm, i;
+    if (!st) return;
+    c._fgm = null;
+    for (i = 0; i < st.length; i++) st[i][0].style[st[i][1]] = st[i][2];
+    if (FORCE) { c.style.columnGap = ''; c.style.rowGap = ''; }
+  }
+
+  // anak yang ikut tata letak flex: yang display:none, melayang (absolute atau fixed) dilewati. display:contents diganti anak-anaknya.
+  // Urutan visual: order, lalu urutan DOM. Margin yang sudah ada dibaca supaya tidak hilang saat jarak ditambahkan
+  function items(c, out) {
+    var ch = c.children, i, e, cs, d, p;
+    for (i = 0; i < ch.length; i++) {
+      e = ch[i]; cs = getComputedStyle(e); d = cs.display;
+      if (d === 'none') continue;
+      if (d === 'contents') { items(e, out); continue; }
+      p = cs.position;
+      if (p === 'absolute' || p === 'fixed') continue;
+      out.push({ e: e, o: parseInt(cs.order, 10) || 0, n: out.length, g: parseFloat(cs.flexGrow) > 0, w: e.getBoundingClientRect().width, mr: px(cs.marginRight), ml: px(cs.marginLeft), mt: px(cs.marginTop), mb: px(cs.marginBottom) });
+    }
+    return out;
+  }
+
+  // cari semua kontainer flex yang tampil di bawah el
+  function scan(el, list) {
+    var ch = el.children, i, cs, d;
+    if (!ch.length || el.namespaceURI !== 'http://www.w3.org/1999/xhtml') return;
+    cs = getComputedStyle(el); d = cs.display;
+    if (d === 'none') return;
+    if (d === 'flex' || d === 'inline-flex') list.push(el);
+    else if (el._fgm) release(el);
+    for (i = 0; i < ch.length; i++) scan(ch[i], list);
+  }
+
+  // jarak utama: margin pada elemen sebelumnya, ditambahkan ke margin yang sudah ada. Pengecualian s.keep: baris tanpa sisa ruang padahal ada margin
+  // di sisi itu = margin:auto yang sedang menyerap sisa ruang (mis. bar alat di layar penuh), jangan diubah jadi angka tetap
+  function put(s) {
+    var c = s.c, it = s.it, i, prop, cur;
+    c._fgm = c._fgm || [];
+    if (FORCE) { c.style.columnGap = '0px'; c.style.rowGap = '0px'; }
+    prop = s.col ? (s.rev ? 'marginTop' : 'marginBottom') : (s.rev ? 'marginLeft' : 'marginRight');
+    cur = s.col ? (s.rev ? 'mt' : 'mb') : (s.rev ? 'ml' : 'mr');
+    for (i = 0; i < it.length - 1; i++) if (!(s.keep && it[i][cur])) mset(c, it[i].e, prop, (it[i][cur] + s.gap) + 'px');
+  }
+
+  // kontainer yang membungkus: ukur baris sebenarnya, lalu jarak antar-kolom hanya di dalam baris dan jarak antar-baris (margin-top) mulai baris kedua.
+  // Memasang margin bisa mengubah letak pembungkusan, jadi diulang sampai susunan baris tidak berubah (paling banyak 6 putaran)
+  function lines(it) {
+    var n = it.length, ln = [0], row = 0, bot = it[0].e.offsetTop + it[0].e.offsetHeight, i, t, b;
+    for (i = 1; i < n; i++) {
+      t = it[i].e.offsetTop; b = t + it[i].e.offsetHeight;
+      if (t >= bot - 0.5) { row++; bot = b; } else if (b > bot) bot = b;
+      ln.push(row);
+    }
+    return ln;
+  }
+  function fit(s) {
+    var it = s.it, n = it.length, c = s.c, prop = s.rev ? 'marginLeft' : 'marginRight', cur = s.rev ? 'ml' : 'mr', i, k, ln, sig, last = '';
+    for (i = 0; i < n; i++) last += '0,';
+    for (k = 0; k < 6; k++) {
+      ln = lines(it); sig = ln.join(',') + ',';
+      if (sig === last) break;
+      last = sig;
+      for (i = 0; i < n; i++) {
+        mset(c, it[i].e, prop, (i < n - 1 && ln[i] === ln[i + 1]) ? (it[i][cur] + s.cgap) + 'px' : null);
+        if (s.rgap) mset(c, it[i].e, 'marginTop', ln[i] > 0 ? (it[i].mt + s.rgap) + 'px' : null);
+      }
+    }
+  }
+
+  // true bila baris satu garis tanpa sisa ruang dan tanpa anak yang melar (flex-grow): margin yang ada di baris seperti itu adalah margin:auto
+  function auto(c, cs, it, skip) {
+    var i, sum = 0;
+    if (skip) return false;
+    for (i = 0; i < it.length; i++) { if (it[i].g) return false; sum += it[i].w + it[i].ml + it[i].mr; }
+    return Math.abs(c.clientWidth - px(cs.paddingLeft) - px(cs.paddingRight) - sum) <= 1.5;
+  }
+
+  function apply(list) {
+    var i, c, cs, cg, rg, dir, col, wrap, it, st = [];
+    for (i = 0; i < list.length; i++) release(list[i]);   // 1. lepas margin lama dulu, supaya yang dibaca adalah nilai dari CSS saja
+    for (i = 0; i < list.length; i++) {                   // 2. baca semuanya sekaligus (satu kali hitung tata letak)
+      c = list[i]; cs = getComputedStyle(c);
+      cg = px(cs.columnGap); rg = px(cs.rowGap);
+      if (!cg && !rg) continue;
+      dir = cs.flexDirection; col = dir === 'column' || dir === 'column-reverse';
+      wrap = !col && cs.flexWrap === 'wrap';   // wrap-reverse dan wrap kolom jarang dipakai, dianggap tidak membungkus
+      it = items(c, []);
+      if (it.length < 2) continue;
+      it.sort(function (a, b) { return a.o - b.o || a.n - b.n; });
+      st.push({ c: c, it: it, col: col, rev: dir === 'row-reverse' || dir === 'column-reverse', wrap: wrap, gap: col ? rg : cg, cgap: cg, rgap: wrap ? rg : 0, keep: auto(c, cs, it, col || wrap) });
+    }
+    for (i = 0; i < st.length; i++) put(st[i]);            // 3. pasang
+    for (i = 0; i < st.length; i++) if (st[i].wrap) fit(st[i]);   // 4. kontainer pembungkus: koreksi sesuai baris sebenarnya
+  }
+
+  function flush() {
+    var roots = dirty, keep = [], list = [], i, j, r, dup;
+    dirty = [];
+    if (roots.length > 30) roots = [document.body];
+    for (i = 0; i < roots.length; i++) {
+      r = roots[i];
+      if (!r.isConnected) continue;
+      dup = false;
+      for (j = 0; j < roots.length && !dup; j++) if (j !== i && roots[j] !== r && roots[j].contains(r)) dup = true;
+      for (j = 0; j < keep.length && !dup; j++) if (keep[j] === r) dup = true;
+      if (dup) continue;
+      // lewati bagian yang tidak tampil (mis. tampilan lain yang disembunyikan): tidak ada yang perlu diukur
+      if (r !== document.body && r !== document.documentElement && !r.getClientRects().length && getComputedStyle(r).display !== 'contents') continue;
+      keep.push(r);
+    }
+    for (i = 0; i < keep.length; i++) scan(keep[i], list);
+    if (list.length) apply(list);
+  }
+  function all() { dirty.push(document.body); flush(); }
+
+  // dijalankan di dalam callback observer (microtask), sebelum browser menggambar, jadi tidak ada kedipan layout tanpa jarak
+  new MutationObserver(function (ms) {
+    var i, t;
+    if (!ready) return;
+    for (i = 0; i < ms.length; i++) {
+      t = ms[i].target;
+      t = t.nodeType === 1 ? (t.parentElement || t) : null;   // induknya ikut dihitung ulang: isi atau tampilnya anak mengubah jarak dan pembungkusan di induk
+      if (t) dirty.push(t);
+    }
+    flush();
+  }).observe(document.documentElement, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'hidden'] });
+
+  document.addEventListener('DOMContentLoaded', function () { ready = true; all(); });
+  window.addEventListener('load', all);
+  window.addEventListener('orientationchange', function () { setTimeout(all, 150); });
+  window.addEventListener('resize', function () { clearTimeout(tmr); tmr = setTimeout(all, 120); });
+})();
+</script>
 <div class="app">
   <!-- homepage. tampilan pertama saat file dibuka -->
   <div id="v-home">
@@ -1837,12 +2044,12 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
       <section class="card" id="sn-cal">
         <div class="eye-h"><h2 data-t="snellen.kalibrasi_ukuran_layar"></h2><span class="pill" id="sn-calpill"></span></div>
         <p class="hint" data-t="snellen.agar_huruf_berukuran_sebenarnya"></p>
-        <div class="sn-cw"><div class="sn-cbar" id="sn-cbar" data-t="snellen.kartu_54_mm"></div></div>
+        <div class="sn-cw"><div class="sn-cbar" id="sn-cbar" data-t="snellen.kartu_54_mm"></div><div class="sn-clab" id="sn-clab" data-t="snellen.kartu_54_mm" hidden></div></div>
         <div class="f" style="margin-top:14px">
           <div class="kr-lbl"><label for="sn-px"><span data-t="snellen.skala"></span> <small data-t="snellen.px_per_mm"></small></label><span class="kr-d" id="sn-px-d"></span></div>
           <div class="ig">
             <button type="button" class="step" data-snpx="down" data-t-aria-label="snellen.kecilkan_skala_0_01" data-t-title="snellen.kecilkan"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.5 4l-6 6 6 6"/></svg></button>
-            <input type="range" id="sn-px" min="2" max="9" step="0.01" data-t-aria-label="snellen.skala_layar_piksel_per">
+            <input type="range" id="sn-px" min="0.8" max="7" step="0.01" data-t-aria-label="snellen.skala_layar_piksel_per">
             <button type="button" class="step" data-snpx="up" data-t-aria-label="snellen.besarkan_skala_0_01" data-t-title="snellen.besarkan"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 4l6 6-6 6"/></svg></button>
           </div>
         </div>
@@ -1871,6 +2078,15 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
               <option value="1" data-t="snellen.1_m"></option>
             </select>
           </div>
+          <div class="f" role="radiogroup" aria-labelledby="lbl-sn-tv">
+            <span class="lbl" id="lbl-sn-tv">Remote TV (panah dan OK)</span>
+            <div class="seg">
+              <label><input type="radio" name="sn-tv" value="auto"><span>Otomatis</span></label>
+              <label><input type="radio" name="sn-tv" value="on"><span>Aktif</span></label>
+              <label><input type="radio" name="sn-tv" value="off"><span>Mati</span></label>
+            </div>
+            <p class="hint" id="sn-tvnote" style="margin:6px 0 0"></p>
+          </div>
         </div>
         <p class="hint" style="margin-top:12px" data-t="snellen.ukuran_huruf_mengikuti_jarak"></p>
         <details class="sn-how">
@@ -1883,6 +2099,18 @@ html[data-sgc="on"] :is(.tile, .pill, .msg, .live, .chip, .ck, .tr-btn, .cs, .se
             <li>Baca tentative spheris, cylinder, dan axis di Hasil, pasang di trial frame, lalu lanjutkan refraksi subjektif.</li>
             <li>Setelah cyl dan axis pas, ketuk Duochrome dan sesuaikan spheris sampai kedua sisi sama jelas (label OVER, UNDER, atau BALANCE tampil sesuai warna yang dipilih). Setelah lensa diganti, ketuk tombol S +0.25 atau S −0.25 (tombol ini menempel di sisi kanan tombol Duochrome, atau di bawah label saat layar penuh) supaya penyesuaian tercatat.</li>
           </ol>
+        </details>
+        <details class="sn-how" id="sn-tvhow">
+          <summary>Kontrol remote TV</summary>
+          <ul>
+            <li>Panah memindahkan sorotan (cincin hitam putih), OK memilih. Memindahkan sorotan tidak mengubah apa pun, hanya OK yang mengubah.</li>
+            <li>Chart: ↑ ↓ pindah baris, OK memilih baris. Di baris terpilih, → masuk ke huruf: ← → pindah huruf, OK menandai atau membatalkan huruf salah, ← dari huruf pertama kembali ke baris.</li>
+            <li>Fan dial: ← → pindah garis (0° di kiri sampai 180° di kanan), OK memilih garis terjelas.</li>
+            <li>Duochrome: ← → pindah sisi merah atau hijau, OK memilih sisi. Setelah lensa diganti, ↑ ke tombol S dan tekan OK.</li>
+            <li>↑ dari baris atau fan dial paling atas naik ke tombol alat (Pinhole, Fan dial, Duochrome, Satu baris, Acak, Layar penuh) dan OD/OS. ↓ kembali ke chart.</li>
+            <li>Kalibrasi: di slider, ← → menggeser skala (tahan untuk lebih cepat) dan OK = Kalibrasi sudah sesuai. Pilihan jarak uji juga diganti dengan ← →.</li>
+            <li>Tombol Kembali di remote menutup layar penuh.</li>
+          </ul>
         </details>
       </section>
 
@@ -3659,8 +3887,9 @@ var DIA_MAX = DIA_DEFAULT;   // diameter lensa standar di pasaran, bisa diubah d
 
 /* ---------- Pengaturan ---------- */
 var SKEY = 'kks-settings-v1';
+var SN_PX_MIN = 0.8, SN_PX_MAX = 7;   // batas skala kalibrasi Snellen (px per mm). Layar TV besar bisa hanya ~1 px/mm, HP biasanya 5.3 sampai 6.5. Ubah juga min dan max di <input id="sn-px"> bila angka ini diganti
 var DEC_MIN = 2, DEC_MAX = 6, DEC_DEFAULT = 3;   // digit desimal hasil: tidak boleh kurang dari 2
-var SET = { theme: 'auto', anim: true, sgc: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0 };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
+var SET = { theme: 'auto', anim: true, sgc: true, diaMax: DIA_DEFAULT, dec: DEC_DEFAULT, sep: '.', snPx: 3.78, snCal: false, snDpr: 0, tv: 'auto' };   // sn*: kalibrasi layar untuk Snellen Chart (px per mm, sudah dikonfirmasi, dan devicePixelRatio saat itu)
 var SEP = '.';   // tampilan desimal pake titik atau koma
 // Lx: titik desimal di teks biasa. L: sama, buat potongan HTML (tag dilewati)
 function Lx(s) { return SEP === ',' ? String(s).replace(/(\d)\.(?=\d)/g, '$1,') : String(s); }
@@ -3676,11 +3905,12 @@ try {
   if (so && typeof so.diaMax === 'number' && so.diaMax >= 60 && so.diaMax <= 200) SET.diaMax = so.diaMax;
   if (so && Number.isInteger(so.dec) && so.dec >= DEC_MIN && so.dec <= DEC_MAX) SET.dec = so.dec;
   if (so && (so.sep === '.' || so.sep === ',')) SET.sep = so.sep;
-  if (so && typeof so.snPx === 'number' && so.snPx >= 2 && so.snPx <= 9) SET.snPx = so.snPx;
-  if (so && so.snCal === true) SET.snCal = true;
+  if (so && typeof so.snPx === 'number' && isFinite(so.snPx)) SET.snPx = Math.max(SN_PX_MIN, Math.min(SN_PX_MAX, so.snPx));   // di luar batas (mis. tersimpan sebelum batas diubah): ditepatkan ke batas
+  if (so && so.snCal === true && SET.snPx === so.snPx) SET.snCal = true;   // nilai yang harus ditepatkan = belum dikalibrasi, perlu dikonfirmasi ulang
   if (so && so.anim === false) SET.anim = false;
   if (so && so.sgc === false) SET.sgc = false;
   if (so && typeof so.snDpr === 'number' && so.snDpr > 0) SET.snDpr = so.snDpr;
+  if (so && /^(auto|on|off)$/.test(so.tv)) SET.tv = so.tv;   // remote TV (panah dan OK) di halaman Snellen: otomatis di peramban TV, atau dipaksa nyala atau mati
 } catch (e) {}
 DIA_MAX = SET.diaMax;
 DECP = SET.dec;
@@ -5625,7 +5855,7 @@ var SN_DISTS = [6, 5, 4, 3, 2, 1];
 var SN_K = Math.tan(5 / 60 * Math.PI / 180) * 1000 / 6;   // mm per (D × d): h = D × d × SN_K
 var SN_LAB = 58;                                          // lebar kolom label baris (3.6rem) dalam px
 var SN_CARD = 53.98;                                      // sisi pendek kartu ID-1 (ATM, KTP) dalam mm
-var SN_PX_MIN = 2, SN_PX_MAX = 9;
+// SN_PX_MIN dan SN_PX_MAX didefinisikan di bagian Pengaturan (dibaca saat memuat pengaturan tersimpan)
 var snFull = false;
 var snLabFan = false;   // mode semua baris: ketukan terakhir di fan dial (label baris terpilih menampilkan axis, mis. OD | X 180). Ketuk baris, ganti mata, pinhole, tampilan, atau chart: kembali ke SC/PH. Tidak disimpan
 var snClrT = null;   // "Hapus catatan" butuh dua ketukan: ketukan pertama hanya mengaktifkan, padam sendiri setelah 3,5 detik. Status disimpan di sini karena tombolnya digambar ulang tiap render
@@ -5999,7 +6229,10 @@ function snRender() {
 
   $('#sn-res').innerHTML = L(snResHTML(a));
 
-  $('#sn-cbar').style.width = (SN_CARD * px).toFixed(1) + 'px';
+  var cbw = SN_CARD * px, cbs = cbw < 100;   // kotak sempit (di bawah 100 px): teks "Kartu 54 mm" tidak muat di dalamnya, tampil di bawah kotak
+  $('#sn-cbar').style.width = cbw.toFixed(1) + 'px';
+  $('#sn-cbar').classList.toggle('sm', cbs);
+  $('#sn-clab').hidden = !cbs;
   // Slider selalu disamakan dengan skala, juga saat slider masih terfokus (setelah digeser, atau di layar sentuh tempat tombol panah tidak mengambil fokus). setVal() melewatkan elemen terfokus sehingga tombolnya terlihat tidak bekerja
   var pxr = $('#sn-px'); if (parseFloat(pxr.value) !== px) pxr.value = String(px);
   $('#sn-px-d').textContent = Lx(px.toFixed(2)) + ' px/mm';
@@ -6009,6 +6242,7 @@ function snRender() {
 
   var fh = L(snFormulaRows().map(function (g) { return '<div><dt>' + g.dt + '</dt><dd>' + g.dd + '</dd></div>'; }).join(''));
   if ($('#sn-rumus').innerHTML !== fh) $('#sn-rumus').innerHTML = fh;
+  tvApply();   // chart dan kartu Hasil digambar ulang di atas: sorotan remote TV dipasang lagi
 }
 
 // layar penuh + duochrome: latar halaman di belakang kartu (area tarik/overscroll di HP, strip di bawah toolbar browser) juga merah | hijau, bukan putih
@@ -6229,6 +6463,7 @@ document.addEventListener('keydown', function (e) {
   c.addEventListener('click', function (e) { if (Date.now() < block) { e.stopPropagation(); e.preventDefault(); } }, true);
 })();
 // Kalibrasi: geser, atau tombol kiri dan kanan (ketuk = 0.01 px per mm, tahan = mengulang)
+$('#sn-px').min = String(SN_PX_MIN); $('#sn-px').max = String(SN_PX_MAX);   // sumber tunggal: sama dengan konstanta di atas
 $('#sn-px').addEventListener('input', function () { var v = parseFloat(this.value); if (!isNaN(v)) snSetPx(v); });
 holdRepeat(document, '[data-snpx]', function (b) { snNudge(b.dataset.snpx === 'up' ? 1 : -1); }, { delay: 450, every: 45, fast: 45 });
 document.addEventListener('contextmenu', function (e) {
@@ -6240,6 +6475,313 @@ bindReset('#sn-reset', function () {
   clearTimeout(snClrT); snClrT = null; snLabFan = false;
   S.sn = blank().sn; hydrate(); save(); update();
 });
+
+/* ---------- Kontrol remote TV (hanya panah dan OK) ---------- */
+// TV tanpa layar sentuh: panah memindahkan sorotan (cincin hitam dengan lingkar putih, kelas .tvf) dan OK = ketuk. Memindahkan sorotan tidak mengubah data apa pun,
+// hanya OK yang mengubah (hasilnya sama persis dengan mengetuk). Sorotan dicatat sebagai deskripsi, bukan elemen, karena isi chart digambar ulang tiap render:
+//   { k: 'ctl', el, q } kontrol biasa (tombol, pilihan, slider)   { k: 'row', r } satu baris chart   { k: 'let', r, j } satu huruf di baris terpilih
+//   { k: 'fan', l } satu garis fan dial                           { k: 'dp', c } sisi merah (r) atau hijau (g) duochrome
+// Aktif otomatis di peramban TV (TV_UA), bisa dipaksa nyala atau mati di Pengaturan chart. Sengaja tanpa fungsi panah dan tanpa :focus-visible supaya jalan di peramban TV lama.
+var TV_UA = /SMART-?TV|Tizen|Web0S|webOS|NetCast|BRAVIA|Android TV|GoogleTV|AFT[A-Z]{1,4}\b|CrKey|HbbTV|VIDAA|Hisense|Viera|Roku|\bTV\b/i.test(navigator.userAgent || '');
+var tvF = null;        // sorotan sekarang
+var tvBar = null;      // kontrol terakhir yang disorot di kepala kartu chart (tombol alat, OD/OS): tujuan saat naik dari chart
+var tvChart = null;    // isi chart terakhir yang disorot: tujuan saat kembali dari tombol alat
+var tvAwake = false;   // false = sorotan disembunyikan (belum ada tombol remote, atau baru memakai layar sentuh atau kursor). Tombol pertama hanya memunculkannya
+var tvSlT = 0, tvSlN = 0;   // slider kalibrasi: waktu dan jumlah tekanan beruntun, untuk mempercepat langkah
+
+function tvOn() { return SET.tv === 'on' || (SET.tv !== 'off' && TV_UA); }
+function tvActive() { return shown === 'snellen' && tvOn(); }
+function tvVis(el) {
+  if (!el || !el.getClientRects || !el.getClientRects().length) return false;
+  return getComputedStyle(el).visibility !== 'hidden';
+}
+function tvDesc(el) {
+  var q = el.id ? '#' + el.id : el.getAttribute('data-sn') ? '[data-sn="' + el.getAttribute('data-sn') + '"]' : null;   // q: cara menemukan lagi kontrol yang digambar ulang (tombol di kartu Hasil)
+  return { k: 'ctl', el: el, q: q };
+}
+function tvFanDef() { var d = snDl(snEye()); return typeof d === 'number' ? d : 90; }
+// Tujuan saat masuk ke chart dari atas: baris terpilih, atau fan dial bila belum ada baris terpilih, atau sisi duochrome
+function tvEntry() {
+  var a = snActive();
+  if (S.sn.cht === 'duo') return tvChart && tvChart.k === 'dp' ? tvChart : { k: 'dp', c: 'r' };
+  if (snIsFan()) return { k: 'fan', l: tvFanDef() };
+  if (S.sn.view === 'single') return { k: 'row', r: a < 0 ? 0 : a };
+  if (a >= 0) return { k: 'row', r: a };
+  return S.sn.fan !== 'off' ? { k: 'fan', l: tvFanDef() } : { k: 'row', r: 0 };
+}
+function tvDefault() {   // sorotan pertama: di layar penuh isi chart. Selain itu slider kalibrasi bila belum dikalibrasi, kalau sudah: tombol Layar penuh
+  var e = tvEntry(), cal = SET.snCal && !(SET.snDpr > 0 && Math.abs((window.devicePixelRatio || 1) - SET.snDpr) > 0.01);
+  if (snFull && tvResolve(e)) return e;
+  return tvDesc($(cal ? '#sn-full' : '#sn-px'));
+}
+function tvResolve(f) {
+  var s = $('#sn-surf'), el = null;
+  if (!f) return null;
+  if (f.k === 'ctl') {
+    el = f.el;
+    if ((!el || !document.documentElement.contains(el)) && f.q) el = $(f.q);
+    return tvVis(el) ? el : null;
+  }
+  if (f.k === 'row') el = s.querySelector('.sn-r[data-r="' + f.r + '"]');
+  else if (f.k === 'let') el = s.querySelector('.sn-r[data-r="' + f.r + '"] .sn-o[data-j="' + f.j + '"]');
+  else if (f.k === 'fan') el = s.querySelector('.sn-fl[data-l="' + f.l + '"]');
+  else if (f.k === 'dp') el = s.querySelector('.sn-dp[data-c="' + f.c + '"]');
+  return el;
+}
+function tvFix(f) {   // sorotan lama sudah tidak ada: cari penggantinya
+  var e;
+  if (f && f.k === 'let' && tvResolve({ k: 'row', r: f.r })) return { k: 'row', r: f.r };
+  if (tvChart && tvResolve(tvChart)) return tvChart;   // mis. tombol S ±0.25 hilang setelah dipakai: kembali ke sisi duochrome
+  e = tvEntry();
+  return tvResolve(e) ? e : tvDefault();
+}
+function tvSync() {
+  var v = SET.tv === 'on' || SET.tv === 'off' ? SET.tv : 'auto', n = $('#sn-tvnote'), msg;
+  Array.prototype.forEach.call(document.querySelectorAll('input[name="sn-tv"]'), function (r) { r.checked = r.value === v; });
+  if (!n) return;
+  msg = tvOn() ? (v === 'auto' ? 'Aktif otomatis karena peramban TV terdeteksi. ' : 'Aktif. ') + 'Panah memindahkan sorotan, OK memilih.'
+    : v === 'off' ? 'Mati. Panah dan Enter bekerja seperti biasa.' : 'Belum aktif karena ini bukan peramban TV. Pilih Aktif untuk memakai remote TV.';
+  if (n.textContent !== msg) n.textContent = msg;
+}
+// Keterangan tombol (hanya ikon di layar penuh): tampil di bawah tombol yang disorot, sama seperti saat kursor di atasnya
+function tvTip(el) {
+  var tip = $('#sn-tip'), b = el && snFull && el.classList.contains('tr-btn') && el.closest('.sn-head') ? el : null, cb, cr, br, vw, w, x;
+  if (!tip) return;
+  if (!b || !b.getAttribute('data-tip')) { tip.hidden = true; return; }
+  tip.textContent = b.getAttribute('data-tip'); tip.hidden = false;
+  cb = tip.offsetParent || tip.parentNode; cr = cb.getBoundingClientRect(); br = b.getBoundingClientRect();
+  vw = document.documentElement.clientWidth; w = tip.offsetWidth;
+  x = Math.max(8, Math.min(br.left + br.width / 2 - w / 2, vw - w - 8));
+  tip.style.left = (x - cr.left) + 'px'; tip.style.top = (br.bottom - cr.top + 6) + 'px';
+}
+// Geser halaman (atau kartu chart di layar penuh) secukupnya supaya sorotan terlihat. Dihitung sendiri, tidak lewat scrollIntoView, karena peramban TV lama tidak mengenal opsinya
+function tvReveal(el) {
+  var r = el.getBoundingClientRect(), vh = window.innerHeight || document.documentElement.clientHeight || 600, s = $('#sn-surf'), sr, d;
+  if (el.classList.contains('sn-o')) {   // chart yang lebih lebar dari layar: huruf digeser ke samping
+    sr = s.getBoundingClientRect();
+    if (r.left < sr.left + 8) s.scrollLeft += r.left - sr.left - 8;
+    else if (r.right > sr.right - 8) s.scrollLeft += r.right - sr.right + 8;
+  }
+  if (snFull) {
+    if (el.closest('.sn-head')) return;   // kepala kartu melayang, tidak ikut tergulir
+    d = r.top < 130 ? r.top - 130 : r.bottom > vh - 16 ? r.bottom - vh + 16 : 0;
+    if (d) $('#sn-chartcard').scrollTop += d;
+    return;
+  }
+  d = r.top < 16 ? r.top - 16 : r.bottom > vh - 16 ? r.bottom - vh + 16 : 0;
+  if (d) window.scrollBy(0, d);
+}
+function tvScroll(dir) {   // tidak ada tujuan lagi di arah itu: gulir, supaya kartu Hasil yang tanpa tombol tetap bisa dibaca
+  var d = (dir === 'down' ? 1 : -1) * Math.round((window.innerHeight || 600) * 0.6);
+  if (snFull) $('#sn-chartcard').scrollTop += d; else window.scrollBy(0, d);
+}
+function tvApply(reveal) {
+  var old = document.querySelectorAll('.tvf'), i, el, f;
+  for (i = 0; i < old.length; i++) old[i].classList.remove('tvf');
+  tvSync();
+  if (!tvActive() || !tvAwake || !tvF) { tvTip(null); return; }
+  f = tvF;
+  if (f.k === 'let' && (S.sn.cht === 'duo' || snIsFan() || snActive() !== f.r)) f = { k: 'row', r: f.r };   // hanya baris terpilih yang hurufnya bisa ditandai
+  el = tvResolve(f);
+  if (!el) { f = tvFix(f); el = tvResolve(f); }
+  if (!el) { tvTip(null); return; }
+  tvF = f;
+  if (f.k !== 'ctl') tvChart = f;
+  el.classList.add('tvf');
+  if (reveal) tvReveal(el);
+  tvTip(el);
+}
+function tvSet(f) {
+  tvF = f; tvAwake = true;
+  if (f.k === 'ctl') { if (f.el.id !== 'sn-full' && f.el.closest && f.el.closest('.sn-head')) tvBar = f; } else tvChart = f;   // Layar penuh/Tutup tidak diingat sebagai tujuan naik: OK yang tidak sengaja menutup layar penuh
+  tvApply(true);
+}
+function tvClick(el) {
+  var ev;
+  if (!el) return;
+  if (typeof el.click === 'function') { el.click(); return; }
+  try { ev = new MouseEvent('click', { bubbles: true, cancelable: true, view: window }); }
+  catch (x) { ev = document.createEvent('MouseEvents'); ev.initEvent('click', true, true); }
+  el.dispatchEvent(ev);   // elemen SVG (garis fan dial) tidak punya click()
+}
+// Kontrol biasa terdekat di satu arah. Kiri dan kanan harus sebaris, atas dan bawah harus berada di luar tepi kontrol sekarang
+function tvCtls() {
+  var root = snFull ? $('#sn-chartcard') : $('#v-snellen'), out = [];
+  Array.prototype.forEach.call(root.querySelectorAll('button, select, input[type="range"], .seg label, summary'), function (el) {
+    var inp = el.tagName === 'LABEL' ? el.querySelector('input') : null;
+    if (el.closest('#sn-surf') || el.disabled || (inp && inp.disabled) || !tvVis(el)) return;
+    if ((el.id === 'sn-up' || el.id === 'sn-dn') && S.sn.cht !== 'duo') return;   // satu baris: panah di chart sudah mengganti baris, tombol ini hanya akan jadi pemberhentian ekstra
+    out.push(el);
+  });
+  return out;
+}
+function tvRect(el) {   // panel duochrome memenuhi tinggi layar (mulai dari y = 0): yang dihitung baris hurufnya saja, supaya tetap terbaca "di bawah" tombol alat
+  var c = el.classList.contains('sn-dp') ? el.querySelector('.sn-dr') : null;
+  return (c || el).getBoundingClientRect();
+}
+function tvNear(from, dir, list, strict) {
+  return tvNear1(from, dir, list, false) || (strict ? null : tvNear1(from, dir, list, true));   // putaran pertama: harus sebaris. Kedua: boleh beda baris, supaya kolom lain tetap terjangkau. strict = hanya putaran pertama
+}
+function tvNear1(from, dir, list, loose) {
+  var a = tvRect(from), horiz = dir === 'left' || dir === 'right', best = null, bs = 1e9, i, c, b, ov, gap, off, s;
+  for (i = 0; i < list.length; i++) {
+    c = list[i];
+    if (c === from || c.contains(from) || from.contains(c)) continue;
+    b = tvRect(c);
+    if (!b.width && !b.height) continue;
+    if (horiz) {
+      ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+      gap = dir === 'right' ? b.left - a.right : a.left - b.right;
+      if ((ov < 4 && !loose) || gap < -2) continue;
+      s = Math.max(0, gap) + Math.abs((b.top + b.bottom) / 2 - (a.top + a.bottom) / 2) * 2;
+    } else {
+      gap = dir === 'down' ? b.top - a.bottom : a.top - b.bottom;
+      if (gap < -2) continue;
+      ov = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+      off = Math.abs((b.left + b.right) / 2 - (a.left + a.right) / 2);
+      s = Math.max(0, gap) + (ov > 0 ? off * 0.3 : 200 + off);
+    }
+    if (s < bs) { bs = s; best = c; }
+  }
+  return best;
+}
+// Keluar dari isi chart. Naik = ke tombol alat (atau tombol S ±0.25 bila lens = true). Arah lain = kontrol terdekat di arah itu, bila ada
+function tvLeave(dir, lens) {
+  var el = tvResolve(tvF), l = $('#sn-lens'), to = null;
+  if (dir === 'up') {
+    if (lens && l && !l.hidden && tvVis(l)) to = l;
+    else if (tvBar) to = tvResolve(tvBar);
+    if (!to && tvVis($('#sn-ph'))) to = $('#sn-ph');   // belum pernah memakai tombol alat: mulai dari Pinhole
+    if (!to && el) to = tvNear(el, 'up', tvCtls());
+    if (to) { tvSet(tvDesc(to)); return; }
+  } else if (el) {
+    to = tvNear(el, dir, tvCtls(), true);   // keluar ke samping hanya ke kontrol yang sebaris. Tanpa itu, ← terus di ujung fan dial akan melempar sorotan ke toolbar
+    if (to) { tvSet(tvDesc(to)); return; }
+  }
+  if (dir === 'up' || dir === 'down') tvScroll(dir);
+}
+// Tampilan satu baris: panah mengganti baris yang tampil (sama dengan tombol panah baris), bukan memindahkan sorotan. Dari 6/60 naik ke fan dial
+function tvStep(dir) {
+  var n = (snIsFan() ? -1 : Math.max(0, snActive())) + dir;
+  if (n < -1 || n > SN_ROWS.length - 1) return false;
+  tvF = tvChart = n < 0 ? { k: 'fan', l: tvFanDef() } : { k: 'row', r: n };
+  snStepRow(dir);
+  tvApply(true);
+  return true;
+}
+function tvRow(dir, f) {
+  var one = S.sn.view === 'single', last = SN_ROWS.length - 1;
+  if (dir === 'up') {
+    if (one) { if (!tvStep(-1)) tvLeave('up'); return; }
+    if (f.r > 0) tvSet({ k: 'row', r: f.r - 1 });
+    else if (S.sn.fan !== 'off') tvSet({ k: 'fan', l: tvFanDef() });
+    else tvLeave('up');
+    return;
+  }
+  if (dir === 'down') {
+    if (one) { if (!tvStep(1)) tvLeave('down'); return; }
+    if (f.r < last) tvSet({ k: 'row', r: f.r + 1 }); else tvLeave('down');
+    return;
+  }
+  if (dir === 'right' && snActive() === f.r) { tvSet({ k: 'let', r: f.r, j: 0 }); return; }   // masuk ke huruf di baris terpilih
+  tvLeave(dir);
+}
+function tvLet(dir, f) {
+  if (dir === 'left') tvSet(f.j > 0 ? { k: 'let', r: f.r, j: f.j - 1 } : { k: 'row', r: f.r });
+  else if (dir === 'right') { if (f.j < SN_ROWS[f.r].n - 1) tvSet({ k: 'let', r: f.r, j: f.j + 1 }); }
+  else tvRow(dir, { k: 'row', r: f.r });
+}
+function tvFan(dir, f) {
+  var l;
+  if (dir === 'left' || dir === 'right') {
+    l = f.l + (dir === 'right' ? 10 : -10);   // 0° di kiri, 90° di atas, 180° di kanan, seperti gambarnya
+    if (l >= 0 && l <= 180) tvSet({ k: 'fan', l: l }); else tvLeave(dir);
+  } else if (dir === 'up') tvLeave('up');
+  else if (S.sn.view === 'single') { if (!tvStep(1)) tvLeave('down'); }
+  else tvSet({ k: 'row', r: 0 });
+}
+function tvDp(dir, f) {
+  if (dir === 'left' && f.c === 'g') tvSet({ k: 'dp', c: 'r' });
+  else if (dir === 'right' && f.c === 'r') tvSet({ k: 'dp', c: 'g' });
+  else if (dir === 'up') tvLeave('up', true);
+  else tvLeave(dir);
+}
+function tvSlide(dir) {   // slider kalibrasi: langkah 0.01, makin besar bila ditekan atau ditahan terus (layar TV bisa ratusan langkah dari nilai awal)
+  var now = Date.now(), n = now - tvSlT < 280 ? tvSlN + 1 : 0, st = n < 4 ? 0.01 : n < 10 ? 0.03 : n < 20 ? 0.08 : 0.15;
+  tvSlT = now; tvSlN = n;
+  snSetPx(SET.snPx + dir * st);
+}
+function tvSelect(el, dir) {   // pilihan jarak uji: dipindah langsung tanpa membuka daftar bawaan peramban, OK = berikutnya (kembali ke awal setelah yang terakhir)
+  var n = el.options.length, i = dir ? Math.max(0, Math.min(n - 1, el.selectedIndex + dir)) : (el.selectedIndex + 1) % n, ev;
+  if (i === el.selectedIndex) return;
+  el.selectedIndex = i;
+  try { ev = new Event('change', { bubbles: true }); } catch (x) { ev = document.createEvent('Event'); ev.initEvent('change', true, true); }
+  el.dispatchEvent(ev);
+}
+function tvCtl(dir, f) {
+  var el = tvResolve(f), horiz = dir === 'left' || dir === 'right', list, ent, entEl, to;
+  if (!el) return;
+  if (horiz && el.type === 'range') { tvSlide(dir === 'right' ? 1 : -1); return; }
+  if (horiz && el.tagName === 'SELECT') { tvSelect(el, dir === 'right' ? 1 : -1); return; }
+  list = tvCtls();
+  ent = tvEntry(); entEl = tvResolve(ent);
+  if (entEl) list.push(entEl);   // isi chart ikut jadi tujuan (sorotan masuk ke baris terpilih, fan dial, atau sisi duochrome)
+  to = tvNear(el, dir, list);
+  if (to && to === entEl) tvSet(ent);
+  else if (to) tvSet(tvDesc(to));
+  else if (!horiz) tvScroll(dir);
+}
+function tvMove(dir) {
+  var f = tvF;
+  if (f.k === 'let') tvLet(dir, f);
+  else if (f.k === 'row') tvRow(dir, f);
+  else if (f.k === 'fan') tvFan(dir, f);
+  else if (f.k === 'dp') tvDp(dir, f);
+  else tvCtl(dir, f);
+}
+function tvOk() {
+  var f = tvF, el = tvResolve(f);
+  if (!el) return;
+  if (f.k === 'ctl' && el.type === 'range') { tvClick($('[data-sn="calok"]')); return; }   // OK di slider = "Kalibrasi sudah sesuai"
+  if (f.k === 'ctl' && el.tagName === 'SELECT') { tvSelect(el, 0); return; }
+  tvClick(el);
+}
+function tvKey(e) {   // e.key dulu, lalu keyCode untuk remote dan peramban TV yang tidak mengisi e.key
+  var k = e.key, c = e.keyCode || e.which;
+  if (k === 'ArrowUp' || k === 'Up' || c === 38) return 'up';
+  if (k === 'ArrowDown' || k === 'Down' || c === 40) return 'down';
+  if (k === 'ArrowLeft' || k === 'Left' || c === 37) return 'left';
+  if (k === 'ArrowRight' || k === 'Right' || c === 39) return 'right';
+  if (k === 'Enter' || k === 'Select' || c === 13 || c === 23 || c === 29443) return 'ok';   // 23 = DPAD_CENTER Android, 29443 = OK Tizen
+  if (k === 'Escape' || k === 'GoBack' || k === 'BrowserBack' || k === 'XF86Back' || c === 27 || c === 4 || c === 461 || c === 10009) return 'back';   // 4 Android, 461 webOS, 10009 Tizen
+  return null;
+}
+document.addEventListener('keydown', function (e) {
+  var k;
+  if (!tvActive() || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+  k = tvKey(e);
+  if (!k) return;
+  if (k === 'back') { if (snFull) { e.preventDefault(); e.stopPropagation(); snFullSet(false); } return; }   // Kembali menutup layar penuh. Di luar layar penuh dibiarkan: peramban kembali ke beranda
+  e.preventDefault(); e.stopPropagation();
+  if (!tvAwake || !tvF || !tvResolve(tvF)) {   // tombol pertama hanya memunculkan sorotan, belum memindahkan atau memilih
+    if (!tvF) tvF = tvDefault(); else if (!tvResolve(tvF)) tvF = tvFix(tvF);
+    tvAwake = true; tvApply(true);
+    return;
+  }
+  if (k === 'ok') { if (!e.repeat) tvOk(); } else tvMove(k);
+}, true);
+// Memakai layar sentuh atau kursor: sorotan disembunyikan. Tombol remote berikutnya memunculkannya lagi di tempat yang sama
+['pointerdown', 'mousedown', 'touchstart'].forEach(function (t) {
+  document.addEventListener(t, function () { if (tvAwake) { tvAwake = false; tvApply(); } }, true);
+});
+document.addEventListener('change', function (e) {
+  var t = e.target;
+  if (!t || t.name !== 'sn-tv' || !t.checked) return;
+  SET.tv = /^(auto|on|off)$/.test(t.value) ? t.value : 'auto'; saveSet();
+  tvApply();
+});
+tvSync();
+
 
 function setLive(el, pre, mono, pyth) {
   if (pre && pre.mono) {
