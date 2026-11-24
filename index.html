@@ -47,6 +47,9 @@ img{max-width:100%}
   --neg: #d32f2f;
   --on-pn: #ffffff;
   --zero: #12202b;
+  --k-optik: #0c5d78; --k-optik-ink: #ffffff;   /* warna ikon menu per kategori, sama dengan warna header kategorinya */
+  --k-refraksi: #5a3a96; --k-refraksi-ink: #ffffff;
+  --k-kontak: #17694b; --k-kontak-ink: #ffffff;
   --f-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --f-num: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Roboto Mono", monospace;
   --r: 14px;
@@ -58,6 +61,7 @@ img{max-width:100%}
     --od: #ff8f78; --on-od: #2c0c05; --os: #7db3ff; --on-os: #06182f;
     --warn: #f2c15a; --warn-soft: #34290f; --bad: #ff8f86; --bad-soft: #3a1815; --on-bad: #2d0b08;
     --pos: #5fd68a; --neg: #ff8a80; --on-pn: #0d1419; --zero: #ffffff;
+    --k-optik: #62c3de; --k-optik-ink: #06202a; --k-refraksi: #c8b0ff; --k-refraksi-ink: #1e1040; --k-kontak: #6fdba9; --k-kontak-ink: #05261a;
     color-scheme: dark;
   }
 }
@@ -67,6 +71,7 @@ img{max-width:100%}
   --od: #ff8f78; --on-od: #2c0c05; --os: #7db3ff; --on-os: #06182f;
   --warn: #f2c15a; --warn-soft: #34290f; --bad: #ff8f86; --bad-soft: #3a1815; --on-bad: #2d0b08;
   --pos: #5fd68a; --neg: #ff8a80; --on-pn: #0d1419; --zero: #ffffff;
+    --k-optik: #62c3de; --k-optik-ink: #06202a; --k-refraksi: #c8b0ff; --k-refraksi-ink: #1e1040; --k-kontak: #6fdba9; --k-kontak-ink: #05261a;
   color-scheme: dark;
 }
 
@@ -130,7 +135,10 @@ h1[tabindex="-1"]:focus { outline: none; }
 a.mi { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 a.mi:hover { border-color: var(--accent); }
 a.mi:active { background: var(--accent-soft); }
-.mi-ico { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--accent); color: var(--accent-ink); }
+.mi-ico { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--mi-bg, var(--accent)); color: var(--mi-fg, var(--accent-ink)); }
+.mi[data-kat="optik"] { --mi-bg: var(--k-optik); --mi-fg: var(--k-optik-ink); }
+.mi[data-kat="refraksi"] { --mi-bg: var(--k-refraksi); --mi-fg: var(--k-refraksi-ink); }
+.mi[data-kat="kontak"] { --mi-bg: var(--k-kontak); --mi-fg: var(--k-kontak-ink); }
 .mi-ico svg { width: 34px; height: 34px; }
 .mi-ico svg.wide { width: 40px; height: auto; }   /* ikon frame kacamata: lebar, jadi memenuhi lebar kotak */
 .mi-txt { flex: 1; min-width: 0; display: grid; gap: 2px; }
@@ -502,7 +510,7 @@ input:disabled, select:disabled { opacity: .62; }
 .cat-btn:active { filter: brightness(.93); }
 @media (hover: hover) { .cat-btn:hover { filter: brightness(1.07); } }
 .cat-btn[data-cat="optik"] { --c1: #0c5d78; --c2: #137893; --ln: #cdeef8; }
-.cat-btn[data-cat="refraksi"] { --c1: #36479e; --c2: #4a5fbb; --ln: #d3dcff; }
+.cat-btn[data-cat="refraksi"] { --c1: #5a3a96; --c2: #7650b8; --ln: #e3d6ff; }
 .cat-btn[data-cat="kontak"] { --c1: #17694b; --c2: #218a65; --ln: #cbf1de; }
 .cat-tx { position: relative; z-index: 1; display: grid; justify-items: start; gap: 4px; min-width: 0; max-width: 10.8rem; }   /* teks tetap di kiri, tidak tertimpa gambar */
 .cat-t { font-size: 1.2rem; font-weight: 700; line-height: 1.2; letter-spacing: -.01em; }
@@ -856,7 +864,7 @@ html.sn-duofull body { background: var(--duo-bg); }   /* body punya latar sendir
 .srch-x svg { width: 18px; height: 18px; pointer-events: none; }
 .fx-srch { margin: 0; }
 #srch-res .sect { margin-top: 0; }
-.mi-tag { color: var(--accent); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3; }
+.mi-tag { color: var(--mi-bg, var(--accent)); font-size: .68rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; line-height: 1.3; }
 .mi mark { background: var(--accent-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
 
 /* navigasi bawah */
@@ -878,6 +886,24 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   @keyframes a-blink { 0%, 100% { transform: scaleY(1); } 45%, 55% { transform: scaleY(.05); } }
   @keyframes a-tick { from { transform: translateY(7px); opacity: .2; } }
   @keyframes a-shake { 20%, 60% { transform: translateX(-4px); } 40%, 80% { transform: translateX(4px); } }
+  @keyframes a-fade { from { opacity: 0; } }
+  @keyframes a-in-r { from { opacity: 0; transform: translateX(26px); } }
+  @keyframes a-in-l { from { opacity: 0; transform: translateX(-26px); } }
+  @keyframes a-zoom { from { opacity: 0; transform: translateY(10px) scale(.92); } }
+  @keyframes a-bar { from { transform: translateY(100%); } }
+  @keyframes a-menu { from { opacity: 0; transform: translateY(6px) scale(.94); } }
+  @keyframes a-pop-s { 0% { opacity: 0; transform: scale(.6); } 70% { transform: scale(1.07); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes a-tile { from { opacity: 0; transform: translateY(12px) scale(.94); } }
+  @keyframes a-ring { from { box-shadow: 0 0 0 0 var(--accent); } to { box-shadow: 0 0 0 10px transparent; } }
+  @keyframes a-alert { 0% { opacity: 0; transform: translateX(-10px); } 30% { opacity: 1; } 45% { transform: translateX(6px); } 65% { transform: translateX(-4px); } 85% { transform: translateX(2px); } }
+  @keyframes a-res { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes a-shine { from { transform: translateX(-130%) skewX(-18deg); } to { transform: translateX(130%) skewX(-18deg); } }
+  @keyframes a-drift { from { transform: translate(0, 0) scale(1); } to { transform: translate(-12px, 9px) scale(1.07); } }
+  @keyframes a-blink-idle { 0%, 93%, 100% { transform: scaleY(1); } 96% { transform: scaleY(.06); } }
+  @keyframes a-key-in { 0% { opacity: 0; transform: scale(.2); } 60% { opacity: 1; transform: scale(1.35); } 100% { opacity: 1; transform: scale(1); } }
+  @keyframes a-key { 0%, 100% { transform: scale(1); } 35% { transform: scale(.4); } 70% { transform: scale(1.3); } }
+  @keyframes a-key-idle { 0%, 11%, 100% { transform: scale(1); } 3% { transform: scale(.4); } 7% { transform: scale(1.3); } }
+  @keyframes a-glide { from { opacity: 1; transform: translateX(var(--gx, 0px)) scaleX(var(--gs, 1)); } }
   /* pindah halaman */
   .app > [id^="v-"]:not([hidden]) { animation: a-view .3s cubic-bezier(.2,.7,.2,1) backwards; }
   /* animasi buka aplikasi */
@@ -887,14 +913,17 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   .a-intro #menu > .cat:nth-child(2) { animation-delay: .09s; }
   .a-intro #menu > .cat:nth-child(3) { animation-delay: .18s; }
   .a-intro #menu > .cat:nth-child(n+4) { animation-delay: .27s; }
-  .a-intro .mark svg { animation: a-blink .6s .7s ease-in-out; }
-  .mark:active svg { animation: a-blink .4s ease-in-out; }
+  .a-intro .mark > svg { animation: a-blink .6s .7s ease-in-out; }   /* hanya mata; panah kecil di lencana (.mark-c) tidak ikut */
+  .mark:active > svg { animation: a-blink .4s ease-in-out; }
   /* animasi buka kategori */
   .cat .menu:not([hidden]) > li { animation: a-rise .38s cubic-bezier(.2,.7,.2,1) backwards; animation-delay: calc(var(--i, 0) * 40ms); }
   .pop:not([hidden]) { transform-origin: top left; animation: a-drop .2s ease-out backwards; }
   /* touch n click */
-  .primary, .ghost, .back, .sign, .cat-btn, a.mi, .pop-i, .mark, .tabs button { transition: transform .14s ease, background-color .22s, border-color .22s, color .22s, filter .15s, box-shadow .2s; }
+  .primary, .ghost, .back, .sign, .cat-btn, a.mi, .pop-i, .mark, .tabs button, .ck, .tr-btn, .step, .hbtn, .ch-tog, .ck-tog, .rq-o, .srch-x { transition: transform .14s ease, background-color .22s, border-color .22s, color .22s, filter .15s, box-shadow .2s; }
   .primary:active, .ghost:active, .back:active, .sign:active, .cat-btn:active, a.mi:active, .mark:active { transform: scale(.97); }
+  .tr-btn:active, .step:active, .hbtn:active, .ch-tog:active, .ck-tog:active, .rq-o:active { transform: scale(.95); }
+  .ck:active { transform: scale(.93); }
+  .sn-card.full .tr-btn:active { transform: none; }   /* chart layar penuh dilihat pasien: tombolnya tidak ikut bergerak */
   @media (hover: hover) { a.mi:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -14px rgba(0,0,0,.45); } }
   .seg span { transition: background-color .25s, color .25s; }
   .badge:not([hidden]) { animation: a-pop .42s cubic-bezier(.3,1.4,.5,1); }
@@ -902,9 +931,111 @@ html[data-anim="off"] *, html[data-anim="off"] *::before, html[data-anim="off"] 
   .ghost.armed { animation: a-shake .35s; }
   /* animasi angka hasil */
   .tick { animation: a-tick .34s cubic-bezier(.2,.7,.2,1); }
+  /* flip Transposisi: angka lama terlipat ke atas, angka baru terbuka dari bawah (dibuat skrip di tombol Transposisi) */
+  .a-flipx { display: inline-block; }
+  .a-flipg { position: fixed; z-index: 4;   /* di atas kartu, tapi di bawah bilah tab (5) dan dialog */
+    display: flex; align-items: center; margin: 0; padding: 0; white-space: nowrap; pointer-events: none; backface-visibility: hidden; transform-origin: 50% 50%; }
   /* Ganti tema */
   .a-tfade, .a-tfade *, .a-tfade *::before, .a-tfade *::after { transition: background-color .35s, color .35s, border-color .35s, fill .35s, stroke .35s !important; }
+  /* Ganti tema: lingkaran warna baru melebar dari tombol yang diketuk (View Transitions; browser lama memakai a-tfade di atas) */
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  ::view-transition-old(root) { z-index: 1; }
+  ::view-transition-new(root) { z-index: 2; }
+
+  /* ===== gerak tambahan ===== */
+  /* pindah halaman searah: maju masuk dari kanan, mundur dari kiri (data-nav dipasang route()) */
+  html[data-nav="fwd"] .app > [id^="v-"]:not([hidden]) { animation-name: a-in-r; }
+  html[data-nav="back"] .app > [id^="v-"]:not([hidden]) { animation-name: a-in-l; }
+  html.a-nav { overflow-x: hidden; }   /* geseran dari samping tidak memunculkan bilah gulir */
+  .tabs:not([hidden]) { animation: a-bar .45s cubic-bezier(.2,.7,.2,1) backwards; }
+  .tabs.pill::before { transition: transform .4s cubic-bezier(.3,1.25,.5,1); }
+  /* kepala halaman (kelas a-enter dipasang route() sebentar setelah halaman dibuka) */
+  .a-enter > .top .back { animation: a-pop-s .5s cubic-bezier(.3,1.4,.5,1) .06s backwards; }
+  .a-enter > .top .brand > div { animation: a-rise .5s cubic-bezier(.2,.7,.2,1) .1s backwards; }
+  .a-enter > .top > .ghost { animation: a-pop-s .5s cubic-bezier(.3,1.4,.5,1) .2s backwards; }
+  /* kartu muncul saat masuk layar (kelas a-sr dan a-sr-in dipasang skrip; hanya berlaku bila animasi nyala) */
+  html[data-anim="on"] .a-sr:not(.a-sr-in) { opacity: 0; transform: translateY(18px); }
+  html[data-anim="on"] .a-sr { transition: opacity .55s ease, transform .65s cubic-bezier(.2,.7,.2,1); transition-delay: var(--d, 0ms); }
+  /* beranda saat dibuka */
+  .a-intro #v-home .top .brand > div { animation: a-rise .6s cubic-bezier(.2,.7,.2,1) .08s backwards; }
+  /* tombol kalkulator di beranda tidak pop-up. Yang bergerak ikonnya: sembilan tombol angka terisi menyerong saat dibuka,
+     berdenyut menyerong sesekali, dan menekan saat disentuh. Hanya bila transform-box didukung (browser lama: ikon diam) */
+  @supports (transform-box: fill-box) {
+    .hbtn .kd { transform-box: fill-box; transform-origin: center; animation: a-key-idle 9s calc(var(--i, 0) * 60ms + 4.5s) infinite; }
+    .hbtn:active .kd { animation: a-key .42s calc(var(--i, 0) * 35ms) backwards; }
+    .a-intro #v-home .hbtn .kd, .a-enter > .top > .hbtn .kd { animation: a-key-in .5s calc(var(--i, 0) * 70ms + .35s) cubic-bezier(.3,1.4,.5,1) backwards; }
+  }
+  .a-intro #v-home .srch { animation: a-rise .6s cubic-bezier(.2,.7,.2,1) .12s backwards; }
+  .inst:not([hidden]) { animation: a-rise .5s cubic-bezier(.2,.7,.2,1) backwards; }
+  .mark > svg { animation: a-blink-idle 7s 3s infinite; }   /* logo mata berkedip sesekali */
+  .cat-btn::before { animation: a-drift 9s ease-in-out infinite alternate; }
+  .cat:nth-child(2) .cat-btn::before { animation-duration: 11s; animation-delay: -4s; }
+  .cat:nth-child(3) .cat-btn::before { animation-duration: 10s; animation-delay: -7s; }
+  .cat-btn::after { content: ""; position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; left: 0; background: linear-gradient(100deg, transparent 36%, rgba(255,255,255,.24) 50%, transparent 64%); transform: translateX(-130%) skewX(-18deg); pointer-events: none; }
+  .a-intro .cat-btn::after { animation: a-shine 1.1s .75s ease-out; }
+  @media (hover: hover) { .cat-btn:hover::after { animation: a-shine .9s ease-out; } }
+  /* ikon dan panah di kartu menu */
+  .mi-ico, .mi-go, .back svg { transition: transform .3s cubic-bezier(.3,1.4,.5,1); }
+  a.mi:active .mi-ico { transform: scale(.92); }
+  .back:active svg { transform: translateX(-4px); }
+  @media (hover: hover) {
+    a.mi:hover .mi-ico { transform: rotate(-7deg) scale(1.08); }
+    a.mi:hover .mi-go { transform: translateX(4px); }
+    .back:hover svg { transform: translateX(-3px); }
+  }
+  /* isian: cincin fokus melebar, isian salah bergetar sekali */
+  input[type="text"], select, .srch input { transition: color .25s, border-color .2s, box-shadow .25s, background-color .2s; }   /* color: angka dioptri (merah, hijau, putih) berganti warna meluncur saat tandanya berubah */
+  input[type="text"]:focus, select:focus, .srch input:focus { box-shadow: 0 0 0 3px var(--accent-soft); }
+  input[aria-invalid="true"] { animation: a-shake .38s; }
+  /* panel yang terbuka */
+  #srch-res:not([hidden]) { animation: a-drop .25s ease-out; }
+  .inst-dlg[open] { animation: a-zoom .3s cubic-bezier(.3,1.25,.5,1); }
+  .inst-dlg[open]::backdrop { animation: a-fade .3s ease-out; }
+  details[open] > :not(summary) { animation: a-drop .3s cubic-bezier(.2,.7,.2,1); }
+  .rf-card:not([hidden]), .rumus > div:not([hidden]) { animation: a-fade .28s ease-out; }
+  .pop:not([hidden]) .pop-i { animation: a-rise .3s cubic-bezier(.2,.7,.2,1) backwards; }
+  .pop-i:nth-child(2) { animation-delay: .07s; }
+  .pop-i:nth-child(3) { animation-delay: .11s; }
+  .pop-i:nth-child(4) { animation-delay: .15s; }
+  .pop-i:nth-child(5) { animation-delay: .19s; }
+  .pop-i:nth-child(n+6) { animation-delay: .23s; }
+  /* kalkulator scientific */
+  #ck-sci:not([hidden]), #ck-hasil:not([hidden]) { animation: a-drop .28s cubic-bezier(.2,.7,.2,1); }
+  .rq-pick:not([hidden]) { transform-origin: 100% 100%; animation: a-menu .18s ease-out; }
+  .calc-res.a-res { animation: a-res .3s cubic-bezier(.2,.7,.2,1); }
+  .calc-res.err.a-res { animation: a-alert .45s ease-out; }
+  .ch-list > li { animation: a-rise .3s cubic-bezier(.2,.7,.2,1) backwards; }
+  .ch-list > li:nth-child(2) { animation-delay: .04s; }
+  .ch-list > li:nth-child(3) { animation-delay: .08s; }
+  .ch-list > li:nth-child(4) { animation-delay: .12s; }
+  .ch-list > li:nth-child(n+5) { animation-delay: .16s; }
+  /* hasil: muncul berurutan saat pertama terisi, berkilau saat angka berubah, pesan baru masuk dengan gerak */
+  .a-reveal .tile { animation: a-tile .5s cubic-bezier(.3,1.3,.5,1) backwards; animation-delay: calc(var(--t, 0) * 60ms); }
+  .a-reveal .r:not(.hd), .a-reveal .bgr, .a-reveal .g, .a-reveal .spec, .a-reveal .how { animation: a-rise .4s cubic-bezier(.2,.7,.2,1) backwards; animation-delay: calc(var(--t, 0) * 45ms + .08s); }
+  .tile.a-new { animation: a-tile .45s cubic-bezier(.3,1.3,.5,1); }
+  .tile.flash { animation: a-ring .75s ease-out; }
+  .msg.a-in { animation: a-drop .3s ease-out; }
+  .msg.bad.a-in { animation: a-alert .45s ease-out; }
+  /* pilihan segmen: blok warna meluncur dari pilihan lama ke yang baru. Hanya bila isolation didukung, supaya blok tidak pernah jatuh di belakang kartu */
+  @supports (isolation: isolate) {
+    .seg { isolation: isolate; }
+    .seg span { position: relative; transition: color .25s; }
+    .seg span::before { content: ""; position: absolute; z-index: -1; top: 0; right: 0; bottom: 0; left: 0; background: var(--accent); opacity: 0; transition: opacity .22s; }
+    .seg input:checked + span { background: transparent; }
+    .seg input:checked + span::before { opacity: 1; }
+    .seg span.a-gl::before { animation: a-glide .34s cubic-bezier(.3,1.15,.5,1); }
+  }
 }
+
+/* penanda tab geser: kotak lembut di belakang tab yang aktif (--tab-i = 0 atau 1, diatur setTab) */
+@supports (width: calc(100% - max(1px, 2px))) {
+  .tabs.pill::before { content: ""; position: absolute; z-index: 0; top: 8px; left: max(16px, env(safe-area-inset-left, 0px)); height: 48px; width: calc((100% - max(16px, env(safe-area-inset-left, 0px)) - max(16px, env(safe-area-inset-right, 0px)) - 8px) / 2); border-radius: 12px; background: var(--accent-soft); transform: translateX(calc(var(--tab-i, 0) * (100% + 8px))); pointer-events: none; }
+  .tabs.pill button { position: relative; z-index: 1; }
+  .tabs.pill button[aria-current="page"] { background: transparent; }
+}
+/* riak tinta saat tombol disentuh: dibuat skrip, tidak mengubah tombolnya sendiri */
+.a-rip { position: fixed; z-index: 9999; overflow: hidden; pointer-events: none; }
+.a-rip > i { position: absolute; border-radius: 50%; background: currentColor; opacity: 0; }
 
 /* Simulator Lensometer */
 #v-lenso .lm-field{display:block;width:100%;max-width:23rem;aspect-ratio:1;margin:6px auto 4px;border-radius:50%;box-shadow:0 0 0 6px #1c2630,0 8px 26px rgba(0,0,0,.35)}
@@ -1462,7 +1593,7 @@ html[data-sgc="on"] button .sgm { color: inherit; fill: inherit; }   /* daftar s
         </div>
       </div>
       <button type="button" class="hbtn" id="calc-open" data-t-aria-label="home.buka_kalkulator_scientific" data-t-title="home.kalkulator_scientific">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.8" width="14" height="18.4" rx="2.6"/><rect x="8" y="5.9" width="8" height="3.3" rx=".8"/><g fill="currentColor" stroke="none"><circle cx="8.8" cy="12.9" r=".95"/><circle cx="12" cy="12.9" r=".95"/><circle cx="15.2" cy="12.9" r=".95"/><circle cx="8.8" cy="15.7" r=".95"/><circle cx="12" cy="15.7" r=".95"/><circle cx="15.2" cy="15.7" r=".95"/><circle cx="8.8" cy="18.5" r=".95"/><circle cx="12" cy="18.5" r=".95"/><circle cx="15.2" cy="18.5" r=".95"/></g></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="2.8" width="14" height="18.4" rx="2.6"/><rect x="8" y="5.9" width="8" height="3.3" rx=".8"/><g fill="currentColor" stroke="none"><circle class="kd" style="--i:0" cx="8.8" cy="12.9" r=".95"/><circle class="kd" style="--i:1" cx="12" cy="12.9" r=".95"/><circle class="kd" style="--i:2" cx="15.2" cy="12.9" r=".95"/><circle class="kd" style="--i:1" cx="8.8" cy="15.7" r=".95"/><circle class="kd" style="--i:2" cx="12" cy="15.7" r=".95"/><circle class="kd" style="--i:3" cx="15.2" cy="15.7" r=".95"/><circle class="kd" style="--i:2" cx="8.8" cy="18.5" r=".95"/><circle class="kd" style="--i:3" cx="12" cy="18.5" r=".95"/><circle class="kd" style="--i:4" cx="15.2" cy="18.5" r=".95"/></g></svg>
       </button>
       <div class="pop" id="logo-menu" role="menu" data-t-aria-label="home.menu_aplikasi" hidden></div>
     </header>
@@ -2618,7 +2749,7 @@ html[data-sgc="on"] button .sgm { color: inherit; fill: inherit; }   /* daftar s
   </div>
 </div>
 
-<nav class="tabs" id="tabs" data-t-aria-label="tentang.tampilan" hidden>
+<nav class="tabs pill" id="tabs" data-t-aria-label="tentang.tampilan" hidden>
   <button type="button" data-go="input" aria-current="page" data-t="tentang.input"></button>
   <button type="button" data-go="result"><span data-t="tentang.hasil"></span><span class="badge" id="badge" hidden>0</span></button>
 </nav>
@@ -3901,11 +4032,33 @@ function applyTheme() {
 applyTheme();
 // Animasi default nyala, otomatis mati kalo perangkat keberatan
 function applyAnim() { document.documentElement.setAttribute('data-anim', SET.anim ? 'on' : 'off'); }
+// Pegas teredam kritis untuk gerak halus: posisi x dan kecepatan v bergerak ke tujuan t selama dt detik. w = kekakuan (rad/detik).
+// Mulai dan berhenti lembut, tidak melampaui tujuan, dan kalau tujuan berubah di tengah jalan (tombol ditahan) kecepatannya tetap nyambung
+function springStep(x, v, t, dt, w) {
+  var d = x - t, a = v + w * d, e = Math.exp(-w * dt);
+  return [t + (d + a * dt) * e, (v - w * a * dt) * e];
+}
 function aniOK() { return SET.anim && !(window.matchMedia && matchMedia(_T('js.prefers_reduced_motion_reduce')).matches); }
 function tFade() {
   if (!aniOK()) return;
   var r = document.documentElement; r.classList.add('a-tfade');
   clearTimeout(tFade.t); tFade.t = setTimeout(function () { r.classList.remove('a-tfade'); }, 500);
+}
+// Ganti tema: di browser yang mendukung View Transitions, warna baru melebar seperti lingkaran dari tombol yang diketuk.
+// Selain itu (atau animasi mati) pakai pudar biasa lewat tFade
+function themeSwap(e) {
+  if (!aniOK() || typeof document.startViewTransition !== 'function') { tFade(); applyTheme(); return; }
+  var b = e && e.target && e.target.getBoundingClientRect ? e.target.getBoundingClientRect() : null;
+  var x = b ? b.left + b.width / 2 : window.innerWidth / 2, y = b ? b.top + b.height / 2 : window.innerHeight / 2;
+  try {
+    var vt = document.startViewTransition(function () { applyTheme(); });
+    vt.ready.then(function () {
+      var rad = Math.sqrt(Math.pow(Math.max(x, window.innerWidth - x), 2) + Math.pow(Math.max(y, window.innerHeight - y), 2));
+      document.documentElement.animate(
+        { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + rad + 'px at ' + x + 'px ' + y + 'px)'] },
+        { duration: 650, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' });
+    }).catch(function () {});
+  } catch (err) { tFade(); applyTheme(); }
 }
 applyAnim();
 
@@ -3914,6 +4067,7 @@ applyAnim();
 /* dilewati: angka nol, angka bersatuan mm, cm, °, %, halaman Kalkulator Scientific, dan teks di dalam .nosg (mis. visus 6/12 +2, itu jumlah huruf, bukan dioptri) */
 function applySgc() { document.documentElement.setAttribute('data-sgc', SET.sgc ? 'on' : 'off'); }
 applySgc();
+var sgScan = function () {};   // pembungkus angka bertanda untuk pohon yang belum dipasang di halaman (dipakai animasi bagan)
 (function () {
   var RE = /(^|[\s(\[|\/=:,;>\u00b7\u2192])([+\u2212-])(\d+(?:[.,]\d+)?)/g;
   var UNIT = /^\s*(?:mm|cm|\u00b5m|\u03bcm|px|ft|\u00b0|%)/i;
@@ -3956,6 +4110,7 @@ applySgc();
   });
   mo.observe(document.body, { childList: true, subtree: true, characterData: true });
   scan(document.body); mo.takeRecords();
+  sgScan = scan;
 })();
 
 /* ---------- Data awal ---------- */
@@ -4579,7 +4734,7 @@ function bcHTML(ev) {
   else if (ev.state === 'error') body = '<div class="msg bad"><ul>' + ev.errs.map(function (m) { return '<li>' + m + '</li>'; }).join('') + '</ul></div>';
   else {
     var se3 = sgn(ev.SE, DECP);
-    var spec = sgn(ev.sph) + (ev.two ? ' ' + sgn(ev.cyl) : '');
+    var spec = 'S ' + sgn(ev.sph) + (ev.two ? ' C ' + sgn(ev.cyl) : '');   // halaman ini tidak memakai axis, jadi tanpa X
     body = '<div class="spec"><b>' + spec + '</b></div>' +
       '<div class="tiles" style="margin-top:12px;grid-template-columns:repeat(2,minmax(0,1fr))">' +
         ('<div class="tile"><small>' + _T('js.se') + '</small><b>') + sgn(ev.SE) + '</b></div>' +
@@ -4932,6 +5087,8 @@ var KR_MIN = 6.5, KR_MAX = 9.4, KR_STEP = 0.01;   // rentang radius (mm), kira-k
 var KW = { w: 320, cx: 160, k: 600 };   // lebar gambar kerato
 var KR_POS = { v: 7.67, h: 7.67 };   // posisi valid terakhir
 var krDrag = null, krAcc = null, krFormKey = '';
+var krVis = { v: null, h: null }, krNow = '', krRAF = 0, krT0 = 0;   // krVis[m]: radius yang sedang tampil (x), kecepatan (v), dan tujuan (t). krNow: skala yang langsung mengikuti (sedang digeser)
+var KR_W = 12;   // kekakuan pegas skala
 function rd2(x) { return Math.round(x * 100 + 1e-9) / 100; }
 function krPow(r) { return rd2(KR_K / r); }
 function krVal(m) { var x = num(S.kr[m]); return (!bad(x) && x >= KR_MIN && x <= KR_MAX) ? rd2(x) : null; }
@@ -4980,10 +5137,33 @@ function krScaleHTML(m, r) {
 function krDraw(m) {
   var x = krVal(m);
   if (x !== null) KR_POS[m] = x;
-  var r = KR_POS[m], box = $('#kr-w-' + m);
-  $('#kr-' + m + '-sc').innerHTML = krScaleHTML(m, r);
+  var r = KR_POS[m], box = $('#kr-w-' + m), s = krVis[m];
+  // Skala bergeser pelan ke radius baru. Langsung mengikuti bila sedang digeser jari atau trackpad, halaman belum tampil, atau animasi dimatikan
+  if (!s || krNow === m || !aniOK() || !box.offsetWidth) s = krVis[m] = { x: r, v: 0, t: r };
+  s.t = r;
+  $('#kr-' + m + '-sc').innerHTML = krScaleHTML(m, s.x);
   box.setAttribute('aria-valuenow', String(r));
   box.setAttribute('aria-valuetext', Lx(r.toFixed(2)) + ' mm, ' + Lx(krPow(r).toFixed(2)) + ' D');
+  if (s.x !== s.t) krGo();
+}
+function krGo() { if (!krRAF) { krT0 = performance.now(); krRAF = requestAnimationFrame(krTick); } }
+function krTick(now) {
+  krRAF = 0;
+  var dt = Math.max(0, (now - krT0) / 1000), busy = false;
+  krT0 = now;
+  ['v', 'h'].forEach(function (m) {
+    var s = krVis[m], box = $('#kr-w-' + m), q;
+    if (!s || s.x === s.t) return;
+    if (!aniOK() || !box || !box.offsetWidth) { s.x = s.t; s.v = 0; }
+    else {
+      q = springStep(s.x, s.v, s.t, dt, KR_W); s.x = q[0]; s.v = q[1];
+      if (Math.abs(s.x - s.t) < 0.0003) { s.x = s.t; s.v = 0; }   // 0,0003 mm = kurang dari 0,2 piksel gambar
+    }
+    $('#kr-' + m + '-sc').innerHTML = krScaleHTML(m, s.x);
+    if (krVal(m) !== null) $('#kr-' + m + '-d').textContent = Lx(krPow(s.x).toFixed(2)) + ' D';   // angka dioptri ikut berjalan bersama skala
+    if (s.x !== s.t) busy = true;
+  });
+  if (busy) krRAF = requestAnimationFrame(krTick);
 }
 
 function evalKr() {
@@ -5038,7 +5218,7 @@ function krRender() {
   if (fh !== krFormKey) { krFormKey = fh; $('#kr-rumus').innerHTML = fh; }
   ['v', 'h'].forEach(function (m) {
     var x = krVal(m);
-    $('#kr-' + m + '-d').textContent = x === null ? '–' : Lx(krPow(x).toFixed(2)) + ' D';
+    $('#kr-' + m + '-d').textContent = x === null ? '–' : Lx(krPow(krVis[m] ? krVis[m].x : x).toFixed(2)) + ' D';
   });
   var lv = $('#kr-live');
   if (ev.state === 'ok') {
@@ -5047,14 +5227,16 @@ function krRender() {
   } else { lv.className = 'live dim'; lv.textContent = _T('js.isi_radius_v_dan'); }
 }
 // Ubah radius H V
-function krSet(m, r) {
+function krSet(m, r, direct) {   // direct: skala langsung ikut (digeser jari atau trackpad), selain itu bergeser pelan
   r = Math.max(KR_MIN, Math.min(KR_MAX, rd2(r)));
   if (krVal(m) === r && num(S.kr[m]) === r) return;
   var s = r.toFixed(2);
   S.kr[m] = s;
   var inp = $('#kr-' + m + '-in');
   if (inp) inp.value = Lx(s);
+  krNow = direct ? m : '';
   krRender();
+  krNow = '';
 }
 function krNudge(m, steps) {   // steps = 0.01 mm
   var cur = krVal(m);
@@ -5073,7 +5255,7 @@ document.addEventListener('pointerdown', function (e) {
 });
 document.addEventListener('pointermove', function (e) {
   if (!krDrag || e.pointerId !== krDrag.id) return;
-  krSet(krDrag.m, krDrag.r - (e.clientX - krDrag.x) * krDrag.u / KW.k);
+  krSet(krDrag.m, krDrag.r - (e.clientX - krDrag.x) * krDrag.u / KW.k, true);
 });
 function krEnd(e) {
   if (!krDrag || (e && e.pointerId !== krDrag.id)) return;
@@ -5092,7 +5274,7 @@ document.addEventListener('wheel', function (e) {
   if (cur === null) cur = KR_POS[m];
   if (!krAcc || krAcc.m !== m || Math.abs(krAcc.r - cur) > 0.015) krAcc = { m: m, r: cur };
   krAcc.r = Math.max(KR_MIN, Math.min(KR_MAX, krAcc.r + dx * (KW.w / (w.getBoundingClientRect().width || KW.w)) / KW.k));
-  krSet(m, krAcc.r); save();
+  krSet(m, krAcc.r, true); save();
 }, { passive: false });
 // Keyboard: panah = 0.01 mm, Shift + panah atau PageUp/PageDown = 0.1 mm
 document.addEventListener('keydown', function (e) {
@@ -5351,7 +5533,7 @@ function bgText(ev, gate) {   // gate: jarak mm hanya untuk meridian yang titikn
 }
 // Mata (kornea + lensa mata) dan lensa kacamata di depannya: cembung = plus, cekung = minus, datar = plano
 // Keterangan lensa saat diketuk: jarak vertex dan axis lensa (axis hanya bila lensa punya cylinder)
-function bgLensCap(ev) { return 'Vertex ' + ev.vd + ' mm' + (bgZ(ev.lc) ? '' : ' · Axis ' + bgDeg(ev.la) + '°'); }
+function bgLensCap(ev) { return 'Vertex ' + (Math.round(ev.vd * 100) / 100) + ' mm' + (bgZ(ev.lc) ? '' : ' · Axis ' + bgDeg(ev.la) + '°'); }
 function bgVB(ev) { return (-ev.ex) + ' 0 ' + (BG.W + 2 * ev.ex) + ' ' + BG.H; }   // gambar melebar simetris: bola mata tetap di tengah
 function bgK(ev) { return ((BG.W + 2 * ev.ex) / BG.W).toFixed(4); }   // lebar gambar relatif terhadap BG.W; dipakai CSS (--k) supaya skala tampilan tidak berubah saat gambar melebar
 function bgEye(ev, Lw) {
@@ -5480,6 +5662,7 @@ function bgZoomBar(z) {
     '<button type="button" class="tr-btn zv" data-bgz="reset" title="' + _T('js.kembalikan_ke_ukuran_awal') + '"' + one + '>' + Math.round(z * 100) + '%</button>' +
     '<button type="button" class="tr-btn zb" data-bgz="in" title="' + _T('js.perbesar_gambar') + '" aria-label="' + _T('js.perbesar_gambar') + '"' + hi + '>' + ic(true) + '</button></div>';
 }
+function bgFigs(ev) { return ev.two && S.bg.view === 'one' ? bgBoth(ev) : bgPanel(ev, 0) + (ev.two ? bgPanel(ev, 1) : ''); }
 function bgHTML(ev) {
   var head = ('<div class="eye-h"><h2>' + _T('js.gambar') + '</h2></div>');
   if (ev.state === 'empty') return { fig: '', out: '<section class="card">' + head + ('<p class="hint">' + _T('js.isi_power_mata_untuk') + '</p></section>') };
@@ -5487,7 +5670,7 @@ function bgHTML(ev) {
   var rw = function (l, n, v) { return '<div class="bgr"><span class="l">' + l + '<small>' + n + '</small></span><span class="v">' + v + '</span></div>'; };
   var mg = ev.two ? ('<button type="button" class="tr-btn" data-bgv aria-pressed="') + (S.bg.view === 'sep' ? 'true' : 'false') + ('" title="' + _T('js.gabungkan_kedua_meridian_dalam') + '"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="4.5" cy="8" r="3"/><circle cx="11.5" cy="8" r="3"/></svg><span>' + _T('js.gabung_meridian') + '</span></button>') : '';
   if (!(ev.two && S.bg.view === 'one')) bgSel = -1;
-  var q = ev.m, k = ev.kind, figs = ev.two && S.bg.view === 'one' ? bgBoth(ev) : bgPanel(ev, 0) + (ev.two ? bgPanel(ev, 1) : '');
+  var q = ev.m, k = ev.kind, figs = bgFigs(ev);
   var rows = rw(ev.cor ? _T('js.hasil_dengan_lensa') : _T('js.jenis'), ev.cor ? 'sisa refraksi' : 'dari power mata', ev.cor && k === 'emm' ? 'terkoreksi penuh' : BG_NAME[k] + (ev.cor ? (' ' + _T('js.sisa')) : ''));
   if (ev.cor) rows += rw(_T('js.lensa_2'), ev.auto ? _T('js.otomatis_koreksi_penuh') : _T('js.ukuran_lensa_dari_anda'), bgLensStr(ev.ls, ev.lc, ev.la));
   if (ev.cor && ev.vd > 0) rows += rw('Jarak vertex', 'lensa ke kornea', ev.vd + ' mm') + rw('Power efektif di mata', 'F ÷ (1 − d × F)', bgLensStr(ev.es, ev.ec, ev.la));
@@ -5521,6 +5704,107 @@ function bgRows() {
   ];
 }
 function bgRF() { return bgRows().map(function (g) { return [g.dt, g.dd]; }); }
+/* ---------- Animasi bagan: sinar, titik fokus, dan lensa bergeser pelan ke posisi baru ---------- */
+// Angka yang tampil di gambar (posisi fokus d, power mata P, power lensa L, sisa R, jarak vertex, kadar lensa) dikejar ke nilai tujuannya oleh pegas
+// (springStep). Tiap frame digambar dengan fungsi gambar yang sama seperti biasa, lalu disalin ke simpul SVG yang sudah ada (bgMorph). Jadi gambar
+// akhir sama persis dengan gambar tanpa animasi, dan fokus keyboard serta hover tidak lepas di tengah gerakan.
+// Langsung berganti (tanpa animasi): animasi dimatikan di Pengaturan atau sistem, halaman tidak tampil, titik fokus atau lensa sedang diseret,
+// atau bentuk gambar berubah (1 ↔ 2 meridian, gabung ↔ pisah, dari kosong atau salah isian)
+var BG_W = 11;   // kekakuan pegas: sekitar 0,35 detik untuk menempuh 90% jarak, 0,6 detik sampai tiba
+var bgVis = null, bgRAF = 0, bgT0 = 0;
+function bgChans(ev, v) {   // angka tujuan, urutan: d, L, P, R masing-masing per meridian, lalu jarak vertex dan kadar lensa (0 tanpa lensa, 1 dengan lensa)
+  var o = [], n = ev.m.length;
+  ['d', 'L', 'P', 'R'].forEach(function (k) { ev.m.forEach(function (q) { o.push(q[k]); }); });
+  o.push(ev.cor ? ev.vd : (v ? v.x[4 * n] : 0), ev.cor ? 1 : 0);   // lensa dilepas: vertex tetap di tempat terakhir, lensa memudar di sana
+  return o;
+}
+function bgMix(v) {   // ev dengan angka yang sedang tampil; bagian lain (jenis, sudut meridian, teks) ikut tujuan
+  var ev = v.ev, n = v.n, x = v.x, e = {}, k;
+  for (k in ev) e[k] = ev[k];
+  e.m = ev.m.map(function (q, j) { return { phi: q.phi, d: x[j], L: x[n + j], P: x[2 * n + j], R: x[3 * n + j] }; });
+  e.cor = ev.cor || x[4 * n + 1] > 0.002;
+  if (e.cor && !ev.cor) { e.lc = v.lc; e.la = v.la; }
+  if (e.cor) e.vd = x[4 * n];
+  e.ex = v.ex;
+  return e;
+}
+function bgSame(v) {   // tampil sudah (hampir) sama dengan tujuan: selisih di bawah satu per sekian piksel
+  var n = v.n, x = v.x, t = v.t, i;
+  for (i = 0; i < n; i++) if (Math.abs(bgOff(x[i]) - bgOff(t[i])) > 0.25) return false;
+  for (i = n; i < 4 * n; i++) if (Math.abs(x[i] - t[i]) > 0.01) return false;
+  return Math.abs(x[4 * n] - t[4 * n]) < 0.02 && Math.abs(x[4 * n + 1] - t[4 * n + 1]) < 0.01;
+}
+function bgMorph(a, b, kids) {   // samakan a dengan b: simpul sejenis dipertahankan (hanya atribut dan teks yang diubah), selebihnya diganti
+  var A, B, i, x, y;
+  if (!kids) {
+    for (i = 0; i < b.attributes.length; i++) { x = b.attributes[i]; if (a.getAttribute(x.name) !== x.value) a.setAttribute(x.name, x.value); }
+    for (i = a.attributes.length - 1; i >= 0; i--) if (!b.hasAttribute(a.attributes[i].name)) a.removeAttribute(a.attributes[i].name);
+  }
+  A = Array.prototype.slice.call(a.childNodes); B = Array.prototype.slice.call(b.childNodes);
+  for (i = 0; i < B.length; i++) {
+    x = A[i]; y = B[i];
+    if (!x) a.appendChild(y);
+    else if (x.nodeType === 3 && y.nodeType === 3) { if (x.nodeValue !== y.nodeValue) x.nodeValue = y.nodeValue; }
+    else if (x.nodeType === 1 && y.nodeType === 1 && x.nodeName === y.nodeName) bgMorph(x, y);
+    else a.replaceChild(y, x);
+  }
+  for (i = B.length; i < A.length; i++) a.removeChild(A[i]);
+}
+function bgPaint(zn, v) {   // gambar keadaan yang sedang tampil ke dalam kartu gambar
+  var t = document.createElement('div'), a = v.x[4 * v.n + 1];
+  t.innerHTML = L(bgFigs(bgMix(v)));
+  sgScan(t);   // angka bertanda dibungkus lebih dulu, supaya bentuknya sama dengan yang dibuat pengamat perubahan saat gambar biasa dipasang
+  bgMorph(zn, t, true);
+  if (a > 0 && a < 0.999) $$('.bgl', zn).forEach(function (g) { g.style.opacity = a.toFixed(3); });   // lensa muncul atau memudar
+}
+function bgStop() { if (bgRAF) { cancelAnimationFrame(bgRAF); bgRAF = 0; } if (bgVis) bgVis.run = false; }
+function bgSettle() {   // tiba: gambar akhir persis seperti tanpa animasi
+  var v = bgVis, zn = $('#bg-fig .bgz'), zr, lz, x0;
+  bgStop();
+  if (!v) return;
+  v.x = v.t.slice(); v.v = v.t.map(function () { return 0; }); v.ex = v.ev.ex;
+  if (!zn) return;
+  zr = bgView(zn); lz = $('.lz', zn); x0 = lz ? lz.getBoundingClientRect().left : 0;
+  bgPaint(zn, v); bgHit(); bgSetView(zn, zr); bgPanMark();   // lebar gambar kembali ke ukuran akhir, pandangan tetap di titik yang sama
+  if (lz && aniOK() && zn.animate) {   // gambar yang sempat digeser ke samping lalu tak perlu digeser lagi: bergeser halus ke tempat barunya, tidak melompat
+    var dx = x0 - lz.getBoundingClientRect().left;
+    if (Math.abs(dx) > 1) $$('.bgf', zn).forEach(function (sv) { sv.animate([{ transform: 'translateX(' + dx.toFixed(1) + 'px)' }, { transform: 'none' }], { duration: 260, easing: 'cubic-bezier(.2,.7,.2,1)' }); });
+  }
+}
+function bgTick(now) {
+  bgRAF = 0;
+  var v = bgVis, zn = $('#bg-fig .bgz'), dt, i, n;
+  if (!v || !v.run) return;
+  if (!zn || !zn.offsetWidth || !aniOK() || (bgDrag && bgDrag.moved) || (bgLD && bgLD.moved) || now - v.t0 > 3000) { bgSettle(); return; }
+  dt = Math.max(0, (now - bgT0) / 1000); bgT0 = now; n = v.n;
+  for (i = 0; i < v.x.length; i++) { var q = springStep(v.x[i], v.v[i], v.t[i], dt, BG_W); v.x[i] = q[0]; v.v[i] = q[1]; }
+  v.ex = Math.max(v.ex, Math.round(Math.max(0, Math.max.apply(null, v.x.slice(0, n).map(function (d) { return bgOff(d); })) - (BG.RW - 13))));   // lebar gambar tidak menyempit di tengah gerakan
+  if (bgSame(v)) { bgSettle(); return; }
+  bgPaint(zn, v); bgHit();
+  bgRAF = requestAnimationFrame(bgTick);
+}
+function bgGlide(ev, zn) {   // dipanggil bgRender setelah kartu digambar dengan keadaan akhir
+  var v = bgVis, n, t, same, live;
+  if (ev.state !== 'ok' || !zn) { bgStop(); bgVis = null; return; }
+  n = ev.m.length; same = !!v && v.n === n && v.two === ev.two;
+  t = bgChans(ev, same ? v : null);
+  live = same && zn.offsetWidth > 0 && aniOK() && !(bgDrag && bgDrag.moved) && !(bgLD && bgLD.moved);
+  if (!live) {   // langsung berganti
+    bgStop();
+    bgVis = { n: n, two: ev.two, x: t.slice(), v: t.map(function () { return 0; }), t: t, ev: ev, lc: ev.lc, la: ev.la, ex: ev.ex, run: false, t0: 0 };
+    return;
+  }
+  v.t = t; v.ev = ev; v.ex = Math.max(v.ex, ev.ex);
+  if (ev.cor) { v.lc = ev.lc; v.la = ev.la; }
+  if (ev.cor && v.x[4 * n + 1] < 0.01) { v.x[4 * n] = t[4 * n]; v.v[4 * n] = 0; }   // lensa baru dipasang: muncul di posisi vertexnya, tidak meluncur dari kornea
+  if (bgSame(v)) {   // tidak ada yang perlu digeser (mis. hanya sorotan berubah): gambar akhir sudah terpasang
+    if (v.run) bgSettle(); else { v.x = t.slice(); v.v = t.map(function () { return 0; }); v.ex = ev.ex; }
+    return;
+  }
+  bgPaint(zn, v);
+  if (!v.run) { v.run = true; v.t0 = bgT0 = performance.now(); }
+  if (!bgRAF) bgRAF = requestAnimationFrame(bgTick);
+}
 function bgView(zn) {   // titik tengah yang sedang terlihat, dalam satuan gambar (x mutlak di viewBox, y dari atas gambar), supaya sama saat zoom berubah atau gambar melebar
   var s = zn && zn.querySelector('.bgf'), vb = s && s.viewBox && s.viewBox.baseVal, w = s ? s.getBoundingClientRect().width : 0;
   if (!vb || !(vb.width > 0) || !(w > 0)) return null;
@@ -5542,6 +5826,7 @@ function bgRender() {
   fg.innerHTML = L(hh.fig); fg.hidden = !hh.fig;
   $('#bg-out').innerHTML = L(hh.out);
   var zn = $('#bg-fig .bgz');
+  bgGlide(ev, zn);
   if (zn && bgCh()) bgSetH(zn, Math.max(bgMinH(zn), bgCh()));
   bgHit();
   if (zn) bgSetView(zn, zr);
@@ -7387,6 +7672,15 @@ function lvOv(I, M, R, zoom) {
 /* ---------- Instance halaman ---------- */
 var LVI = {};
 var LVV = { Q: null, zoom: 1, phase: 0, owner: null, raf: 0, last: 0, ema: 16, scale: 1, slow: 0, good: 0, upNeed: 90, drag: null, pausedUntil: 0, pts: {}, pinch0: 0, zoom0: 1, bound: false };
+// Tombol sudut kamera (Depan, Belakang, Samping) menyala sesuai LVV.pose. Seretan, putar otomatis, atau klik dobel pada gambar mematikannya
+function lvCamBtns(h) {
+  if (!h) return;
+  Array.prototype.forEach.call(h.querySelectorAll('[data-view]'), function (b) {
+    var nm = b.dataset.view === 'side' ? 'side' : (b.dataset.view === '0,0' ? 'front' : 'back');
+    b.setAttribute('aria-pressed', LVV.pose === nm ? 'true' : 'false');
+  });
+}
+function lvCamSync() { Object.keys(LVI).forEach(function (k) { lvCamBtns(LVI[k].host); }); }
 function lvDark() { var t = document.documentElement.getAttribute('data-theme'); return t === 'dark' || (t !== 'light' && !!(window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches)); }
 
 // Petunjuk "Seret ke segala arah…": hilang setelah gambar 3D disentuh, muncul lagi cuma saat pindah mode 2D/3D
@@ -7458,17 +7752,17 @@ function lvOrtho(m) {   // koreksi pembulatan biar matriks tetap rotasi murni
   n = Math.hypot(b[0], b[1], b[2]); b = [b[0] / n, b[1] / n, b[2] / n];
   return [a[0], a[1], a[2], b[0], b[1], b[2], a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 }
-function lvTurn(dyaw, dpitch) { LVV.pose = ''; LVV.Q = lvOrtho(lvMul(lvMul(lvRx(dpitch), lvRy(dyaw)), LVV.Q)); }
+function lvTurn(dyaw, dpitch) { if (LVV.pose) { LVV.pose = ''; lvCamSync(); } LVV.Q = lvOrtho(lvMul(lvMul(lvRx(dpitch), lvRy(dyaw)), LVV.Q)); }
 function lvPose(yaw, pitch) { LVV.Q = lvMul(lvRx(pitch), lvRy(yaw)); }
 function lvFoldSpin() { LVV.Q = lvMul(LVV.Q, lvRy(LVV.phase)); LVV.phase = 0; }   // putar otomatis = satu putaran penuh (360°) di sumbu tegak lensa
 LVV.amp = 0.75;
 lvPose(-0.6, 0.18);   // sudut awal: miring
-function lvView(yaw, pitch) { LVV.pose = ''; lvPose(yaw, pitch); LVV.phase = 0; LVV.zoom = 1; LVV.pausedUntil = performance.now() + 1500; lv3Kick(); }
+function lvView(yaw, pitch, name) { LVV.pose = name || ''; lvCamSync(); lvPose(yaw, pitch); LVV.phase = 0; LVV.zoom = 1; LVV.pausedUntil = performance.now() + 1500; lv3Kick(); }
 
 // Tampak samping: lensa tegak lurus ke bidang meridian terpilih, profilnya terbaca seperti gambar 2D (depan di atas, CT tegak)
 function lvSide(I) {
   var M = I.M, m = M && M.mer[Math.min(I.mi, M.mer.length - 1)], t = m ? (m.ax || 0) * Math.PI / 180 : 0, c = Math.cos(t), s = Math.sin(t);
-  LVV.Q = [c, s, 0, 0, 0, 1, s, -c, 0]; LVV.phase = 0; LVV.zoom = 1; LVV.pose = 'side'; LVV.pausedUntil = performance.now() + 1500; lv3Kick();
+  LVV.Q = [c, s, 0, 0, 0, 1, s, -c, 0]; LVV.phase = 0; LVV.zoom = 1; LVV.pose = 'side'; lvCamSync(); LVV.pausedUntil = performance.now() + 1500; lv3Kick();
 }
 function lv3Kick() { if (!LVV.raf) LVV.raf = requestAnimationFrame(lv3Frame); }
 function lv3Frame(now) {
@@ -7565,6 +7859,7 @@ function lvMake(kind, hostSel) {
     $$('[data-vw]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.vw === LVP.view ? 'true' : 'false'); });
     $$('[data-v3]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.v3 === LVP.v3 ? 'true' : 'false'); });
     $$('[data-q]', host).forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.q === LVP.q ? 'true' : 'false'); });
+    lvCamBtns(host);
     $('.lv-qh', host).textContent = LT('qh_' + LVP.q);
     host.setAttribute('data-m', LVP.mode);
     barEl.hidden = !has; vwEl.hidden = !has || LVP.mode !== '2d'; vw3El.hidden = !has || LVP.mode !== '3d';
@@ -7656,7 +7951,7 @@ function lvMake(kind, hostSel) {
     else if (b.dataset.act === 'ar') { LVP.ar = !LVP.ar; lvSaveP(); LVP_apply(); }
     else if (b.dataset.eye) { I.eye = b.dataset.eye; I.set(I.choose(), true); }
     else if (b.dataset.vw) { LVP.view = b.dataset.vw; lvSaveP(); I.set(I.choose(), true); }
-    else if (b.dataset.view) { var v = b.dataset.view.split(','); LVP.spin = false; lvSaveP(); lvFoldSpin(); if (b.dataset.view === 'side') lvSide(I); else lvView(+v[0], +v[1]); LVP_apply(); }
+    else if (b.dataset.view) { var v = b.dataset.view.split(','); LVP.spin = false; lvSaveP(); lvFoldSpin(); if (b.dataset.view === 'side') lvSide(I); else lvView(+v[0], +v[1], b.dataset.view === '0,0' ? 'front' : 'back'); LVP_apply(); }
   });
   if ('ResizeObserver' in window) new ResizeObserver(function () { if (I.M && I.visible()) paint(); }).observe(st);
   if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { I.inView = es[es.length - 1].isIntersecting; if (I.inView && LVP.mode === '3d') { LVV.last = 0; lv3Kick(); } }).observe(st);
@@ -7849,6 +8144,7 @@ function touch(path) { if (!path || !/^(mbs|sag|bc|ft|rad|et|kr|lk|bg|sn)\./.tes
 /* ---------- Tab ---------- */
 function setTab(t) {
   $('#cols').dataset.tab = t;
+  $('#tabs').style.setProperty('--tab-i', t === 'result' ? '1' : '0');   // penanda tab bergeser ke tab yang aktif
   $$('[data-go]').forEach(function (b) { if (b.dataset.go === t) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   window.scrollTo(0, 0);
 }
@@ -7913,12 +8209,59 @@ document.addEventListener('click', function (e) {
 });
 
 /* ---------- Transposisi di kartu hasil (data-tr = kunci S: od, os, sag, bc, ft) ---------- */
+// Efek flip: resep dan angka hasil yang berubah karena transposisi tidak langsung berganti. Angka lama terlipat ke atas (salinan melayang di tempatnya),
+// angka baru terbuka dari bawah, berurutan dari atas ke bawah. Hanya angka yang benar-benar berubah yang dilipat. Kartu tetap digambar seperti biasa,
+// jadi hasil akhirnya sama persis dengan tanpa animasi. Mati bila animasi dimatikan di Pengaturan atau perangkat meminta gerak dikurangi
+var TR_FL = '.spec > b, .tile b, .tile small, .r.hd .v, .r:not(.hd) .v';
+var TR_CSS = ['fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'letterSpacing', 'textTransform', 'textAlign', 'color', 'fontVariantNumeric'];
+var TR_PER = 'perspective(520px) ';
+var trGhosts = [];
+function trClear() { while (trGhosts.length) { var g = trGhosts.pop(); if (g.parentNode) g.parentNode.removeChild(g); } }
+function trSnap(b) {   // keadaan kartu sebelum transposisi: isi, posisi di layar, dan gaya tiap angka
+  if (!aniOK() || typeof Element.prototype.animate !== 'function') return null;
+  var card = b.closest('.card') || b.parentNode, els = card.querySelectorAll(TR_FL), out = [], i, r, cs, o;
+  for (i = 0; i < els.length; i++) {
+    r = els[i].getBoundingClientRect(); cs = getComputedStyle(els[i]);
+    o = { t: els[i].textContent.trim(), h: els[i].innerHTML, x: r.left, y: r.top, w: r.width, hh: r.height, op: cs.opacity, st: {} };
+    TR_CSS.forEach(function (p) { o.st[p] = cs[p]; });
+    out.push(o);
+  }
+  return out;
+}
+function trFlip(k, snap) {   // dipanggil setelah kartu digambar ulang dengan keadaan baru
+  if (!snap) return;
+  var nb = $('[data-tr="' + k + '"]');
+  if (!nb) return;
+  trClear();
+  var ic = nb.querySelector('svg');   // ikon panah bolak-balik: berputar 180° dan tetap sama bentuknya di akhir
+  if (ic) ic.animate([{ transform: 'rotate(0deg)' }, { transform: 'rotate(180deg)' }], { duration: 420, easing: 'cubic-bezier(.3,1.25,.5,1)' });
+  var card = nb.closest('.card') || nb.parentNode, els = card.querySelectorAll(TR_FL), c = 0, vh = window.innerHeight || 800, i, el, o, g, d, st;
+  if (els.length !== snap.length) return;   // susunan kartu berubah: biarkan angka berganti biasa
+  for (i = 0; i < els.length; i++) {
+    el = els[i]; o = snap[i];
+    if (el.textContent.trim() === o.t) continue;
+    d = Math.min(c, 9) * 30; c++;
+    el.classList.add('a-flipx');
+    el.animate([{ transform: TR_PER + 'rotateX(-88deg)', opacity: 0 }, { transform: TR_PER + 'rotateX(0deg)' }],
+      { duration: 340, delay: d + 150, easing: 'cubic-bezier(.2,.9,.3,1.15)', fill: 'backwards' }).onfinish = (function (n) { return function () { n.classList.remove('a-flipx'); }; })(el);
+    if (!(o.w > 0 && o.hh > 0) || o.y + o.hh < 0 || o.y > vh) continue;   // angka lama di luar layar: tidak perlu salinan
+    g = document.createElement('span'); g.className = 'a-flipg'; g.innerHTML = '<span>' + o.h + '</span>';   // satu pembungkus: kalau tidak, tiap potongan jadi item flex sendiri dan spasi di antaranya hilang
+    st = o.st;
+    g.style.cssText = 'left:' + o.x + 'px;top:' + o.y + 'px;width:' + o.w + 'px;height:' + o.hh + 'px;justify-content:' + (/right|end/.test(st.textAlign) ? 'flex-end' : st.textAlign === 'center' ? 'center' : 'flex-start') +
+      ';font-family:' + st.fontFamily + ';font-size:' + st.fontSize + ';font-weight:' + st.fontWeight + ';font-style:' + st.fontStyle + ';letter-spacing:' + st.letterSpacing +
+      ';text-transform:' + st.textTransform + ';color:' + st.color + ';font-variant-numeric:' + st.fontVariantNumeric;
+    document.body.appendChild(g); trGhosts.push(g);
+    g.animate([{ transform: TR_PER + 'rotateX(0deg)', opacity: o.op }, { transform: TR_PER + 'rotateX(88deg)', opacity: 0 }],
+      { duration: 170, delay: d, easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'both' }).onfinish = (function (n) { return function () { var j = trGhosts.indexOf(n); if (j >= 0) trGhosts.splice(j, 1); if (n.parentNode) n.parentNode.removeChild(n); }; })(g);
+  }
+}
 document.addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('[data-tr]') : null;
   if (!b) return;
-  var k = b.dataset.tr;
+  var k = b.dataset.tr, snap = trSnap(b);
   S[k].tr = !S[k].tr;
   save(); update();
+  trFlip(k, snap);
   if (e.detail === 0) { var nb = $('[data-tr="' + k + '"]'); if (nb) nb.focus(); }   // keyboard: fokus tetap di tombol setelah kartu digambar ulang
 });
 
@@ -8096,7 +8439,7 @@ $('#menu').innerHTML = CATS.map(function (c) {
   return '<section class="cat" aria-labelledby="cat-' + c.id + '"><h2 class="cat-h"><button type="button" class="cat-btn" data-cat="' + c.id + '" aria-expanded="false" aria-controls="catm-' + c.id + '">' + c.art + '<span class="cat-tx"><span class="cat-t" id="cat-' + c.id + '">' + c.title + '</span><span class="cat-n">' + items.length + (' ' + _T('js.menu') + '</span></span><span class="cat-go">') + CHEV_DOWN + '</span></button></h2><ul class="menu" id="catm-' + c.id + '" hidden>' + items.map(function (f) {
     var inner = '<span class="mi-ico">' + f.ico + '</span><span class="mi-txt"><b>' + f.title + '</b><small>' + f.desc + '</small></span>';
     return f.ready
-      ? '<li><a class="mi" href="#/' + f.route + '" data-route="' + f.route + '">' + inner + CHEV_GO + '</a></li>'
+      ? '<li><a class="mi" href="#/' + f.route + '" data-route="' + f.route + '" data-kat="' + c.id + '">' + inner + CHEV_GO + '</a></li>'
       : '<li><div class="mi soon">' + inner + ('<span class="pill">' + _T('js.segera') + '</span></div></li>');
   }).join('') + '</ul></section>';
 }).join('');
@@ -8130,12 +8473,29 @@ function viewOf(hash) {
   var m = /^#\/([a-z0-9-]+)$/.exec(hash);
   return (m && Object.prototype.hasOwnProperty.call(VIEWS, m[1])) ? m[1] : 'home';
 }
+// Gerak pindah halaman: arah geser (maju dari kanan, mundur dari kiri) dan kepala halaman yang menyusul
+function navMotion(back) {
+  var r = document.documentElement;
+  r.setAttribute('data-nav', back ? 'back' : 'fwd');
+  r.classList.add('a-nav');
+  clearTimeout(navMotion.t);
+  navMotion.t = setTimeout(function () { r.classList.remove('a-nav'); }, 600);
+}
+function enterMotion(el) {
+  if (!el) return;
+  el.classList.add('a-enter');
+  clearTimeout(el._et);
+  el._et = setTimeout(function () { el.classList.remove('a-enter'); }, 900);
+}
 function route(nav) {
   var v = viewOf(location.hash);
   if (v === shown) return;
+  var first = shown === null;
   shown = v;
   closeMenu(false);
   var cfg = VIEWS[v], tabs = !!(cfg && cfg.tabs);
+  var mo = !first && aniOK();
+  if (mo) navMotion(v === 'home');
   $('#v-home').hidden = !!cfg;
   Object.keys(VIEWS).forEach(function (k) { $(VIEWS[k].el).hidden = k !== v; });
   $('#tabs').hidden = !tabs;
@@ -8147,6 +8507,7 @@ function route(nav) {
     window.scrollTo(0, 0);
     var h = $(cfg ? cfg.h : '#home-h'); if (h) h.focus({ preventScroll: true });
   }
+  if (mo) enterMotion($(cfg ? cfg.el : '#v-home'));
 }
 function openFeature(r) {
   // pushState biar tombol Back ponsel balik ke beranda, cadangan lewat hash jika peramban menolak
@@ -8159,13 +8520,27 @@ function goHome() {
   try { history.replaceState(null, '', '#/'); } catch (e) { location.hash = '#/'; }
   route(true);
 }
+// Buka/tutup daftar dengan tinggi yang meluncur halus. Tanpa animasi (atau browser lama) langsung tampil/sembunyi seperti semula
+function slideToggle(el, open) {
+  if (el._sl) { el._sl.onfinish = null; el._sl.cancel(); el._sl = null; el.style.overflow = ''; }
+  if (!aniOK() || typeof el.animate !== 'function') { el.hidden = !open; return; }
+  el.hidden = false;
+  var h = el.offsetHeight, mt = getComputedStyle(el).marginTop;
+  var kf = open
+    ? [{ height: '0px', marginTop: '0px', opacity: 0 }, { height: h + 'px', marginTop: mt, opacity: 1 }]
+    : [{ height: h + 'px', marginTop: mt, opacity: 1 }, { height: '0px', marginTop: '0px', opacity: 0 }];
+  el.style.overflow = 'hidden';
+  var a = el.animate(kf, { duration: open ? 340 : 240, easing: 'cubic-bezier(.2,.7,.2,1)' });
+  el._sl = a;
+  a.onfinish = function () { el._sl = null; el.style.overflow = ''; if (!open) el.hidden = true; };
+}
 // Header kategori: buka atau tutup daftar menunya. Semua kategori tertutup saat aplikasi dibuka.
 $('#menu').addEventListener('click', function (e) {
   var b = e.target.closest ? e.target.closest('button[data-cat]') : null;
   if (!b) return;
   var open = b.getAttribute('aria-expanded') !== 'true';
   b.setAttribute('aria-expanded', open ? 'true' : 'false');
-  $('#' + b.getAttribute('aria-controls')).hidden = !open;
+  slideToggle($('#' + b.getAttribute('aria-controls')), open);
 });
 $('#menu').addEventListener('click', function (e) {
   var a = e.target.closest ? e.target.closest('a[data-route]') : null;
@@ -8207,6 +8582,9 @@ function bindLiveHint(live, show, UI, redraw) {
   const UI = { hide: false, hidelive: false };
   const syncHint = bindLiveHint($('#lm-live'), $('#lm-show-live'), UI, function () { draw(); });
   const S = {}; function rst() { Object.keys(DEF).forEach(function (k) { S[k] = DEF[k]; }); } rst();
+  // Posisi roda yang tampil (drum, axis wheel) dan tujuannya. Tampil = nilai S yang diikuti pelan oleh pegas, seperti skala Keratometer
+  const LA = { drum: DEF.drum, dial: DEF.dial, vd: 0, vl: 0, tD: DEF.drum, tL: DEF.dial, raf: 0, t0: 0, on: false, direct: false };
+  const LMW = 12;   // kekakuan pegas, sama dengan skala Keratometer (KR_W)
   // [kunci, label, min, max, langkah, jenis (d = dioptri, a = derajat)]
   const CT = [['sph', 'Spheris (S)', -20, 20, .25, 'd'], ['cyl', 'Silinder (C)', -6, 6, .25, 'd'], ['axis', 'Axis lensa', 1, 180, 1, 'a'], ['add', 'ADD', 0, 4, .25, 'd'],
             ['drum', 'Power drum', -20, 20, .25, 'd'], ['dial', 'Axis wheel', 0, 180, 1, 'a'],
@@ -8280,19 +8658,13 @@ function bindLiveHint(live, show, UI, redraw) {
     $('#lm-lens-body').hidden = UI.hide; $('#lm-lens-card').classList.toggle('lm-fold', UI.hide);
     $('#lm-hide').textContent = UI.hide ? 'Tampilkan' : 'Sembunyikan'; $('#lm-hide').setAttribute('aria-expanded', UI.hide ? 'false' : 'true');
     syncHint();   // teks petunjuk di bawah gambar
-    renderDrum(); renderWheel();
+    lmFollow(); paintVis();   // roda dan garis mires bergeser pelan ke nilai baru
     $('#lm-drum').setAttribute('aria-valuenow', S.drum); $('#lm-wheel').setAttribute('aria-valuenow', Math.round(S.dial));
     $('#lm-lensrow').hidden = !S.add; $('#lm-posf').hidden = !S.add; $('#lm-pill').hidden = !S.add;
     $('#lm-ap').setAttribute('cy', S.pos === 'near' ? 62 : 26);
     $('#lm-pill').textContent = S.pos === 'near' ? 'Segmen' : 'Induk';
     const base = S.sph + (S.pos === 'near' ? S.add : 0);
-    function pm(m) { const s = Math.sin((m - S.axis) * Math.PI / 180); return base + S.cyl * s * s; }
-    const pA = pm(S.dial + 90), pB = pm(S.dial);
-    // axis wheel yang belum sejajar axis lensa meninggalkan sisa kabur pada kedua set garis
-    const res = S.cyl ? Math.min(1.5, .5 * Math.abs(S.cyl) * Math.abs(Math.sin(2 * (S.dial - S.axis) * Math.PI / 180))) : 0;
-    const bA = Math.abs(S.drum - pA) + res, bB = Math.abs(S.drum - pB) + res;
-    setSet('a', S.dial, bA); setSet('b', S.dial + 90, bB);
-    $('#lm-ptr').setAttribute('transform', 'rotate(' + (-S.dial) + ')');
+    const bl = lmBlur(S.drum, S.dial), pA = bl.pA, pB = bl.pB, res = bl.res, bA = bl.bA, bB = bl.bB;   // petunjuk teks memakai nilai tujuan, bukan posisi yang masih bergeser
     let msg, sharp = .13;
     if (bA < sharp && bB < sharp) msg = 'Semua garis jelas pada ' + fd(S.drum) + ' D: lensa spheris pada titik ukur ini.';
     else if (bA < sharp || bB < sharp) msg = (bA < sharp ? 'Garis 3 (mengikuti axis wheel)' : 'Garis 2') + ' jelas pada drum ' + fd(S.drum) + ' D. Lanjutkan drum untuk garis yang lain.';
@@ -8309,12 +8681,54 @@ function bindLiveHint(live, show, UI, redraw) {
       (hc ? '<p class="spec"><span>Daya meridian di titik ukur:</span> ' + fd(base) + ' dan ' + fd(base + cy) + ' D</p>' : '');
     $('#lm-out').innerHTML = out;
   }
+  // Kabur tiap set garis: selisih drum dengan daya meridian, ditambah sisa karena axis wheel belum sejajar axis lensa
+  function lmBlur(drum, dial) {
+    const base = S.sph + (S.pos === 'near' ? S.add : 0);
+    const pm = function (m) { const s = Math.sin((m - S.axis) * Math.PI / 180); return base + S.cyl * s * s; };
+    const pA = pm(dial + 90), pB = pm(dial);
+    const res = S.cyl ? Math.min(1.5, .5 * Math.abs(S.cyl) * Math.abs(Math.sin(2 * (dial - S.axis) * Math.PI / 180))) : 0;
+    return { pA: pA, pB: pB, res: res, bA: Math.abs(drum - pA) + res, bB: Math.abs(drum - pB) + res };
+  }
+  function wrapA(v) { return ((v - 1) % 180 + 180) % 180 + 1; }   // sudut penunjuk tetap di 1..180
+  // Gambar yang ikut roda: skala drum, skala axis wheel, kabur dan putaran garis mires, penunjuk di busur
+  function paintVis() {
+    renderDrum(LA.drum); renderWheel(LA.dial);
+    const q = lmBlur(LA.drum, LA.dial);
+    setSet('a', LA.dial, q.bA); setSet('b', LA.dial + 90, q.bB);
+    $('#lm-ptr').setAttribute('transform', 'rotate(' + (-wrapA(LA.dial)) + ')');
+  }
+  // Gerak halus seperti skala Keratometer: pegas teredam kritis (springStep). Langsung mengikuti bila sedang digeser jari atau mouse,
+  // halaman belum tampil, atau animasi dimatikan. Tombol yang ditahan: tujuan berpindah, kecepatan tetap nyambung
+  function lmSnap() { LA.drum = LA.tD = S.drum; LA.dial = LA.tL = S.dial; LA.vd = LA.vl = 0; }
+  function lmFollow() {
+    if (!LA.on || LA.direct || !aniOK() || !V.offsetWidth) { lmSnap(); LA.on = true; return; }
+    let dd = S.dial - LA.dial; dd = ((dd + 90) % 180 + 180) % 180 - 90;   // axis berputar (180 lanjut ke 1): lewat jalur terpendek
+    LA.tD = S.drum; LA.tL = LA.dial + dd;
+    if (LA.drum !== LA.tD || LA.dial !== LA.tL) lmGo();
+  }
+  function lmGo() { if (!LA.raf) { LA.t0 = performance.now(); LA.raf = requestAnimationFrame(lmTick); } }
+  function lmTick(now) {
+    LA.raf = 0;
+    const dt = Math.max(0, (now - LA.t0) / 1000); LA.t0 = now;
+    if (!aniOK() || !V.offsetWidth) lmSnap();
+    else {
+      let q = springStep(LA.drum, LA.vd, LA.tD, dt, LMW); LA.drum = q[0]; LA.vd = q[1];
+      q = springStep(LA.dial, LA.vl, LA.tL, dt, LMW); LA.dial = q[0]; LA.vl = q[1];
+      if (Math.abs(LA.drum - LA.tD) < .002) { LA.drum = LA.tD; LA.vd = 0; }   // kurang dari 0,05 piksel gambar
+      if (Math.abs(LA.dial - LA.tL) < .01) { LA.dial = LA.tL; LA.vl = 0; }   // kurang dari 0,06 piksel gambar
+    }
+    const busy = LA.drum !== LA.tD || LA.dial !== LA.tL;
+    if (!busy) LA.dial = S.dial;   // putaran axis selesai: kembali ke 1..180, gambarnya sama
+    paintVis();
+    if (busy) LA.raf = requestAnimationFrame(lmTick);
+  }
+  function drawNow() { LA.direct = true; try { draw(); } finally { LA.direct = false; } }   // dipakai saat roda digeser jari atau mouse: skala langsung ikut
   // Kontrol sungguhan: power drum (vertikal) dan axis wheel (horizontal) digeser. Skala ikut jari, penanda merah tetap di tengah. Drum: plus di atas, minus di bawah
   const PXD = 26, PXA = 6;   // piksel per dioptri dan per derajat
   function norm(v) { return ((Math.round(v) - 1) % 180 + 180) % 180 + 1; }   // axis wheel berputar terus: 1..180
   function clampQ(v) { return Math.max(-20, Math.min(20, Math.round(v * 4) / 4)); }
-  function renderDrum() {
-    let cur = S.drum, o = '';
+  function renderDrum(c) {
+    let cur = c === undefined ? S.drum : c, o = '';
     for (let q = Math.floor(cur * 4) - 18; q <= Math.ceil(cur * 4) + 18; q++) {
       const v = q / 4; if (v < -20 || v > 20) continue;
       const y = (100 - (v - cur) * PXD).toFixed(1), len = q % 4 === 0 ? 22 : q % 2 === 0 ? 15 : 9;
@@ -8323,8 +8737,8 @@ function bindLiveHint(live, show, UI, redraw) {
     }
     $('#lm-dg').innerHTML = o;
   }
-  function renderWheel() {
-    let cur = S.dial, o = '';
+  function renderWheel(c) {
+    let cur = c === undefined ? S.dial : c, o = '';
     for (let v = Math.floor(cur) - 26; v <= Math.ceil(cur) + 26; v++) {
       const x = (150 + (v - cur) * PXA).toFixed(1), w = norm(v), len = w % 10 === 0 ? 24 : w % 5 === 0 ? 16 : 9;
       o += '<line x1="' + x + '" x2="' + x + '" y1="6" y2="' + (6 + len) + '"/><line x1="' + x + '" x2="' + x + '" y1="72" y2="' + (72 - len) + '"/>';
@@ -8345,8 +8759,8 @@ function bindLiveHint(live, show, UI, redraw) {
     });
     ['pointerup', 'pointercancel', 'lostpointercapture'].forEach(function (n) { el.addEventListener(n, function () { st = null; }); });
   }
-  dragger($('#lm-drum'), 'y', function (v, d) { S.drum = clampQ(v - d / PXD); draw(); });   // plus di atas: skala ikut jari, geser ke bawah = lebih plus
-  dragger($('#lm-wheel'), 'x', function (v, d) { S.dial = norm(v + d / PXA); draw(); });
+  dragger($('#lm-drum'), 'y', function (v, d) { S.drum = clampQ(v - d / PXD); drawNow(); });   // plus di atas: skala ikut jari, geser ke bawah = lebih plus
+  dragger($('#lm-wheel'), 'x', function (v, d) { S.dial = norm(v + d / PXA); drawNow(); });
   $('#lm-drum').addEventListener('wheel', function (e) { e.preventDefault(); S.drum = clampQ(S.drum + (e.deltaY < 0 ? .25 : -.25)); draw(); }, { passive: false });
   $('#lm-wheel').addEventListener('wheel', function (e) { e.preventDefault(); S.dial = norm(S.dial + ((e.deltaX || e.deltaY) > 0 ? 1 : -1)); draw(); }, { passive: false });
   $('#lm-drum').addEventListener('keydown', function (e) {
@@ -9120,7 +9534,7 @@ var SEARCH = (function () {
   var catName = {}, list = [];
   CATS.forEach(function (c) { catName[c.id] = c.title; });
   FEATURES.forEach(function (f) {
-    if (f.ready) list.push({ route: f.route, title: f.title, desc: f.desc, cat: catName[f.cat || 'optik'] || '', ico: f.ico });
+    if (f.ready) list.push({ route: f.route, title: f.title, desc: f.desc, cat: catName[f.cat || 'optik'] || '', kat: f.cat || 'optik', ico: f.ico });
   });
   list.push({ route: 'kalkulator', title: _T('js.kalkulator_scientific'), desc: _T('js.trigonometri_logaritma_pangkat_a'), cat: _T('js.aplikasi'),
     ico: SVG('<rect x="5" y="2.8" width="14" height="18.4" rx="2.6"/><rect x="8" y="5.9" width="8" height="3.3" rx=".8"/><g fill="currentColor" stroke="none"><circle cx="8.8" cy="12.9" r=".95"/><circle cx="12" cy="12.9" r=".95"/><circle cx="15.2" cy="12.9" r=".95"/><circle cx="8.8" cy="15.7" r=".95"/><circle cx="12" cy="15.7" r=".95"/><circle cx="15.2" cy="15.7" r=".95"/><circle cx="8.8" cy="18.5" r=".95"/><circle cx="12" cy="18.5" r=".95"/><circle cx="15.2" cy="18.5" r=".95"/></g>') });
@@ -9163,7 +9577,7 @@ function srchUpdate() {
   if (!on) { SQ.list.innerHTML = ''; SQ.sr.textContent = ''; return; }
   var hits = srchRun(q), toks = srchToks(q), msg = hits.length + ' menu ditemukan';
   SQ.list.innerHTML = hits.map(function (e) {
-    return '<li><a class="mi" href="#/' + e.route + '" data-route="' + e.route + '"><span class="mi-ico">' + e.ico + '</span><span class="mi-txt">' +
+    return '<li><a class="mi" href="#/' + e.route + '" data-route="' + e.route + '"' + (e.kat ? ' data-kat="' + e.kat + '"' : '') + '><span class="mi-ico">' + e.ico + '</span><span class="mi-txt">' +
       '<span class="mi-tag">' + esc(e.cat) + '</span><b>' + srchMark(e.title, toks) + '</b><small>' + srchMark(e.desc, toks) + '</small></span>' + CHEV_GO + '</a></li>';
   }).join('');
   SQ.list.hidden = SQ.n.hidden = !hits.length;
@@ -9307,7 +9721,7 @@ function setDec(v) {
 function setMsg(t) { var m = $('#set-msg'); m.textContent = t; m.hidden = !t; }
 document.addEventListener('change', function (e) {
   var t = e.target;
-  if (t.name === 'set-theme' && t.checked) { SET.theme = t.value; saveSet(); tFade(); applyTheme(); }
+  if (t.name === 'set-theme' && t.checked) { SET.theme = t.value; saveSet(); themeSwap(e); }
   if (t.name === 'set-anim' && t.checked) { SET.anim = t.value === 'on'; saveSet(); applyAnim(); }
   if (t.name === 'set-sgc' && t.checked) { SET.sgc = t.value === 'on'; saveSet(); applySgc(); }
   if (t.name === 'set-sep' && t.checked) applySep(t.value);
@@ -10617,23 +11031,161 @@ route(false);
   // Sekali saja saat aplikasi dibuka
   if (aniOK()) {
     var r = document.documentElement; r.classList.add('a-intro');
-    setTimeout(function () { r.classList.remove('a-intro'); }, 1600);
+    setTimeout(function () { r.classList.remove('a-intro'); }, 2000);
   }
-  // Angka hasil yang berubah diberi kelas .tick (hasil dirender ulang tiap ketikan, jadi cuma yang beda yang bergerak)
+  // Hasil dirender ulang tiap ketikan, jadi yang dianimasikan hanya yang benar-benar berubah:
+  //  - angka yang beda: bergeser (.tick) dan kotaknya berkilau (.flash)
+  //  - kotak angka baru di hasil yang sudah ada: memantul masuk (.a-new)
+  //  - hasil yang baru pertama terisi: semua kotak dan baris muncul berurutan (.a-reveal di pembungkusnya)
+  //  - pesan baru atau yang isinya berganti: masuk dengan gerak, pesan salah bergetar (.a-in)
+  // Simulator (Lensometer, Streak) berubah tiap geseran jari, jadi hanya mendapat .tick seperti semula
+  var OUT = '#out, [id$="-out"], #sn-res', SIM = /^(lm|st)-out$/;
   var seen = {};
+  function flash(t) { t.classList.remove('flash'); void t.offsetWidth; t.classList.add('flash'); }
+  function reveal(out) {
+    var els = out.querySelectorAll('.tile, .r:not(.hd), .bgr, .g, .spec, .how'), i;
+    for (i = 0; i < els.length; i++) els[i].style.setProperty('--t', Math.min(i, 8));
+    out.classList.add('a-reveal'); out._rv = true;
+    clearTimeout(out._rt); out._rt = setTimeout(function () { out.classList.remove('a-reveal'); out._rv = false; }, 1100);
+  }
+  // quiet = hanya mencatat isi sekarang, tanpa animasi (saat dibuka dan saat animasi mati)
+  function scan(out, quiet) {
+    var id = out.id, live = !SIM.test(id), bs = out.querySelectorAll('.tile b'), n = bs.length, prev = seen[id + '#n'] || 0, i, k, t, tile;
+    if (out._rv) { out._rv = false; out.classList.remove('a-reveal'); }   // render berikutnya tidak mengulang urutan masuk
+    for (i = 0; i < n; i++) {
+      k = id + ':' + i; t = bs[i].textContent; tile = bs[i].parentNode;
+      if (!quiet) {
+        if (seen[k] !== undefined && seen[k] !== t) { bs[i].classList.add('tick'); if (live) flash(tile); }
+        else if (seen[k] === undefined && prev > 0 && live) tile.classList.add('a-new');
+      }
+      seen[k] = t;
+    }
+    for (i = n; seen[id + ':' + i] !== undefined; i++) delete seen[id + ':' + i];
+    var ms = out.querySelectorAll('.msg');
+    for (i = 0; i < ms.length; i++) {
+      k = id + ':m' + i; t = ms[i].textContent;
+      if (!quiet && live && seen[k] !== t) ms[i].classList.add('a-in');
+      seen[k] = t;
+    }
+    for (i = ms.length; seen[id + ':m' + i] !== undefined; i++) delete seen[id + ':m' + i];
+    if (!quiet && live && n > 0 && prev === 0) reveal(out);
+    seen[id + '#n'] = n;
+  }
+  $$(OUT).forEach(function (o) { scan(o, true); });
   new MutationObserver(function (ms) {
-    if (!aniOK()) return;
+    var quiet = !aniOK(), outs = [];
     ms.forEach(function (m) {
       var h = m.target.nodeType === 1 ? m.target : m.target.parentElement;
-      var out = h && h.closest ? h.closest('#out, [id$="-out"]') : null;
-      if (!out) return;
-      Array.prototype.forEach.call(out.querySelectorAll('.tile b'), function (b, i) {
-        var k = out.id + ':' + i, t = b.textContent;
-        if (seen[k] !== undefined && seen[k] !== t) b.classList.add('tick');
-        seen[k] = t;
-      });
+      var out = h && h.closest ? h.closest(OUT) : null;
+      if (out && outs.indexOf(out) < 0) outs.push(out);
     });
+    outs.forEach(function (o) { scan(o, quiet); });
   }).observe($('.app'), { childList: true, subtree: true });
+})();
+
+/* ---------- Gerak tambahan: riak tombol, pilihan segmen, kartu saat digulir, hasil kalkulator ---------- */
+(function () {
+  var doc = document;
+  function can() { return aniOK() && typeof Element.prototype.animate === 'function'; }
+
+  // 1. Riak tinta di tombol yang disentuh. Dibuat sebagai lapisan sementara di atas tombol (position: fixed), jadi tombolnya
+  //    sendiri tidak diubah. Dibatalkan bila jari mulai menggulir halaman.
+  var RIP = 'button, a.mi, summary', rips = [];
+  function ripDrop(h) {
+    var i = rips.indexOf(h);
+    if (i >= 0) rips.splice(i, 1);
+    if (h.parentNode) h.parentNode.removeChild(h);
+  }
+  function ripClear() { while (rips.length) ripDrop(rips[0]); }
+  doc.addEventListener('pointerdown', function (e) {
+    if (e.button > 0 || !can() || !e.target.closest) return;
+    var t = e.target.closest(RIP);
+    if (!t || t.disabled || t.closest('.sn-card.full')) return;   // chart layar penuh dilihat pasien: tanpa efek tambahan
+    var r = t.getBoundingClientRect();
+    if (r.width < 12 || r.height < 12) return;
+    var cs = getComputedStyle(t), x = e.clientX - r.left, y = e.clientY - r.top;
+    if (!(x >= 0 && x <= r.width && y >= 0 && y <= r.height)) { x = r.width / 2; y = r.height / 2; }
+    var dx = Math.max(x, r.width - x), dy = Math.max(y, r.height - y), d = 2 * Math.sqrt(dx * dx + dy * dy);
+    var host = doc.createElement('span'), dot = doc.createElement('i');
+    host.className = 'a-rip';
+    host.style.cssText = 'left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;color:' + cs.color +
+      ';border-radius:' + cs.borderTopLeftRadius + ' ' + cs.borderTopRightRadius + ' ' + cs.borderBottomRightRadius + ' ' + cs.borderBottomLeftRadius;
+    dot.style.cssText = 'left:' + (x - d / 2) + 'px;top:' + (y - d / 2) + 'px;width:' + d + 'px;height:' + d + 'px';
+    host.appendChild(dot);
+    (t.closest('dialog') || doc.body).appendChild(host);   // dialog modal ada di lapisan atas, jadi riaknya harus di dalamnya
+    rips.push(host);
+    if (rips.length > 8) ripDrop(rips[0]);
+    dot.animate([{ transform: 'scale(.15)', opacity: .24 }, { transform: 'scale(1)', opacity: 0 }], { duration: 560, easing: 'cubic-bezier(.2,.6,.3,1)' }).onfinish = function () { ripDrop(host); };
+  }, { passive: true });
+  doc.addEventListener('pointercancel', ripClear, true);
+  window.addEventListener('scroll', ripClear, { passive: true, capture: true });
+
+  // 2. Pilihan segmen (.seg): blok warna meluncur dari pilihan lama ke yang baru. Pilihan lama dicatat sebelum berubah
+  //    (sentuhan atau tombol panah), lalu dipakai saat event change. Perubahan lewat skrip (muat data, atur ulang) tanpa gerak.
+  var ISO = !!(window.CSS && CSS.supports && CSS.supports('isolation', 'isolate'));
+  function segMark(e) {
+    var s = e.target.closest ? e.target.closest('.seg') : null;
+    if (!s) return;
+    var c = s.querySelector('input:checked');
+    s._from = c ? c.nextElementSibling : null;
+  }
+  doc.addEventListener('pointerdown', segMark, true);
+  doc.addEventListener('keydown', segMark, true);
+  doc.addEventListener('change', function (e) {
+    var i = e.target, s = i && i.type === 'radio' && i.closest ? i.closest('.seg') : null;
+    if (!s) return;
+    var from = s._from, to = i.nextElementSibling;
+    s._from = null;
+    if (!ISO || !can() || !from || !to || from === to || !from.isConnected || !to.isConnected) return;
+    var a = from.getBoundingClientRect(), b = to.getBoundingClientRect();
+    if (!a.width || !b.width) return;
+    to.style.setProperty('--gx', ((a.left + a.width / 2) - (b.left + b.width / 2)).toFixed(1) + 'px');
+    to.style.setProperty('--gs', (a.width / b.width).toFixed(3));
+    to.classList.remove('a-gl'); void to.offsetWidth; to.classList.add('a-gl');
+    clearTimeout(to._gt); to._gt = setTimeout(function () { to.classList.remove('a-gl'); }, 450);
+  });
+
+  // 3. Kartu muncul saat masuk layar: yang terlihat langsung berurutan, yang di bawah muncul saat digulir. Tampilan yang
+  //    disembunyikan menyiapkan ulang kartunya, jadi gerak yang sama ikut saat halaman dibuka lagi. Isi hasil (#out dan sejenisnya)
+  //    diganti terus oleh skrip, jadi yang dipasangi adalah pembungkusnya, bukan kartu di dalamnya. Tanpa IntersectionObserver
+  //    (browser lama), atau animasi mati, kartu tampil biasa: kelas a-sr baru menyembunyikan kartu bila html[data-anim="on"].
+  if ('IntersectionObserver' in window) {
+    try {
+      var DYN = '.panel[id$="out"]', SKIP = '.sn-card, .calc-disp';
+      var io = new IntersectionObserver(function (ents) {
+        var n = 0;
+        ents.forEach(function (en) {
+          var el = en.target;
+          if (en.isIntersecting) {
+            if (el.classList.contains('a-sr-in')) return;
+            el.style.setProperty('--d', (Math.min(n++, 7) * 60) + 'ms');
+            el.classList.add('a-sr-in');
+          } else if (!en.boundingClientRect.width && !en.boundingClientRect.height) {
+            el.classList.remove('a-sr-in');   // tampilan atau panelnya disembunyikan: siapkan lagi
+          }
+        });
+      }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
+      $$('.card, ' + DYN).forEach(function (el) {
+        if (el.matches(SKIP) || el.closest('.sn-card')) return;
+        var up = el.parentElement ? el.parentElement.closest('.card, ' + DYN) : null;
+        if (up) return;   // sudah dalam pembungkus yang dipasangi
+        el.classList.add('a-sr');
+        io.observe(el);
+      });
+    } catch (err) {}
+  }
+
+  // 4. Hasil kalkulator: setelah "=" (bukan pratinjau abu-abu) angkanya naik masuk, pesan galat bergetar
+  var cr = $('#calc-res');
+  if (cr) {
+    var lastT = cr.textContent, lastP = cr.classList.contains('pre');
+    new MutationObserver(function () {
+      var t = cr.textContent, p = cr.classList.contains('pre');
+      if (t === lastT && p === lastP) return;
+      lastT = t; lastP = p;
+      if (t && !p && aniOK()) cr.classList.add('a-res');
+    }).observe(cr, { childList: true, characterData: true, subtree: true });
+  }
 })();
 })();
 </script>

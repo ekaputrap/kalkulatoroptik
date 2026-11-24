@@ -7,7 +7,7 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#edf1f4",
+  "background_color": "#0d6480",
   "theme_color": "#0d6480",
   "categories": ["utilities", "productivity"],
   "icons": [
